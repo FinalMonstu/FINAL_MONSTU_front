@@ -43,7 +43,7 @@ export function responseStatus(response,data=null){
 //Handle Response Error Status
 export function errorStatus(error){
 
-    let result = { success : false, message : 'Null Error'};
+    let result = { success : false, message : 'Internal Server Error. Please try again later'};
     if(!error || !error.response) return result;
 
     switch(error.response.status){

@@ -8,10 +8,11 @@ const aiController = (url,type='post',data=null) => {
 }
 
 // 단어, 문장 번역 API
-export const trans = async () => {
+export const trans = async (translation) => {
     try {
-        const response = await aiController(`/trans`, 'post',);
-        return responseStatus(response);
+        const response = await aiController(`/trans`, 'post',translation);
+        console.log("response: "+ response.data)
+        return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
     }     
