@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import ContentBox from "../components/box/ContentBox";
 import HistoryWordBox from "../components/box/HistoryWordBox";
 import HistorySenBox from "../components/box/HistorySenBox";
-import { Box, Button, Fab, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import LanguageSelect from "../components/selecter/LanguageSelect";
 import { hasWhitespace } from "../hooks/regexValid";
 import { trans } from "../hooks/controller/AiController";
@@ -17,9 +17,7 @@ function PostPage() {
   const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
   const [histWord,setHistWord] = useState([]);
   const [histSentence,setHistSentence] = useState([]);
-
-  //PostInput Modal 속성
-  const [inputModal,setInputModal] = useState({ isModalOpen : false })
+  const [inputModal,setInputModal] = useState({ isModalOpen : false })  //PostInput Modal 속성
 
   //Option Modal 속성
   const [option,setOption] = useState({
@@ -45,7 +43,6 @@ function PostPage() {
     id : "",  //단어 ID
     memberId : "",  // 회원 ID
     postId : "",  //게시물 ID
-
     target: "",    // 번역할 단어 또는 문장
     transed: "", // 번역된 단어 또는 문장
     oriLang: "",      // 원본 언어
@@ -53,101 +50,61 @@ function PostPage() {
     genre : "", //WORD,SENTENCE
   }); 
   
-  // translation 속성값 수정 함수
-  const updateTranslation = (field, value) => {
-    setTranslation((prev) => ({
-      ...prev,   
-      [field]: value,  
-    }));
-  };
 
-  // post 속성값 수정 함수
-  const updatePost = (field, value) => {
-    setPost((prev) => ({
-      ...prev,   
-      [field]: value,  
-    }));
-  };
-
-  // Option 속성값 수정 함수
-  const updateOption = (updater) => {
-    setOption((prev) => {
-      return typeof updater === "function" ? updater(prev) : { ...prev, ...updater };
-    });
-  };
-
+  const updateTranslation = (field, value) => setTranslation(prev => ({ ...prev, [field]: value }));
+  const updatePost = (field, value) => setPost(prev => ({ ...prev, [field]: value }));
+  const updateOption = updater => setOption(prev => (typeof updater === "function" ? updater(prev) : { ...prev, ...updater }));
+  
+  // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
+  const searchHistory = useCallback((translation) => {
+    const history = (translation?.genre === "SENTENCE") ? histSentence : histWord;
+    return history.find(e => e.target === translation.target)?.transed || null;
+  }, [translation.target]);
 
   //  Text 번역 API
-  const fetchTrans = async (translation) => {
-    let cachedTrans = search(translation);  //이미 History에 있으면 번역API 사용X
-    if(cachedTrans!=null) return updateTranslation("transed",cachedTrans);
-
-    const result = await trans(translation);    //API
-    // if(!result?.success) return alert(result.message); //!!!!POPUP BOX로 교체
-    console.log("112: "+result?.success && translation.target === result?.data.target);
-    if(result?.success && translation.target === result?.data.target) {
-      updateTranslation("transed",result?.data.transed);  //translation 초기화
-      return  
-    }
+  const fetchTrans = async () => {
+    const cachedTrans = searchHistory(translation);  //translation가 이미 History에 저장된 요소인지 확인
+    if (cachedTrans) { updateTranslation("transed", cachedTrans); return; } 
+    const result = await trans(translation);  // 번역 API
+    if (!result?.success || translation.target !== result?.data.target) return; //번역 실패 시
+    updateTranslation("transed", result.data.transed);  //translation.transed 초기화
   };
-
-  const search = (translation) => {
-    const found = histWord.find(e => e.target === translation.target);
-    return found ? found.transed : null;
-  }
-
+  
   // 사용자가 텍스트를 드래그하면 Popover를 띄움
   const handleSelection = () => {
     const selection = window.getSelection();
     if (!selection.rangeCount) return; // 선택한 텍스트가 없으면 리턴
-  
-    const range = selection.getRangeAt(0);
-    const rect = range.getBoundingClientRect();
-  
+    const rect = selection.getRangeAt(0).getBoundingClientRect();
     if (rect.width === 0 || rect.height === 0) return; // 빈 공간 선택 방지
-  
-    setAnchorEl({
-      getBoundingClientRect: () => rect,
-    });
+    setAnchorEl({ getBoundingClientRect: () => rect }); //getBoundingClientRect함수를 실행하면 rect가 나오게
   };
+
+  // WORD,SENTENCE 분별
+  const disGenre = (text) => { return !hasWhitespace(text.trim()) ? "WORD" : "SENTENCE";  }
+
 
   // Log
   useEffect(()=>{
     // console.log("post Object:", JSON.stringify(post, null, 2));
-  //   console.log("Translation Object:", JSON.stringify(translation, null, 2));
+    console.log("Translation Object:", JSON.stringify(translation, null, 2));
   //   console.log("Option Object:", JSON.stringify(option, null, 2));
     console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
     console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
   },[translation,option,histWord,histSentence,post])
 
-
-  // type 초기화 (예시: "word" 또는 "sentence") & 번역 APi이용
+  // type 초기화 (예시: "WORD" 또는 "SENTENCE") & 번역 APi이용
   useEffect(() => {
     if (!translation.target) return ;
-    const type = !hasWhitespace(translation.target.trim()) ? "WORD" : "SENTENCE";
-    
-    if (translation.genre !== type) { 
-      updateTranslation("genre", type);
-    }
-    fetchTrans({ ...translation, type });
+    const type = disGenre(translation.target);  // 단어,문장 분별별
+    if (translation.genre !== type) updateTranslation("genre", type); 
+    fetchTrans(); //번역 API
+    handleSelection();  //번역된 텍스트를 화면에 표시
   }, [translation.target]); 
-
-  // 번역된 텍스트를 화면에 표시
-  useEffect(()=>{
-    handleSelection();
-  },[translation.target])
 
   // History 리스트에 추가
   useEffect(() => {
-    if (!translation.transed) return;
-    let cachedTrans = search(translation);  //이미 History에 있으면 추가하지 않음
-    if(cachedTrans!=null) return ;
-
-    if (translation.genre === "WORD") {
-      setHistWord((prev) => [...prev, translation]);
-    } else if (translation.genre === "SENTENCE") {
-      setHistSentence((prev) => [...prev, translation]);
-    }
+    if (!translation.transed || searchHistory(translation)!=null) return;
+    (translation.genre === "WORD" ? setHistWord : setHistSentence)(prev => [...prev, translation]);
   }, [translation.transed]);
 
   return (
@@ -170,8 +127,7 @@ function PostPage() {
           }}>
             {post.title}
           </Typography>
-          <Button 
-            sx={{color:"black"}} 
+          <Button sx={{color:"black"}} 
             onClick={()=>setInputModal(prev => ({ ...prev, isModalOpen : true}))}
           >
             <ControlPointIcon sx={{fontSize:33}}/>
@@ -217,39 +173,7 @@ function PostPage() {
         }
       </Box>
 
-      {/* Upload,GoNext_Button & empty_Box*/}
-        {/* <Box sx={{
-          display: "flex",
-          flexDirection: "row",
-        }}>
-          <Box sx={{
-            // boxSizing: "border-box",
-            display: "flex",
-            width: "75vw",
-            minHeight: "3.8vh",
-            overflowY: "auto",
-            justifyContent: "right",  // 가로 방향 가운데 정렬
-            alignItems: "center",       // 세로 방향 가운데 정렬
-            gap: "0px"  // 버튼 사이 간격 조절
-          }}>
-            <Button 
-              sx={{color:"black"}} 
-              onClick={()=>setInputModal(prev => ({ ...prev, isModalOpen : true}))}
-            >
-              <ControlPointIcon sx={{fontSize:33}}/>
-            </Button>
-          </Box>
-          <Box sx={{
-            boxSizing: "border-box",
-            width: "25vw",
-            height: "3.5vh",
-            overflowY: "auto"
-          }}> */}
-            {/* Empty Box */}
-          {/* </Box>
-        </Box> */}
-
-        {/* History_Sentences_Section & empty_Box */}
+      {/* History_Sentences_Section & empty_Box */}
         { option.viewSentence &&
           <Box sx={{
             display: "flex",
@@ -275,12 +199,10 @@ function PostPage() {
         }
 
         {/* Popover 컴포넌트 (드래그한 텍스트에 대한 번역 표시) */}
-        <TransPopover
-          anchorEl={anchorEl}
-          setAnchorEl={setAnchorEl}
-          translation={translation}
-        />
+        <TransPopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} translation={translation} />
+        {/* Option Modal */}
         <PostOption option={option} setOption={updateOption}/>
+        {/* 게시물 추가 Modal */}
         <PostInputModal option={inputModal} setOption={setInputModal} setPost={setPost}/>
     </Box>
   );

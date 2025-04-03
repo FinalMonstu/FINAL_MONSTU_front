@@ -11,7 +11,7 @@ const aiController = (url,type='post',data=null) => {
 export const trans = async (translation) => {
     try {
         const response = await aiController(`/trans`, 'post',translation);
-        console.log("response: "+ response.data)
+        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

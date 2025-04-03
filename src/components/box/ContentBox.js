@@ -3,11 +3,11 @@ import { Box, Typography } from "@mui/material";
 
 export default function ContentBox( {translation,updateTranslation,post} ) {
 
-  // onMouseUp 이벤트트 
+  // onMouseUp 이벤트트
   const handleHighlightText = () => {
     const selection = window.getSelection().toString().trim();  // 선택된 텍스트 가져오기
     if (selection && translation.target !== selection) {
-      updateTranslation("target",selection.trim()); 
+      updateTranslation("target",selection); 
     }
   };
 

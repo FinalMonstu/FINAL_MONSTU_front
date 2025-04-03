@@ -11,7 +11,7 @@ const presetController = (url,type='post',data=null) => {
 export const getLangList = async () => {
     try {
         const response = await presetController(`/lang`, 'get',);
-        console.log("response.data: "+response.data.langList)
+        console.log("Response.data:", JSON.stringify(response.data.langList, null, 2));
         return responseStatus(response,response.data.langList);
     }catch(error){
         return errorStatus(error);

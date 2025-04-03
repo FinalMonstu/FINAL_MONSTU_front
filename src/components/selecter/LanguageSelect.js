@@ -7,10 +7,8 @@ export default function LanguageSelect( {translation,updateTranslation,type} ) {
     
     // 언어 목록 초기화
     const fetchLangList = async () => {
-    const result = await getLangList();
-
-    if(result.success) setLangList(result.data);
-    else{ alert(result.message) }
+      const result = await getLangList();
+      (result.success) ? setLangList(result.data) : alert(result.message);
     }
 
     useEffect(()=>{

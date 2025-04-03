@@ -2,10 +2,6 @@ import { Box, Modal, Typography,Button, ButtonGroup  } from "@mui/material";
 import React from "react";
 
 export default function PostOption({option,setOption}) {
-    // const isModalOpen = "isModalOpen";
-    // const viewWord = "viewWord";
-    // const viewSentence = "viewSentence";
-
     return(
         <Modal
             open={option.isModalOpen}
@@ -29,12 +25,8 @@ export default function PostOption({option,setOption}) {
             >
                 <ButtonGroup variant="text" aria-label="Basic button group">
                     <Button onClick={()=> setOption(prev => ({...prev, viewWord : false, viewSentence : false}))}>NONE</Button>
-                    <Button onClick={() => setOption(prev => ({ ...prev, viewWord : !prev.viewWord }))}>
-                        WORD
-                    </Button>
-                    <Button onClick={() => setOption(prev => ({ ...prev, viewSentence : !prev.viewSentence }))}>
-                        SENTENCE
-                    </Button>
+                    <Button onClick={() => setOption(prev => ({ ...prev, viewWord : !prev.viewWord }))}> WORD </Button>
+                    <Button onClick={() => setOption(prev => ({ ...prev, viewSentence : !prev.viewSentence }))}> SENTENCE </Button>
                     <Button onClick={()=> setOption(prev => ({...prev, viewWord : true, viewSentence : true}))}>All</Button>
                 </ButtonGroup>
             </Box>
