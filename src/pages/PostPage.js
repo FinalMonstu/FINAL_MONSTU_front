@@ -12,12 +12,17 @@ import PostOption from "../components/modal/PostOption";
 import SettingsIcon from '@mui/icons-material/Settings';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import PostInputModal from "../components/modal/PostInputModal";
+import MultiSnackBar from "../components/popup/MultiSnackBar";
 
 function PostPage() {
   const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
   const [histWord,setHistWord] = useState([]);
   const [histSentence,setHistSentence] = useState([]);
   const [inputModal,setInputModal] = useState({ isModalOpen : false })  //PostInput Modal 속성
+  const [snackBar,setSnackBar] = useState({
+    msg : "",
+    option : "",
+  })
 
   //Option Modal 속성
   const [option,setOption] = useState({
@@ -54,7 +59,8 @@ function PostPage() {
   const updateTranslation = (field, value) => setTranslation(prev => ({ ...prev, [field]: value }));
   const updatePost = (field, value) => setPost(prev => ({ ...prev, [field]: value }));
   const updateOption = updater => setOption(prev => (typeof updater === "function" ? updater(prev) : { ...prev, ...updater }));
-  
+  const updateSnackBar = (field, value) => setSnackBar(prev => ({ ...prev, [field]: value }));
+
   // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
   const searchHistory = useCallback((translation) => {
     const history = (translation?.genre === "SENTENCE") ? histSentence : histWord;
@@ -66,7 +72,10 @@ function PostPage() {
     const cachedTrans = searchHistory(translation);  //translation가 이미 History에 저장된 요소인지 확인
     if (cachedTrans) { updateTranslation("transed", cachedTrans); return; } 
     const result = await trans(translation);  // 번역 API
-    if (!result?.success || translation.target !== result?.data.target) return; //번역 실패 시
+    if (!result?.success || translation.target !== result?.data.target) { //번역 실패 시
+      updateSnackBar("option","error"); 
+      updateSnackBar("msg",result.message); 
+      return;} 
     updateTranslation("transed", result.data.transed);  //translation.transed 초기화
   };
   
@@ -204,6 +213,8 @@ function PostPage() {
         <PostOption option={option} setOption={updateOption}/>
         {/* 게시물 추가 Modal */}
         <PostInputModal option={inputModal} setOption={setInputModal} setPost={setPost}/>
+        {/* PopupBox */}
+        <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar}/>
     </Box>
   );
 }

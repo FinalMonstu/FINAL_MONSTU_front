@@ -14,7 +14,7 @@ export default function TransPopover({ anchorEl, setAnchorEl, translation }) {
       anchorReference="anchorPosition" // 위치를 직접 지정
       anchorPosition={
         anchorEl
-          ? { top: anchorEl.getBoundingClientRect().top + window.scrollY - 35, 
+          ? { top: anchorEl.getBoundingClientRect().top + window.scrollY - 37, 
               left: anchorEl.getBoundingClientRect().left + window.scrollX }
           : { top: 0, left: 0 }
       }
@@ -23,7 +23,7 @@ export default function TransPopover({ anchorEl, setAnchorEl, translation }) {
         horizontal: "left",
       }}
     >
-      <Typography sx={{ p: 0.5 }}>{translation.transed}</Typography>
+      <Typography sx={{ p: 0.5, border: "1px solid black" }}>{translation.transed}</Typography>
     </Popover>
   );
 }
