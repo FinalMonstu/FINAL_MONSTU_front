@@ -1,13 +1,14 @@
 import React from "react";
-import { Box, List, ListItem, ListItemText, Typography } from "@mui/material";
+import { Box, Button, List, ListItem, ListItemText, Typography } from "@mui/material";
 
-function HistorySenBox({list}) {
+function HistorySenBox({list,handleDelete}) {
   return (
     <Box elevation={0} sx={{ padding: 2, margin: "auto" }}>
       <List>
         {list.length > 0 ? (
             list.map(({ target, transed }, index) => (
               <ListItem key={index} divider>
+                <Button onClick={() => handleDelete(target)}>x</Button>
                 <ListItemText sx={{ 
                     "& .MuiListItemText-primary": { fontWeight: "bold" }, 
                     "& .MuiListItemText-secondary": { color: "gray" } 

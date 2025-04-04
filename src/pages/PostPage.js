@@ -13,6 +13,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import PostInputModal from "../components/modal/PostInputModal";
 import MultiSnackBar from "../components/popup/MultiSnackBar";
+import TripOriginSharpIcon from '@mui/icons-material/TripOriginSharp';
 
 function PostPage() {
   const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
@@ -44,6 +45,11 @@ function PostPage() {
     tags : null,  //List<TagDTO>
   });
 
+  const [postByAi, setPostByAi] = useState({
+    title: "René Descartes",   
+    content: "It is not enough to have a good mind\nthe main thing is to use it well.",
+  });
+
   const [translation, setTranslation] = useState({
     id : "",  //단어 ID
     memberId : "",  // 회원 ID
@@ -60,6 +66,9 @@ function PostPage() {
   const updatePost = (field, value) => setPost(prev => ({ ...prev, [field]: value }));
   const updateOption = updater => setOption(prev => (typeof updater === "function" ? updater(prev) : { ...prev, ...updater }));
   const updateSnackBar = (field, value) => setSnackBar(prev => ({ ...prev, [field]: value }));
+
+  const deleteWord = (target) => { setHistWord(prev => prev.filter(item => item.target !== target)); };
+  const deleteSent = (target) => { setHistSentence(prev => prev.filter(item => item.target !== target)); };
 
   // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
   const searchHistory = useCallback((translation) => {
@@ -98,13 +107,14 @@ function PostPage() {
     console.log("Translation Object:", JSON.stringify(translation, null, 2));
   //   console.log("Option Object:", JSON.stringify(option, null, 2));
     console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
-    console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
+    // console.log("histWord :", JSON.stringify(histWord, null, 2));
+    // console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
   },[translation,option,histWord,histSentence,post])
 
   // type 초기화 (예시: "WORD" 또는 "SENTENCE") & 번역 APi이용
   useEffect(() => {
     if (!translation.target) return ;
-    const type = disGenre(translation.target);  // 단어,문장 분별별
+    const type = disGenre(translation.target);  // 단어,문장 분별
     if (translation.genre !== type) updateTranslation("genre", type); 
     fetchTrans(); //번역 API
     handleSelection();  //번역된 텍스트를 화면에 표시
@@ -136,11 +146,17 @@ function PostPage() {
           }}>
             {post.title}
           </Typography>
-          <Button sx={{color:"black"}} 
-            onClick={()=>setInputModal(prev => ({ ...prev, isModalOpen : true}))}
-          >
-            <ControlPointIcon sx={{fontSize:33}}/>
-          </Button>
+
+          {/* 게시물 수정 버튼, 문장 생성 API 버튼 */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0 }}>
+            <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
+              <ControlPointIcon sx={{ fontSize: 33 }} />
+            </Button>
+            <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
+              <TripOriginSharpIcon sx={{ fontSize: 33 }} />
+            </Button>
+          </Box>
+          
           <Box sx={{
             boxSizing: "border-box",
             width: "25vw",
@@ -177,7 +193,7 @@ function PostPage() {
             height: option.viewSentence ? "60vh" : "85vh",
             overflowY: "auto"
           }}>
-            <HistoryWordBox list={histWord}/>
+            <HistoryWordBox list={histWord} handleDelete={deleteWord}/>
           </Box>
         }
       </Box>
@@ -194,7 +210,7 @@ function PostPage() {
               height: "25vh",
               overflowY: "auto"
             }}>
-              <HistorySenBox list={histSentence}/>
+              <HistorySenBox list={histSentence} handleDelete={deleteSent}/>
             </Box>
             <Box sx={{
               boxSizing: "border-box",

@@ -1,17 +1,19 @@
 import React from "react";
-import { Box, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
 
-function HistoryWordBox({list}) {
+function HistoryWordBox({list,handleDelete}) {
   return (
     <Box elevation={0} sx={{ padding: 2, maxWidth: 400, margin: "auto" }}>
       <List>
         {list.map((item, index) => (
           <ListItem key={index} divider>
-            <ListItemText
+            <Button onClick={() => handleDelete(item.target)}>x</Button>
+            <ListItemText sx={{ 
+                "& .MuiListItemText-primary": { fontWeight: "bold" }, 
+                "& .MuiListItemText-secondary": { color: "gray" } 
+              }}
               primary={item.target}
               secondary={item.transed}
-              primaryTypographyProps={{ fontWeight: "bold" }}
-              secondaryTypographyProps={{ color: "gray" }}
             />
           </ListItem>
         ))}

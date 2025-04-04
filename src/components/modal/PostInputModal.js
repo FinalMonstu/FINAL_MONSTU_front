@@ -64,12 +64,24 @@ export default function PostInputModal({option,setOption,setPost}) {
                     value={tempPost.content}
                     onChange={(e) => handleChange(content, e.target.value)}
                 />
-                <ButtonGroup sx={{ mt: 2 }}>
-                    <Button variant="contained" color="primary" onClick={handleSave}>
-                        저장
+                <ButtonGroup sx={{ display: "flex", gap: 0, mt: 2, border:"none"}}>
+                    <Button sx={{ 
+                            backgroundColor: "black", 
+                            color: "white", 
+                            '&:hover': { backgroundColor: "#333" },
+                            border:"none"
+                        }}
+                        variant="contained" color="primary" onClick={handleSave}>
+                        Insert
                     </Button>
-                    <Button variant="outlined" color="secondary" onClick={() => setOption(prev => ({ ...prev, isModalOpen: false }))}>
-                        취소
+                    <Button sx={{ 
+                            backgroundColor: "black", 
+                            color: "white", 
+                            '&:hover': { backgroundColor: "#333" },
+                            border:"none"
+                        }}
+                        variant="outlined" color="secondary" onClick={() => setOption(prev => ({ ...prev, isModalOpen: false }))}>
+                        Cancel
                     </Button>
                 </ButtonGroup>
             </Paper>
