@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FormControl, MenuItem, Select } from "@mui/material";
 import { getCounList } from "../../hooks/controller/PreSetController";
 
 export default function CountrySelect ({dto,setter}) {
     const [countries,setCountries] = useState([])
 
-    const fetchCounList = async () => {
+    const fetchCounList = useCallback(async () => {
         const result = await getCounList();
         (result.success) ? setCountries(result.data) : alert(result.message);
-    }
+      }, []);
 
     useEffect(()=>{
         fetchCounList();
-    },[])
+    },[fetchCounList])
 
     return(
         <FormControl sx={{ width: 100, height: 30}}>

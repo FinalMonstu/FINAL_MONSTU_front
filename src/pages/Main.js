@@ -20,14 +20,14 @@ function Main() {
       </Box>
 
       {/* PostPage (Header 높이를 뺀 나머지 영역) */}
-      {/* <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
+      <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
         <PostPage />
-      </Box> */}
+      </Box>
 
 {/* flexGrow: 1, overflow: "hidden",paddingTop:"60px" */}
-      <Box sx={{  }}>
+      {/* <Box sx={{  }}>
         <SignUpPage/>
-      </Box>
+      </Box> */}
 
     </Box>
   );

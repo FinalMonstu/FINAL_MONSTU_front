@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Typography, TextField, Button, Divider, Stack} from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { Formik, Form, Field, useFormik } from "formik";
@@ -24,14 +24,14 @@ const btnBlack = {
 
 
 const SignUpPage = () => {
-  const initialValues = {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      nickName: "",
-      phoneNumber: "",
-      country: "",
-  }
+  const initialValues = useMemo(() => ({
+    email: "",
+    password: "",
+    confirmPassword: "",
+    nickName: "",
+    phoneNumber: "",
+    country: "",
+  }), []);
 
   const [verifiCode,setVerifiCode] = useState({
     id : null,
@@ -39,66 +39,77 @@ const SignUpPage = () => {
     code : "",
   })
 
-  const [snackBar,setSnackBar] = useState({
-      msg : "",
-      option : "error",
-  })
-
-  const [option,setOption] = useState({
-    emailCheck : false,
-    codeCheck : false,
-  })
+  const [snackBar, setSnackBar] = useState({ msg: "", option: "error" });
+  const [option, setOption] = useState({ emailCheck: false, codeCheck: false });
 
 
-  const updateVerifiCode = (field, value) => setVerifiCode(prev => ({ ...prev, [field]: value }));
-  const updateSnackBar = (field, value) => setSnackBar(prev => ({ ...prev, [field]: value }));
-  const updateOption = (field, value) => setOption(prev => ({ ...prev, [field]: value }));
+  const updateVerifiCode = useCallback( (field, value) => { setVerifiCode((prev) => ({ ...prev, [field]: value })); }, [] );
+  const updateSnackBar = useCallback( (field, value) => setSnackBar(prev => ({ ...prev, [field]: value })), []);
+  const updateOption = useCallback( (field, value) => setOption(prev => ({ ...prev, [field]: value })), []);
 
 
   // 이메일 중복 확인
-  const emailCheckAPI = async (email) => {
-    if (!email || !email.trim()) {updateSnackBar("option","error"); updateSnackBar("msg", "이메일을 입력해주세요"); return;}  
-    const result = await emailAvail(email);
-    updateSnackBar("option", (result?.success) ? "info" : "error" )
-    if (result?.success) {  // 중복 없음
+  const emailCheckAPI = useCallback(
+    async (email) => {
+      if (!email || !email.trim()) {
+        updateSnackBar("option", "error");
+        updateSnackBar("msg", "이메일을 입력해주세요");
+        return;
+      }
+      const result = await emailAvail(email);
+      updateSnackBar("option", result?.success ? "info" : "error");
+      if (result?.success) {
         updateOption("emailCheck", true);
         updateVerifiCode("email", email.trim());
-    }
-    updateSnackBar("msg", result?.message);
-  };
+      }
+      updateSnackBar("msg", result?.message);
+    },
+    [updateSnackBar, updateOption, updateVerifiCode]
+  );
 
   // 이메일 인증 코드 전송
-  const sendEmailCodeAPI = async () => {
-    if(!verifiCode.email) {updateSnackBar("option","error"); updateSnackBar("msg","이메일 확인해주세요"); return;}
+  const sendEmailCodeAPI = useCallback(async () => {
+    if (!verifiCode.email) {
+      updateSnackBar("option", "error");
+      updateSnackBar("msg", "이메일 확인해주세요");
+      return;
+    }
     const result = await sendEmailCode(verifiCode);
-    console.log("result Object:", JSON.stringify(result, null, 2));
-    updateVerifiCode("id",result.data.id);
-    updateVerifiCode("email",result.data.email);
-    updateSnackBar("option", (result?.success) ? "info" : "error" )
-    updateSnackBar("msg",result?.message);  
-  } 
+    if (result?.success) {
+      updateVerifiCode("id", result.data.id);
+      updateVerifiCode("email", result.data.email);
+    }
+    updateSnackBar("option", result?.success ? "info" : "error");
+    updateSnackBar("msg", result?.message);
+  }, [verifiCode, updateSnackBar, updateVerifiCode]);
 
   // 인증 코드 검증
-  const verifyCodeAPI = async () => {
-    if(!verifiCode.email) {updateSnackBar("option","error"); updateSnackBar("msg","이메일 확인해주세요"); return;}
+  const verifyCodeAPI = useCallback(async () => {
+    if (!verifiCode.email) {
+      updateSnackBar("option", "error");
+      updateSnackBar("msg", "이메일 확인해주세요");
+      return;
+    }
     const result = await verifyEmailCode(verifiCode);
-    updateSnackBar("option", (result?.success) ? "info" : "error" )
-    if(result?.success) updateOption("codeCheck",true);
-    updateSnackBar("msg",result?.message);  
-  } 
+    updateSnackBar("option", result?.success ? "info" : "error");
+    if (result?.success) {
+      updateOption("codeCheck", true);
+    }
+    updateSnackBar("msg", result?.message);
+  }, [verifiCode, updateSnackBar, updateOption]);
 
   // 회원가입입
-  const signupAPI = async (values) => {
+  const signupAPI = useCallback(async (values) => {
     const result = await signup(values);
     alert(result?.success ? result?.message : "회원가입에 실패했습니다.");
-  };
+  }, []);
 
   // Log
   useEffect(()=>{
     console.log("verifiCode Object:", JSON.stringify(verifiCode, null, 2));
     // console.log("option Object:", JSON.stringify(option, null, 2));
     console.log("initialValues Object:", JSON.stringify(initialValues, null, 2));
-  },[option,initialValues])
+  },[verifiCode, option, initialValues])
 
 
   return (
@@ -107,14 +118,9 @@ const SignUpPage = () => {
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
           Sign Up
         </Typography>
-
         <Divider sx={{ mb: 5, borderColor: "#C0C0C0" }} />
 
-        <Formik
-          initialValues={initialValues}
-          validationSchema={SignUpSchema}
-          onSubmit={(values) => { signupAPI(values) }}
-        >
+        <Formik initialValues={initialValues} validationSchema={SignUpSchema} onSubmit={signupAPI}>
           {({ values, errors, touched, handleChange, handleBlur, setFieldValue, validateForm, submitForm}) => (
             <Form>
               <Stack spacing={2}>
@@ -152,8 +158,12 @@ const SignUpPage = () => {
                       onChange={(e) => updateVerifiCode("code", e.target.value)}
                       onBlur={handleBlur}
                     />
-                    <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={()=>sendEmailCodeAPI()}>Send</Button>
-                    <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={()=>verifyCodeAPI()}>Check</Button>
+                     <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={sendEmailCodeAPI}>
+                      Send
+                    </Button>
+                    <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={verifyCodeAPI}>
+                      Check
+                    </Button>
                   </Stack>
                 </LabelWithInput>
 
@@ -243,7 +253,6 @@ const SignUpPage = () => {
                       updateSnackBar("msg", "회원가입 조건을 확인해주세요.");
                       return;
                     }
-                    // 에러가 없다면 정상 제출합니다.
                     submitForm();
                   }}
                 >

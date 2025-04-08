@@ -62,19 +62,20 @@ function PostPage() {
   }); 
   
 
-  const updateTranslation = (field, value) => setTranslation(prev => ({ ...prev, [field]: value }));
-  const updatePost = (field, value) => setPost(prev => ({ ...prev, [field]: value }));
-  const updateOption = updater => setOption(prev => (typeof updater === "function" ? updater(prev) : { ...prev, ...updater }));
-  const updateSnackBar = (field, value) => setSnackBar(prev => ({ ...prev, [field]: value }));
-
-  const deleteWord = (target) => { setHistWord(prev => prev.filter(item => item.target !== target)); };
-  const deleteSent = (target) => { setHistSentence(prev => prev.filter(item => item.target !== target)); };
+  // 상태 업데이트 헬퍼 함수들
+    const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
+    const updatePost = useCallback((field, value) =>setPost((prev) => ({...prev, [field]: value, })), [] );
+    const updateOption = useCallback( (updater) => setOption((prev) => typeof updater === "function" ? updater(prev) : { ...prev, ...updater } ), [] );
+    const updateSnackBar = useCallback( (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value, })), [] );
+  
+    const deleteWord = useCallback( (target) => setHistWord((prev) => prev.filter((item) => item.target !== target)), [] );
+    const deleteSent = useCallback( (target) => setHistSentence((prev) => prev.filter((item) => item.target !== target)),  [] );
 
   // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
   const searchHistory = useCallback((translation) => {
     const history = (translation?.genre === "SENTENCE") ? histSentence : histWord;
     return history.find(e => e.target === translation.target)?.transed || null;
-  }, [translation.target]);
+  }, [translation.target,histSentence,histWord]);
 
   //  Text 번역 API
   const fetchTrans = async () => {
@@ -89,16 +90,16 @@ function PostPage() {
   };
   
   // 사용자가 텍스트를 드래그하면 Popover를 띄움
-  const handleSelection = () => {
-    const selection = window.getSelection();
-    if (!selection.rangeCount) return; // 선택한 텍스트가 없으면 리턴
-    const rect = selection.getRangeAt(0).getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return; // 빈 공간 선택 방지
-    setAnchorEl({ getBoundingClientRect: () => rect }); //getBoundingClientRect함수를 실행하면 rect가 나오게
-  };
+  const handleSelection = useCallback(() => {
+      const selection = window.getSelection();
+      if (!selection?.rangeCount) return;
+      const rect = selection.getRangeAt(0).getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      setAnchorEl({ getBoundingClientRect: () => rect });
+  }, []);
 
   // WORD,SENTENCE 분별
-  const disGenre = (text) => { return !hasWhitespace(text.trim()) ? "WORD" : "SENTENCE";  }
+  const disGenre = useCallback((text) => { return !hasWhitespace(text.trim()) ? "WORD" : "SENTENCE";  },[])
 
 
   // Log

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import Button from '@mui/material/Button';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 
 function SnackBar({snackBar,setSnackBar}) {
@@ -7,11 +6,11 @@ function SnackBar({snackBar,setSnackBar}) {
 
     useEffect(() => {
       if (!snackBar.msg) return;
-
       enqueueSnackbar(snackBar.msg, {
-        variant: snackBar.option || "default", // 'success', 'error', 'info', 'warning', 'default'
+        variant: snackBar.option || "default",
       });
-    }, [snackBar]);
+      setSnackBar({ msg: "", option: "" });
+    }, [snackBar, enqueueSnackbar, setSnackBar]);
 
     return null;
   }

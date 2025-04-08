@@ -1,19 +1,20 @@
-import React from "react";
-import { Box, Button, List, ListItem, ListItemText, Paper, Typography } from "@mui/material";
+import React, { memo } from "react";
+import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 
-function HistoryWordBox({list,handleDelete}) {
+function HistoryWordBox({ list, handleDelete }) {
   return (
-    <Box elevation={0} sx={{ padding: 2, maxWidth: 400, margin: "auto" }}>
+    <Box sx={{ p: 2, maxWidth: 400, margin: "auto" }}>
       <List>
-        {list.map((item, index) => (
-          <ListItem key={index} divider>
+        {list.map((item) => (
+          <ListItem key={item.target} divider>
             <Button onClick={() => handleDelete(item.target)}>x</Button>
-            <ListItemText sx={{ 
-                "& .MuiListItemText-primary": { fontWeight: "bold" }, 
-                "& .MuiListItemText-secondary": { color: "gray" } 
-              }}
+            <ListItemText
               primary={item.target}
               secondary={item.transed}
+              sx={{
+                "& .MuiListItemText-primary": { fontWeight: "bold" },
+                "& .MuiListItemText-secondary": { color: "gray" },
+              }}
             />
           </ListItem>
         ))}
@@ -22,4 +23,4 @@ function HistoryWordBox({list,handleDelete}) {
   );
 }
 
-export default HistoryWordBox;
+export default memo(HistoryWordBox);

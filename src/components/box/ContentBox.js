@@ -1,21 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { Box, Typography } from "@mui/material";
 
-export default function ContentBox( {translation,updateTranslation,post} ) {
-
-  // onMouseUp 이벤트트
-  const handleHighlightText = () => {
-    const selection = window.getSelection().toString().trim();  // 선택된 텍스트 가져오기
+export default function ContentBox({ translation, updateTranslation, post }) {
+  // onMouseUp 이벤트 핸들러: 메모이제이션을 위해 useCallback 사용
+  const handleHighlightText = useCallback(() => {
+    const selectionObj = window.getSelection();
+    const selection = selectionObj ? selectionObj.toString().trim() : "";
     if (selection && translation.target !== selection) {
-      updateTranslation("target",selection); 
+      updateTranslation("target", selection);
     }
-  };
+  }, [translation.target, updateTranslation]);
 
   return (
-    <Box sx={{padding: "40px"}} onMouseUp={handleHighlightText}>
-      <Typography sx={{ whiteSpace: "pre-wrap" }}>
-        {post.content}
-      </Typography>
+    <Box sx={{ padding: "40px" }} onMouseUp={handleHighlightText}>
+      <Typography sx={{ whiteSpace: "pre-wrap" }}>{post.content}</Typography>
     </Box>
   );
 }

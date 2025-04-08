@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { getLangList } from "../../hooks/controller/PreSetController";
 import { FormControl, MenuItem, Select } from "@mui/material";
 
@@ -6,14 +6,15 @@ export default function LanguageSelect( {translation,updateTranslation,type} ) {
     const [langList,setLangList] = useState([])
     
     // 언어 목록 초기화
-    const fetchLangList = async () => {
-      const result = await getLangList();
-      (result.success) ? setLangList(result.data) : alert(result.message);
-    }
+    const fetchLangList = useCallback(
+      async () => {
+        const result = await getLangList();
+        (result.success) ? setLangList(result.data) : alert(result.message);
+      },[])
 
     useEffect(()=>{
       fetchLangList();
-    },[])
+    },[fetchLangList])
 
     return (
       <FormControl sx={{ width: 100, height: 30}}>
