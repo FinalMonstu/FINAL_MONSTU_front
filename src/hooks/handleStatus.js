@@ -1,6 +1,6 @@
 //Handle Response
 export function responseStatus(response,data=null){
-
+    const message = response.data.message;
     let result = { success : false, message : 'No Response'};
 
     if(!response) return result;
@@ -12,21 +12,21 @@ export function responseStatus(response,data=null){
             result = { 
                 status: 299,
                 success : true, 
-                message : response.data?.stateMessage || 'Succesful'
+                message : message || 'Succesful'
             };  
             break; 
         case 204:   //HttpStatus.NO_CONTENT
             result = { 
                 status: 204,
                 success : true, 
-                message : response.data?.stateMessage || 'No Data'
+                message : message || 'No Data'
             };  
             break; 
         case 209:   //HttpStatus.CREATED
             result = { 
                 status: 209,
                 success : true, 
-                message : response.data?.stateMessage || 'Created'
+                message : message || 'Created'
             };  
             break; 
         default:
@@ -42,7 +42,7 @@ export function responseStatus(response,data=null){
 
 //Handle Response Error Status
 export function errorStatus(error){
-
+    const message = error.response?.data?.message;
     let result = { success : false, message : 'Internal Server Error. Please try again later'};
     if(!error || !error.response) return result;
 
@@ -51,49 +51,49 @@ export function errorStatus(error){
             result = { 
                 status: 400,
                 success : false, 
-                message : error.response.data?.error || 'Bad Request'
+                message : message || 'Bad Request'
             };
             break; 
         case 401:   //HttpStatus.UNAUTHORIZED
             result = { 
                 status: 401,
                 success : false, 
-                message : error.response.data?.error || 'Unauthorized'
+                message : message || 'Unauthorized'
             };
             break; 
         case 403:   //HttpStatus.FORBIDDEN
             result = { 
                 status: 403,
                 success : false, 
-                message : error.response.data?.error || 'Forbidden. You do not have access'
+                message : message || 'Forbidden. You do not have access'
             };
             break; 
         case 404:   //HttpStatus.NOT_FOUND
             result =  { 
                 status: 404,
                 success : false, 
-                message : error.response.data?.error || 'Not Found.'
+                message : message || 'Not Found.'
             }; 
             break; 
         case 409:   //HttpStatus.CONFLICT
             result =  { 
                 status: 409,
                 success : false, 
-                message : error.response.data?.error || 'Already Exists.'
+                message : message || 'Already Exists.'
             }; 
             break; 
         case 500:   //HttpStatus.INTERNAL_SERVER_ERROR
             result =  { 
                 status: 500,
                 success : false, 
-                message : error.response.data?.error || 'Internal Server Error. Please try again later'
+                message : message || 'Internal Server Error. Please try again later'
             }; 
             break; 
         default:   
             result =  { 
                 status: 999,
                 success : false, 
-                message : error.response.data?.error || `An unexpected error occurred. ${error.response.data.error}`
+                message : message || `An unexpected error occurred. ${error.response.data.error}`
             }; 
             break; 
     }
