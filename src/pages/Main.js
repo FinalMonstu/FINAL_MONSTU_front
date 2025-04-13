@@ -1,10 +1,15 @@
 import React from "react";
 import Header from "../components/Header";
 import PostPage from "./PostPage";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import SignUpPage from "./SignUpPage";
+import LoginPage from "./LoginPage";
+import { useNavigate } from "react-router-dom";
 
 function Main() {
+
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -14,21 +19,25 @@ function Main() {
         overflow: "hidden", // 불필요한 스크롤 제거
       }}
     >
-      {/* Header (고정 높이) */}
-      <Box sx={{ height: "60px", flexShrink: 0 }}>
-        <Header />
-      </Box>
+      <Button onClick={()=>navigate('/login')}>login</Button>
+      <Button onClick={()=>navigate('/signup')}>signup</Button>
 
+      <Button onClick={()=>navigate('/post')}>post</Button>
+
+      
       {/* PostPage (Header 높이를 뺀 나머지 영역) */}
-      <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
+      {/* <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
         <PostPage />
-      </Box>
+      </Box> */}
 
-{/* flexGrow: 1, overflow: "hidden",paddingTop:"60px" */}
+      {/* flexGrow: 1, overflow: "hidden",paddingTop:"60px" */}
       {/* <Box sx={{  }}>
         <SignUpPage/>
       </Box> */}
 
+      {/* <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
+        <LoginPage />
+      </Box> */}
     </Box>
   );
 }

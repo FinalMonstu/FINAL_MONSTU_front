@@ -1,26 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Typography, TextField, Button, Divider, Stack} from "@mui/material";
-import CheckIcon from "@mui/icons-material/Check";
-import { Formik, Form, Field, useFormik } from "formik";
+import { Formik, Form} from "formik";
 import CountrySelect from "../components/selecter/CountrySelect";
-import { SignUpSchema } from "../hooks/schema/SignUpSchema";
+import { SignSchema } from "../hooks/schema/SignSchema";
 import { LabelWithInput } from "../components/input/LabelWithInput";
 import MultiSnackBar from "../components/popup/MultiSnackBar";
-import { emailAvail, sendEmailCode, signup, verifyEmailCode } from "../hooks/controller/AuthController";
-
-// 공통 스타일
-const inputStyle = {
-  fontSize: "16px",
-  height: "5px"
-};
-
-const btnBlack = {
-  backgroundColor: "black",
-  color: "white",
-  minWidth: "70px",
-  textTransform: "none",
-  height: "38px"
-};
+import { emailAvail, sendEmailCode, signupAPI, verifyEmailCode } from "../hooks/controller/AuthController";
+import { btnBlack, inputStyle } from "../styles/commonStyle";
 
 
 const SignUpPage = () => {
@@ -71,7 +57,7 @@ const SignUpPage = () => {
   const sendEmailCodeAPI = useCallback(async () => {
     if (!verifiCode.email) {
       updateSnackBar("option", "error");
-      updateSnackBar("msg", "이메일 확인해주세요");
+      updateSnackBar("msg", "이메일을 확인해주세요");
       return;
     }
     const result = await sendEmailCode(verifiCode);
@@ -87,7 +73,7 @@ const SignUpPage = () => {
   const verifyCodeAPI = useCallback(async () => {
     if (!verifiCode.email) {
       updateSnackBar("option", "error");
-      updateSnackBar("msg", "이메일 확인해주세요");
+      updateSnackBar("msg", "이메일을 확인해주세요");
       return;
     }
     const result = await verifyEmailCode(verifiCode);
@@ -98,17 +84,17 @@ const SignUpPage = () => {
     updateSnackBar("msg", result?.message);
   }, [verifiCode, updateSnackBar, updateOption]);
 
-  // 회원가입입
-  const signupAPI = useCallback(async (values) => {
-    const result = await signup(values);
+  // 회원가입
+  const handleSignupAPI = useCallback(async (values) => {
+    const result = await signupAPI(values);
     alert(result?.success ? result?.message : "회원가입에 실패했습니다.");
   }, []);
 
   // Log
   useEffect(()=>{
-    console.log("verifiCode Object:", JSON.stringify(verifiCode, null, 2));
+    // console.log("verifiCode Object:", JSON.stringify(verifiCode, null, 2));
     // console.log("option Object:", JSON.stringify(option, null, 2));
-    console.log("initialValues Object:", JSON.stringify(initialValues, null, 2));
+    // console.log("initialValues Object:", JSON.stringify(initialValues, null, 2));
   },[verifiCode, option, initialValues])
 
 
@@ -120,7 +106,7 @@ const SignUpPage = () => {
         </Typography>
         <Divider sx={{ mb: 5, borderColor: "#C0C0C0" }} />
 
-        <Formik initialValues={initialValues} validationSchema={SignUpSchema} onSubmit={signupAPI}>
+        <Formik initialValues={initialValues} validationSchema={SignSchema} onSubmit={handleSignupAPI}>
           {({ values, errors, touched, handleChange, handleBlur, setFieldValue, validateForm, submitForm}) => (
             <Form>
               <Stack spacing={2}>
@@ -143,7 +129,7 @@ const SignUpPage = () => {
                       variant="contained" 
                       disabled={option.emailCheck} 
                       onClick={() => emailCheckAPI(values.email)} > 
-                        Check
+                        중복확인
                     </Button>
                   </Stack>
                 </LabelWithInput>
@@ -159,10 +145,10 @@ const SignUpPage = () => {
                       onBlur={handleBlur}
                     />
                      <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={sendEmailCodeAPI}>
-                      Send
+                      인증코드 전송
                     </Button>
                     <Button sx={btnBlack} variant="contained" disabled={option.codeCheck} onClick={verifyCodeAPI}>
-                      Check
+                      인증코드 확인
                     </Button>
                   </Stack>
                 </LabelWithInput>

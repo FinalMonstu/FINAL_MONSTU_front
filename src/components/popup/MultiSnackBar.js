@@ -9,16 +9,16 @@ function SnackBar({snackBar,setSnackBar}) {
       enqueueSnackbar(snackBar.msg, {
         variant: snackBar.option || "default",
       });
-      setSnackBar({ msg: "", option: "" });
+      // setSnackBar({ msg: "", option: "" });
     }, [snackBar, enqueueSnackbar, setSnackBar]);
 
     return null;
   }
   
-  export default function MultiSnackBar({ snackBar, setSnackBar }) {
-    return (
-      <SnackbarProvider maxSnack={3}>
-        <SnackBar snackBar={snackBar} setSnackBar={setSnackBar} />
-      </SnackbarProvider>
-    );
-  }
+export default function MultiSnackBar({ snackBar, setSnackBar }) {
+  return (
+    <SnackbarProvider maxSnack={3}>
+      <SnackBar snackBar={snackBar} setSnackBar={setSnackBar} />
+    </SnackbarProvider>
+  );
+}

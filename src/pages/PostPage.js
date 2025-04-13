@@ -105,9 +105,9 @@ function PostPage() {
   // Log
   useEffect(()=>{
     // console.log("post Object:", JSON.stringify(post, null, 2));
-    console.log("Translation Object:", JSON.stringify(translation, null, 2));
+    // console.log("Translation Object:", JSON.stringify(translation, null, 2));
   //   console.log("Option Object:", JSON.stringify(option, null, 2));
-    console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
+    // console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
     // console.log("histWord :", JSON.stringify(histWord, null, 2));
     // console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
   },[translation,option,histWord,histSentence,post])

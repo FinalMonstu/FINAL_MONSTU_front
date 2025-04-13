@@ -1,6 +1,7 @@
 import { connectSpring } from "../preAxios";
 import { responseStatus, errorStatus } from "../handleStatus"
 
+
 const authController = (url,type='post',data=null) => {
     const baseUrl = '/api/auth';
     if(type==='get') return connectSpring.get(baseUrl+url,data);
@@ -39,9 +40,18 @@ export const verifyEmailCode = async (dto) => {
 };
 
 // 회원가입
-export const signup = async (dto) => {
+export const signupAPI = async (dto) => {
     try {
         const response = await authController(`/signup`, 'post',dto);
+        return responseStatus(response,response.data);
+    }catch(error){
+        return errorStatus(error);
+    }     
+};
+
+export const loginAPI = async (dto) => {
+    try {
+        const response = await authController(`/login`, 'post',dto);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
