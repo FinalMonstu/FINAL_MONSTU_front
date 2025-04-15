@@ -9,6 +9,8 @@ import Header from './components/Header';
 import { Box } from '@mui/material';
 import PrivateRoute from './components/authenticate/PrivateRoute';
 import {AuthProvider} from './components/authenticate/AuthContext'
+import FindPage from './pages/FindPage';
+import ResetPwPage from './pages/ResetPwPage';
 
 function App() {
   const publicRoutes = [
@@ -17,8 +19,10 @@ function App() {
 
     { path: "/login", element: <LoginPage /> },/* 로그인 페이지 */
     { path: "/signup", element: <SignUpPage /> }, /* 회원가입 페이지 */
+    { path: "/find", element: <FindPage /> }, /* ID,Password 찾기 페이지 */
+    { path: "/pw/reset", element: <ResetPwPage /> }, /* Password 재설정 페이지 */
 
-    { path: "/post", element: <PostPage /> }, /* 회원가입 페이지 */
+    { path: "/post", element: <PostPage /> }, /* 번역 페이지 */
 
   ];
 

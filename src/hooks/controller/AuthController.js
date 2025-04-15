@@ -57,3 +57,12 @@ export const loginAPI = async (dto) => {
         return errorStatus(error);
     }     
 };
+
+export const resetPwAPI = async (dto) => {
+    try {
+        const response = await authController(`/email/repass`, 'post',dto);
+        return responseStatus(response);
+    }catch(error){
+        return errorStatus(error);
+    }     
+};

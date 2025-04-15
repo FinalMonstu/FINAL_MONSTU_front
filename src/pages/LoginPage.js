@@ -39,10 +39,9 @@ const LoginForm = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#f5f5f5",
       }}
     >
-      <Box sx={{ padding: 4, width: 400 }}>
+      <Box sx={{ padding: 4, width: 400,}}>
         <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
           Login
         </Typography>
@@ -52,34 +51,39 @@ const LoginForm = () => {
           {({ values, errors, touched, handleChange, handleBlur }) => (
             <Form>
               <Stack spacing={2}>
-                <LabelWithInput label="ID" sub="(email)">
-                  <Stack direction="row" spacing={1}>
-                    <TextField
-                      name="email"
-                      fullWidth
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.email && Boolean(errors.email)}
-                      helperText={touched.email && errors.email}
-                      sx={{ input: inputStyle }}
-                    />
-                  </Stack>
-                </LabelWithInput>
 
-                <LabelWithInput label="Password">
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
+                    ID (email)
+                  </Typography>
                   <TextField
-                    name="password"
-                    type="password"
+                    name="email"
                     fullWidth
-                    value={values.password}
+                    value={values.email}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    error={touched.password && Boolean(errors.password)}
-                    helperText={touched.password && errors.password}
+                    error={touched.email && Boolean(errors.email)}
+                    helperText={touched.email && errors.email}
                     sx={{ input: inputStyle }}
                   />
-                </LabelWithInput>
+                </Stack>
+
+                <Stack direction="row" alignItems="center" spacing={2}>
+                    <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
+                      Password
+                    </Typography>
+                    <TextField
+                      name="password"
+                      type="password"
+                      fullWidth
+                      value={values.password}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      error={touched.password && Boolean(errors.password)}
+                      helperText={touched.password && errors.password}
+                      sx={{ input: inputStyle }}
+                    />
+                </Stack>
 
                 <Button sx={btnBlack} type="submit" variant="contained" color="primary" fullWidth>
                   LOGIN

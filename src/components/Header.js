@@ -18,14 +18,21 @@ function Header() {
     
     const handleLogout = React.useCallback(() => {
         logout();
-        navigate('/login');
+        navigate('/');
     }, [logout, navigate]);
+
+    const handleHome = React.useCallback(() => {
+        navigate('/');
+    }, [navigate]);
 
     return (
         <Box sx={{ flexGrow: 1, marginLeft: "15px", marginRight: "15px",marginTop: "8px"}}>
             <AppBar position="static" sx={{backgroundColor:"white",boxShadow:"none"}}>
             <Toolbar>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: "black",fontWeight: "bold"}}>
+                <Typography variant="h6" component="div" 
+                    sx={{ flexGrow: 1, color: "black",fontWeight: "bold"}}
+                    onClick={handleHome}    
+                >
                 MonStu
                 </Typography>
 

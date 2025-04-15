@@ -21,8 +21,11 @@ function Main() {
     >
       <Button onClick={()=>navigate('/login')}>login</Button>
       <Button onClick={()=>navigate('/signup')}>signup</Button>
+      <Button onClick={()=>navigate('/find')}>find</Button>
+      <Button onClick={()=>navigate('/pw/reset')}>ResetPw</Button>
 
       <Button onClick={()=>navigate('/post')}>post</Button>
+
 
       
       {/* PostPage (Header 높이를 뺀 나머지 영역) */}
