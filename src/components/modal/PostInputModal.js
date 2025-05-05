@@ -1,26 +1,33 @@
-import { Box, Modal, Typography, Button, ButtonGroup, TextField, Paper } from "@mui/material";
-import React, { useCallback, useState } from "react";
+import { Box, Modal, Typography, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel } from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
 
-export default function PostInputModal({ option, setOption, setPost }) {
+export default function PostInputModal({ option, setOption, post, setPost, savePost }) {
   const [tempPost, setTempPost] = useState({ title: "", content: "" });
+  const [saveBool, setSaveBool] = useState(false);
 
   // 입력값 업데이트
-  const handleChange = useCallback((field, value) => {
-    setTempPost((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  }, []);
+  const handleChange = useCallback((field, value) => { setTempPost((prev) => ({ ...prev, [field]: value, })); }, []);
 
   // 저장 버튼 클릭 시, 부모의 post 업데이트 및 모달 닫기
-  const handleSave = useCallback(() => {
-    setPost((prev) => ({
-      ...prev,
+  const handleSave = () => {
+    const updatedPost = {
+      ...post,
       title: tempPost.title,
-      content: tempPost.content,
-    }));
+      content: tempPost.content
+    };
+    setPost( updatedPost  );
     setOption((prev) => ({ ...prev, isModalOpen: false }));
-  }, [tempPost]);
+    if(saveBool) { savePost(updatedPost ); }
+  }
+
+  // Switch change 핸들러
+  const handleToggleSave = (event) => {
+    setSaveBool(event.target.checked);
+  };
+
+  useEffect(()=>{
+    console.log("saveBool Object:", JSON.stringify(saveBool, null, 2));
+  },[saveBool])
 
   return (
     <Modal
@@ -57,6 +64,19 @@ export default function PostInputModal({ option, setOption, setPost }) {
           value={tempPost.content}
           onChange={(e) => handleChange("content", e.target.value)}
         />
+
+        {/* 데이터베이스에 저장 옵션 스위치 */}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={saveBool}
+              onChange={handleToggleSave}
+            />
+          }
+          label="데이터베이스에 저장"
+          sx={{ ml: 5 }}
+        />
+
         <ButtonGroup sx={{ display: "flex", gap: 0, mt: 2 }}>
           <Button
             sx={{

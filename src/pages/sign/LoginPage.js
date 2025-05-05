@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Formik, Form } from "formik";
 import { Box, TextField, Button, Typography, Paper, Stack, Divider } from "@mui/material";
-import { LoginSchema } from "../hooks/schema/SignSchema";
-import { LabelWithInput } from "../components/input/LabelWithInput";
-import { btnBlack, inputStyle } from "../styles/commonStyle";
-import { loginAPI } from "../hooks/controller/AuthController";
-import MultiSnackBar from "../components/popup/MultiSnackBar";
-import { useAuth } from "../components/authenticate/AuthContext";
+import { LoginSchema } from "../../hooks/schema/SignSchema";
+import { LabelWithInput } from "../../components/input/LabelWithInput";
+import { btnBlack, inputStyle } from "../../styles/commonStyle";
+import { loginAPI } from "../../hooks/controller/AuthController";
+import MultiSnackBar from "../../components/popup/MultiSnackBar";
+import { useAuth } from "../../components/authenticate/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
@@ -22,7 +22,8 @@ const LoginForm = () => {
     async (values) => {
       const result = await loginAPI(values);
       if (result.success) {
-        login();
+        console.log("MemberInfo : ", JSON.stringify(result.data, null, 2));
+        login(result.data);
         navigate("/");
       } else {
         updateSnackBar("option", "error");

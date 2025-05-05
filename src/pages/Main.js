@@ -1,46 +1,56 @@
-import React from "react";
-import Header from "../components/Header";
-import PostPage from "./PostPage";
-import { Box, Button } from "@mui/material";
-import SignUpPage from "./SignUpPage";
-import LoginPage from "./LoginPage";
+import React, { useState, useEffect } from 'react';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Box,
+  Container,
+  Grid,
+  Card,
+  CardContent
+} from '@mui/material';
+import { styled } from '@mui/system';
 import { useNavigate } from "react-router-dom";
+import { authPath, postPath } from "../hooks/urlManager";
+import Footer from '../components/Footer';
+import LitePosts from '../components/box/LitePosts';
+import Hero from '../components/box/Hero';
+
+
 
 function Main() {
 
   const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+
+  }, []);
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        height: "100vh", // 전체 화면을 차지하도록 설정
+        // height: "100vh", // 전체 화면을 차지하도록 설정
         overflow: "hidden", // 불필요한 스크롤 제거
       }}
     >
-      <Button onClick={()=>navigate('/login')}>login</Button>
-      <Button onClick={()=>navigate('/signup')}>signup</Button>
-      <Button onClick={()=>navigate('/find')}>find</Button>
-      <Button onClick={()=>navigate('/pw/reset')}>ResetPw</Button>
+      <Button onClick={()=>navigate(authPath.login)}>login</Button>
+      <Button onClick={()=>navigate(authPath.signup)}>signup</Button>
+      <Button onClick={()=>navigate(authPath.signout)}>signout</Button>
+      <Button onClick={()=>navigate(authPath.find)}>find</Button>
+      <Button onClick={()=>navigate(authPath.resetPw)}>ResetPw</Button>
+      <Button onClick={()=>navigate(authPath.foundEmail)}>Email Found</Button>
 
-      <Button onClick={()=>navigate('/post')}>post</Button>
+      <Button onClick={()=>navigate(postPath.post)}>post</Button>
 
-
+      <Hero/>
       
-      {/* PostPage (Header 높이를 뺀 나머지 영역) */}
-      {/* <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
-        <PostPage />
-      </Box> */}
+      <LitePosts/>
 
-      {/* flexGrow: 1, overflow: "hidden",paddingTop:"60px" */}
-      {/* <Box sx={{  }}>
-        <SignUpPage/>
-      </Box> */}
-
-      {/* <Box sx={{ flexGrow: 1, overflow: "hidden",paddingTop:"30px" }}>
-        <LoginPage />
-      </Box> */}
+      {/* <Footer/> */}
     </Box>
   );
 }

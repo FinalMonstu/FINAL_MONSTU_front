@@ -11,11 +11,11 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import MultiSnackBar from "../components/popup/MultiSnackBar";
-import { sendEmailCode, verifyEmailCode } from "../hooks/controller/AuthController";
-import ResetPwBox from "../components/box/ResetPwBox";
-import FindIdBox from "../components/box/FindIdBox";
-import { findEmailSchema, resetPwSchema } from "../hooks/schema/SignSchema";
+import MultiSnackBar from "../../components/popup/MultiSnackBar";
+import { findIdAPI, sendEmailCode, verifyEmailCode } from "../../hooks/controller/AuthController";
+import ResetPwBox from "../../components/box/ResetPwBox";
+import FindIdBox from "../../components/box/FindIdBox";
+import { emailAuthSchema, findEmailSchema, resetPwSchema } from "../../hooks/schema/SignSchema";
 import { useNavigate } from "react-router-dom";
 
 function FindPage() {
@@ -46,7 +46,7 @@ function FindPage() {
     []
   );
 
-  // 이메일 인증 코드 전송 로직 (필요 시 email 값을 인자로 전달)
+  // 이메일 인증 코드 전송 로직
   const sendEmailCodeAPI = useCallback(
     async (email) => {
       if (!email) {
@@ -63,6 +63,19 @@ function FindPage() {
       updateSnackBar("msg", result?.message);
     },
     [verifiCode, updateSnackBar, updateVerifiCode]
+  );
+
+  // ID 찾기 -> 전화번호, 닉네임을 사용해서 ID찾기
+  const findId = useCallback(
+    async (phoneNumber,nickName) => {
+      const result = await findIdAPI({ "phoneNumber":phoneNumber,"nickName":nickName });
+      if (result?.success) {
+        navigate("/email/found", { state: { email: result.data } });
+      }
+      updateSnackBar("option", result?.success ? "info" : "error");
+      updateSnackBar("msg", result?.message);
+    },
+    []
   );
 
   // 인증 코드 검증 로직
@@ -82,13 +95,12 @@ function FindPage() {
   );
 
   const initialValues = tabValue === 0 ? { email: "", authCode: "" } : { phoneNumber: "", nickName: "" };
-  const validationSchema = (tabValue === 0) ? resetPwSchema : findEmailSchema
+  const validationSchema = (tabValue === 0) ? emailAuthSchema : findEmailSchema
 
   const onSubmitForm = useCallback(
     (values, { setSubmitting }) => {
       console.log("Form Submit:", values);
       if (tabValue === 0) { // Reset Password 처리 로직
-        console.log("codeCheck: "+codeCheck);
         if(codeCheck) {
             navigate("/pw/reset", { state: { email: verifiCode.email } });
         }else{
@@ -96,7 +108,7 @@ function FindPage() {
             updateSnackBar("msg", "인증 코드를 확인해주세요");
         }
       } else {  // Find ID 처리 로직
-        
+        findId(values.phoneNumber,values.nickName);
       }
       setSubmitting(false);
     },

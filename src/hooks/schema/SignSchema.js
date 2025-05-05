@@ -17,7 +17,7 @@ export const SignSchema = Yup.object().shape({
         .string().trim()
         .min(6, "6자 이상 입력하세요")
         .matches(whiteSpace, "공백은 허용되지 않습니다")
-        .matches(passwordRule, "특수문자를 하나 이상 포함해야 합니다")
+        .matches(passwordRule, "특수문자 !@#$%*? 를 하나 이상 포함해야 합니다")
         .required(requiredMsg),
 
     confirmPassword: Yup
@@ -31,8 +31,29 @@ export const SignSchema = Yup.object().shape({
 
     phoneNumber: Yup
         .string().trim()
-        .length(13, "전화번호를 다시 확인해주세요")
         .matches(phoneNumberRule, "전화번호는 010-1234-5678 형식으로 입력해주세요")
+        .length(13, "전화번호를 다시 확인해주세요")
+        .required(requiredMsg),
+
+    country: Yup
+        .string().trim()
+        .required(requiredMsg),
+});
+
+export const UpdateSchema = Yup.object().shape({
+    email: Yup
+        .string().trim()
+        .email("유효한 이메일을 입력하세요")
+        .required(requiredMsg),
+
+    nickName: Yup
+        .string().trim()
+        .required(requiredMsg),
+
+    phoneNumber: Yup
+        .string().trim()
+        .matches(phoneNumberRule, "전화번호는 010-1234-5678 형식으로 입력해주세요")
+        .length(13, "전화번호를 다시 확인해주세요")
         .required(requiredMsg),
 
     country: Yup
@@ -50,14 +71,14 @@ export const LoginSchema = Yup.object().shape({
         .required("비밀번호를 입력해주세요"),
 });
 
-export const resetPwSchema = Yup.object().shape({
+export const emailAuthSchema = Yup.object().shape({
     email: Yup
         .string().trim()
         .email("유효한 이메일이 아닙니다")
         .required("이메일을 입력해주세요"),
     authCode: Yup
         .string().trim()
-        .required("전달 받은 코드를 입력해주세요요"),
+        .required("전달 받은 코드를 입력해주세요"),
 });
 
 export const findEmailSchema = Yup.object().shape({

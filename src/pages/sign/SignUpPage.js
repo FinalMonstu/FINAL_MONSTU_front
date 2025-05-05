@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Box, Typography, TextField, Button, Divider, Stack} from "@mui/material";
 import { Formik, Form} from "formik";
-import CountrySelect from "../components/selecter/CountrySelect";
-import { SignSchema } from "../hooks/schema/SignSchema";
-import { LabelWithInput } from "../components/input/LabelWithInput";
-import MultiSnackBar from "../components/popup/MultiSnackBar";
-import { emailAvail, sendEmailCode, signupAPI, verifyEmailCode } from "../hooks/controller/AuthController";
-import { btnBlack, inputStyle } from "../styles/commonStyle";
+import CountrySelector from "../../components/selecter/CountrySelector";
+import { SignSchema } from "../../hooks/schema/SignSchema";
+import { LabelWithInput } from "../../components/input/LabelWithInput";
+import MultiSnackBar from "../../components/popup/MultiSnackBar";
+import { emailAvail, sendEmailCode, signupAPI, verifyEmailCode } from "../../hooks/controller/AuthController";
+import { btnBlack, inputStyle } from "../../styles/commonStyle";
 
 
 const SignUpPage = () => {
@@ -217,9 +217,10 @@ const SignUpPage = () => {
                 {/* Country */}
                 <Stack direction="row" alignItems="center" spacing={1}>
                   <Typography variant="h6">Country</Typography>
-                  <CountrySelect
-                    dto={values}
-                    setter={(field, val) => setFieldValue("country", val)}
+                  <CountrySelector
+                    sx={{ width: 100, height: 30}}
+                    value={values.country}
+                    onChange={val => setFieldValue("country", val)}
                   />
                 </Stack>
                 {touched.country && errors.country && (

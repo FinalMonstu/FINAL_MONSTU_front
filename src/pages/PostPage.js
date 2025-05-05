@@ -3,7 +3,7 @@ import ContentBox from "../components/box/ContentBox";
 import HistoryWordBox from "../components/box/HistoryWordBox";
 import HistorySenBox from "../components/box/HistorySenBox";
 import { Box, Button, Typography } from "@mui/material";
-import LanguageSelect from "../components/selecter/LanguageSelect";
+import LanguageSelector from "../components/selecter/LanguageSelector";
 import { hasWhitespace } from "../hooks/regexValid";
 import { trans } from "../hooks/controller/AiController";
 import TransPopover from "../components/popup/TransPopover";
@@ -13,9 +13,13 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import PostInputModal from "../components/modal/PostInputModal";
 import MultiSnackBar from "../components/popup/MultiSnackBar";
-import TripOriginSharpIcon from '@mui/icons-material/TripOriginSharp';
+import { getPostById, savePost } from "../hooks/controller/PostController";
+import { useAuth } from "../components/authenticate/AuthContext";
+import { useParams } from "react-router-dom";
 
 function PostPage() {
+  const { userInfo } = useAuth();
+  const { id } = useParams();
   const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
   const [histWord,setHistWord] = useState([]);
   const [histSentence,setHistSentence] = useState([]);
@@ -27,28 +31,27 @@ function PostPage() {
 
   //Option Modal 속성
   const [option,setOption] = useState({
-    isModalOpen : false, 
     viewWord : true,
     viewSentence : true,
   })
 
   const [post, setPost] = useState({
     id : null,
-    title: "René Descartes",   
-    content: "It is not enough to have a good mind\nthe main thing is to use it well.",
+    title: "",   
+    content: "",
     createdAt : null,
     modifiedAt : null,
     status : null,
-    isPublic : null,
-    authorId : null,
+    isPublic : false,
+    authorEmail : userInfo?.email,
     nickName : null,
     tags : null,  //List<TagDTO>
   });
 
-  const [postByAi, setPostByAi] = useState({
-    title: "René Descartes",   
-    content: "It is not enough to have a good mind\nthe main thing is to use it well.",
-  });
+  // const [postByAi, setPostByAi] = useState({
+  //   title: "René Descartes",   
+  //   content: "It is not enough to have a good mind\nthe main thing is to use it well.",
+  // });
 
   const [translation, setTranslation] = useState({
     id : "",  //단어 ID
@@ -63,13 +66,13 @@ function PostPage() {
   
 
   // 상태 업데이트 헬퍼 함수들
-    const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
-    const updatePost = useCallback((field, value) =>setPost((prev) => ({...prev, [field]: value, })), [] );
-    const updateOption = useCallback( (updater) => setOption((prev) => typeof updater === "function" ? updater(prev) : { ...prev, ...updater } ), [] );
-    const updateSnackBar = useCallback( (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value, })), [] );
-  
-    const deleteWord = useCallback( (target) => setHistWord((prev) => prev.filter((item) => item.target !== target)), [] );
-    const deleteSent = useCallback( (target) => setHistSentence((prev) => prev.filter((item) => item.target !== target)),  [] );
+  const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
+  const updatePost = useCallback((field, value) =>setPost((prev) => ({...prev, [field]: value, })), [] );
+  const updateOption = useCallback( (updater) => setOption((prev) => typeof updater === "function" ? updater(prev) : { ...prev, ...updater } ), [] );
+  const updateSnackBar = useCallback( (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value, })), [] );
+
+  const deleteWord = useCallback( (target) => setHistWord((prev) => prev.filter((item) => item.target !== target)), [] );
+  const deleteSent = useCallback( (target) => setHistSentence((prev) => prev.filter((item) => item.target !== target)),  [] );
 
   // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
   const searchHistory = useCallback((translation) => {
@@ -88,6 +91,32 @@ function PostPage() {
       return;} 
     updateTranslation("transed", result.data.transed);  //translation.transed 초기화
   };
+
+  // 게시물 데이터 DB에 저장 API
+  const savePostAPI = useCallback(
+    async ( updatedPost ) => {
+      const result = await savePost( updatedPost );
+      if (result?.success) {
+        updateSnackBar("option","info"); 
+        updatePost("id",result?.data.id);
+      }else{
+        if(result.status==403) result.message = "로그인이 필요합니다";
+        updateSnackBar("option","error"); 
+      }
+      updateSnackBar("msg",result.message); 
+    },[]);
+
+    // 게시물 ID를 이용하여 게시물 데이터를 받아오는 API
+    const fetchPostById = useCallback(
+      async ( ) => {
+        const result = await getPostById( id );
+        if (result?.success) {
+          setPost(result.data);
+        }else{
+          updateSnackBar("option","error"); 
+          updateSnackBar("msg",result.message); 
+        }
+    },[id]);
   
   // 사용자가 텍스트를 드래그하면 Popover를 띄움
   const handleSelection = useCallback(() => {
@@ -106,11 +135,16 @@ function PostPage() {
   useEffect(()=>{
     // console.log("post Object:", JSON.stringify(post, null, 2));
     // console.log("Translation Object:", JSON.stringify(translation, null, 2));
-  //   console.log("Option Object:", JSON.stringify(option, null, 2));
+    // console.log("Option Object:", JSON.stringify(option, null, 2));
     // console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
     // console.log("histWord :", JSON.stringify(histWord, null, 2));
     // console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
-  },[translation,option,histWord,histSentence,post])
+    // console.log("inputModal Object:", JSON.stringify(inputModal, null, 2));
+  },[translation,option,histWord,histSentence,post,inputModal])
+
+  useEffect(()=>{
+    if(id!=null) fetchPostById()
+  },[id])
 
   // type 초기화 (예시: "WORD" 또는 "SENTENCE") & 번역 APi이용
   useEffect(() => {
@@ -140,7 +174,7 @@ function PostPage() {
           <Typography variant="h3" sx={{
             boxSizing: "border-box",
             width: "75vw",
-            height: "5vh",
+            minHeight: "5vh",
             paddingLeft: "40px",
             overflowY: "auto",
             fontWeight: "bold"
@@ -153,9 +187,10 @@ function PostPage() {
             <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
               <ControlPointIcon sx={{ fontSize: 33 }} />
             </Button>
-            <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
+            {/* 다음 챕터로 이동 버튼 */}
+            {/* <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
               <TripOriginSharpIcon sx={{ fontSize: 33 }} />
-            </Button>
+            </Button> */}
           </Box>
           
           <Box sx={{
@@ -167,9 +202,9 @@ function PostPage() {
             justifyContent: "center",  // 가로 방향 가운데 정렬
             alignItems: "center",       // 세로 방향 가운데 정렬
           }}>
-            <LanguageSelect translation={translation} updateTranslation={updateTranslation} type="ori"/>
+            <LanguageSelector translation={translation} updateTranslation={updateTranslation} type="ori"/>
             <ArrowForwardIcon sx={{padding:0.8,fontSize:"19px",color:"black",}}/>  {/* 화살표 아이콘 */}
-            <LanguageSelect translation={translation} updateTranslation={updateTranslation} type="trans"/>
+            <LanguageSelector translation={translation} updateTranslation={updateTranslation} type="trans"/>
             <Button sx={{}} onClick={()=>updateOption(prev => ({ ...prev, isModalOpen : true}))}><SettingsIcon sx={{color:"black"}}/></Button>
           </Box>
       </Box>
@@ -229,7 +264,7 @@ function PostPage() {
         {/* Option Modal */}
         <PostOption option={option} setOption={updateOption}/>
         {/* 게시물 추가 Modal */}
-        <PostInputModal option={inputModal} setOption={setInputModal} setPost={setPost}/>
+        <PostInputModal option={inputModal} setOption={setInputModal} post={post} setPost={setPost} savePost={savePostAPI}/>
         {/* PopupBox */}
         <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar}/>
     </Box>

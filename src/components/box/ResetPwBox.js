@@ -24,11 +24,12 @@ const ResetPwBox = ({ formik, sendEmailCodeAPI, verifyCodeAPI }) => {
             sx={{
               backgroundColor: "black",
               "&:hover": { backgroundColor: "#333" },
+              minWidth : 125,
             }}
             type="button"
             onClick={() => sendEmailCodeAPI(values.email)}
           >
-            Send Code
+            인증 코드 전송
           </Button>
         </Stack>
 
@@ -54,7 +55,7 @@ const ResetPwBox = ({ formik, sendEmailCodeAPI, verifyCodeAPI }) => {
             type="button"
             onClick={() => verifyCodeAPI(values.email, values.authCode)}
           >
-            Check
+            인증
           </Button>
         </Stack>
       </Stack>

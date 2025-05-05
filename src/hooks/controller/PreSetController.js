@@ -11,20 +11,42 @@ const presetController = (url,type='post',data=null) => {
 export const getLangList = async () => {
     try {
         const response = await presetController(`/lang`, 'get',);
-        console.log("Response.data:", JSON.stringify(response.data.langList, null, 2));
-        return responseStatus(response,response.data.langList);
+        console.log("Response.data:", JSON.stringify(response.data, null, 2));
+        return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
     }     
 };
 
-// 나라라 목록 반환 API
+// 나라 목록 반환 API
 export const getCounList = async () => {
     try {
         const response = await presetController(`/coun`, 'get',);
-        console.log("Response.data:", JSON.stringify(response.data.langList, null, 2));
-        return responseStatus(response,response.data.counList);
+        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
+        return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
     }     
 };
+
+// 멤버 상태코드 목록 반환 API
+export const getMemStatus = async () => {
+    try {
+        const response = await presetController(`/mem/status`, 'get',);
+        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
+        return responseStatus(response,response.data);
+    }catch(error){
+        return errorStatus(error);
+    }     
+}
+
+// 멤버 상태코드 목록 반환 API
+export const getMemRole = async () => {
+    try {
+        const response = await presetController(`/mem/role`, 'get',);
+        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
+        return responseStatus(response,response.data);
+    }catch(error){
+        return errorStatus(error);
+    }     
+};;

@@ -11,9 +11,9 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { confirmPwSchema } from "../hooks/schema/SignSchema";
-import { resetPwAPI } from "../hooks/controller/AuthController";
-import MultiSnackBar from "../components/popup/MultiSnackBar";
+import { confirmPwSchema } from "../../hooks/schema/SignSchema";
+import { resetPwAPI } from "../../hooks/controller/AuthController";
+import MultiSnackBar from "../../components/popup/MultiSnackBar";
 
 function ResetPwPage() {
     const location = useLocation();
