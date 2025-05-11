@@ -29,7 +29,7 @@ function Header() {
 
     const Authenticated = () => (
         <Box>
-            { userInfo.role === "ADMIN" ?
+            { userInfo?.role === "ADMIN" ?
             <Button variant="overline" sx={btnBlack} onClick={handleAdminPage}>ADMIN</Button>
             : <Button variant="overline" sx={btnBlack} onClick={handleMyPage}>my page</Button>
             }

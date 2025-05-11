@@ -1,6 +1,15 @@
+
+/* 
+  역할 : Respsone 객체 '커스텀 Response'로 재초기화 및 반환환
+  인증 : 
+  비고 : 
+    Http 상태번호 이용, 응답 성공여부 설정
+    Http 상태번호 이용, 기본 제공 메세지 설정
+*/
+
 //Handle Response
 export function responseStatus(response,data=null){
-    const message = response.data.message;
+    const message = response.data?.message ?? response.data;
     let result = { success : false, message : 'No Response'};
 
     if(!response) return result;

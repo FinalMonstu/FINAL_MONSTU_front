@@ -1,9 +1,15 @@
-import React, { memo } from "react";
 import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 
-function HistorySenBox({ list, handleDelete }) {
+/* 
+  역할 : 게시물 페이지 -> 번역 문장 기록 관리 박스
+  인증 : 모든 사용자 사용가능
+  기능 : 
+    기록 표시 ,
+    기록 삭제 
+*/
+export default function HistorySenBox({ list, handleDelete }) {
   return (
-    <Box sx={{ p: 2, m: "auto" }}>
+    <Box sx={{ p: 3 }}>
       <List>
         {list.length > 0 ? (
           list.map(({ target, transed }) => (
@@ -37,5 +43,3 @@ function HistorySenBox({ list, handleDelete }) {
     </Box>
   );
 }
-
-export default memo(HistorySenBox);

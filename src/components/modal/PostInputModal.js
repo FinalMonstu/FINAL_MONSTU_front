@@ -1,108 +1,92 @@
-import { Box, Modal, Typography, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel } from "@mui/material";
+import { Modal, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel, IconButton, Box } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
-export default function PostInputModal({ option, setOption, post, setPost, savePost }) {
-  const [tempPost, setTempPost] = useState({ title: "", content: "" });
-  const [saveBool, setSaveBool] = useState(false);
+/* 
+  역할 : 게시물 페이지 -> 게시물 삽입/저장장
+  인증 : 
+    게시물 삽입 -> 모든 이용자 사용가능
+    게시물 저장 -> 인증 이용자자 사용가능
+  기능 : 
+    입력한 title, content 정보 게시물에 적용
+    입력한 정보 데이터베이스에 저장/수정정
+*/
+export default function PostInputModal({ isOpen, toggleOption, post, setPost, savePost }) {
+  const [tempPost, setTempPost] = useState({ title: post.title || '', content: post.content || '' });
+  const [autoSave, setAutoSave] = useState(false);
+
+  const handleClose = () => toggleOption("inputModal");
 
   // 입력값 업데이트
-  const handleChange = useCallback((field, value) => { setTempPost((prev) => ({ ...prev, [field]: value, })); }, []);
+  const handleChange = useCallback((field) => (e) => { setTempPost((prev) => ({ ...prev, [field]: e.target.value })); }, []);
+  const handleToggleAutoSave = useCallback((e) => { setAutoSave(e.target.checked); }, []);
 
   // 저장 버튼 클릭 시, 부모의 post 업데이트 및 모달 닫기
-  const handleSave = () => {
-    const updatedPost = {
-      ...post,
-      title: tempPost.title,
-      content: tempPost.content
-    };
-    setPost( updatedPost  );
-    setOption((prev) => ({ ...prev, isModalOpen: false }));
-    if(saveBool) { savePost(updatedPost ); }
-  }
+  const save = useCallback(() => {
+    const updated = { ...post, ...tempPost };
+    console.log("updated Object:", JSON.stringify(updated, null, 2));
+    if (autoSave) savePost(updated);
+    handleClose();
+  }, [post, setPost, tempPost, autoSave]);
 
-  // Switch change 핸들러
-  const handleToggleSave = (event) => {
-    setSaveBool(event.target.checked);
-  };
 
+  useEffect(() => {
+    setTempPost({ title: post.title || '', content: post.content || '' });
+  }, [post]);
+
+
+  // Log
   useEffect(()=>{
-    console.log("saveBool Object:", JSON.stringify(saveBool, null, 2));
-  },[saveBool])
+    console.log("autoSave Object:", JSON.stringify(autoSave, null, 2));
+  },[autoSave])
+
 
   return (
     <Modal
-      open={option.isModalOpen}
-      onClose={() => setOption((prev) => ({ ...prev, isModalOpen: false }))}
+      open={isOpen}
+      onClose={handleClose}
       disableEnforceFocus
-      sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
     >
       <Paper
         component="form"
+        onSubmit={(e) => e.preventDefault()}
         sx={{
-          "& .MuiTextField-root": { m: 1, width: "70vw" },
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          width: { xs: '90%', sm: 500 },
           p: 3,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'stretch',
+          gap: 2,
         }}
-        noValidate
-        autoComplete="off"
       >
+
         <TextField
-          id="outlined-required"
           label="Title"
           value={tempPost.title}
-          onChange={(e) => handleChange("title", e.target.value)}
+          onChange={handleChange('title')}
+          fullWidth
         />
+
         <TextField
-          required
-          id="outlined-multiline-static"
           label="Content"
-          multiline
-          rows={10}
           value={tempPost.content}
-          onChange={(e) => handleChange("content", e.target.value)}
+          onChange={handleChange('content')}
+          fullWidth
+          multiline
+          rows={8}
         />
 
-        {/* 데이터베이스에 저장 옵션 스위치 */}
         <FormControlLabel
-          control={
-            <Switch
-              checked={saveBool}
-              onChange={handleToggleSave}
-            />
-          }
-          label="데이터베이스에 저장"
-          sx={{ ml: 5 }}
+          control={<Switch checked={autoSave} onChange={handleToggleAutoSave} />}
+          label="내 페이지에 저장"
         />
 
-        <ButtonGroup sx={{ display: "flex", gap: 0, mt: 2 }}>
-          <Button
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              "&:hover": { backgroundColor: "#333" },
-              border:"none",
-            }}
-            variant="contained"
-            color="primary"
-            onClick={handleSave}
-          >
-            Insert
+        <ButtonGroup sx={{ alignSelf: 'flex-end' }}>
+          <Button variant="contained" onClick={save}>
+            저장
           </Button>
-          <Button
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              "&:hover": { backgroundColor: "#333" },
-              border:"none",
-            }}
-            variant="outlined"
-            color="secondary"
-            onClick={() => setOption((prev) => ({ ...prev, isModalOpen: false }))}
-          >
-            Cancel
+          <Button variant="outlined" onClick={handleClose}>
+            취소
           </Button>
         </ButtonGroup>
       </Paper>

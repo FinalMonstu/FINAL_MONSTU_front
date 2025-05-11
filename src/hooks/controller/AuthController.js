@@ -1,7 +1,9 @@
 import { connectSpring } from "../preAxios";
 import { responseStatus, errorStatus } from "../handleStatus"
 
-
+/* 
+  역할 : 서버 AuthController와 소통
+*/
 const authController = (url,type='post',data=null) => {
     const baseUrl = '/api/auth';
     if(type==='get') return connectSpring.get(baseUrl+url,data);
@@ -11,7 +13,6 @@ const authController = (url,type='post',data=null) => {
 
 // 이메일 중복 검사
 export const emailAvail = async (text) => {
-    console.log("text: "+text)
     try {
         const response = await authController(`/email/avail?email=${text}`, 'get');
         return responseStatus(response,response.data);
@@ -34,14 +35,17 @@ export const sendEmailCode = async (dto) => {
 export const verifyEmailCode = async (dto) => {
     try {
         const response = await authController(`/email/verify`, 'post',dto);
+        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
+        console.log("error:", JSON.stringify(error.response.data, null, 2));
         return errorStatus(error);
     }     
 };
 
 // 회원가입
 export const signupAPI = async (dto) => {
+    console.log("SignUp Reqest: ", JSON.stringify(dto, null, 2));
     try {
         const response = await authController(`/signup`, 'post',dto);
         return responseStatus(response,response.data);
@@ -72,7 +76,7 @@ export const loginAPI = async (dto) => {
 // 비밀번호 재설정
 export const resetPwAPI = async (dto) => {
     try {
-        const response = await authController(`/email/repass`, 'post',dto);
+        const response = await authController(`/repassword`, 'post',dto);
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);

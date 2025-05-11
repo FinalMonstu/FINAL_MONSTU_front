@@ -1,13 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  Box,
-  Modal,
-  Paper,
-  Button,
-  ButtonGroup,
-  TextField,
-} from "@mui/material";
-import { Formik, Form, Field } from "formik";
+import { Box,Modal,Paper,Button,ButtonGroup,TextField } from "@mui/material";
+import { Formik, Form } from "formik";
 import MemberRoleSelector from "../../selecter/MemberRoleSelector";
 import MemberStatusSelector from "../../selecter/MemberStatusSelector";
 import CountrySelect from "../../selecter/CountrySelector";
@@ -15,29 +8,38 @@ import { SignSchema } from "../../../hooks/schema/SignSchema";
 import { btnBlack } from "../../../styles/commonStyle";
 import { signupAPI } from "../../../hooks/controller/AuthController";
 
-export default function AddMemberModal({ modalOpen, setModal }) {
-    const initialValues = useMemo(() => ({
-        email: "",
-        password: "",
-        confirmPassword: "",
-        nickName: "",
-        phoneNumber: "",
-        role: "",
-        status: "",
-        country: "",
-    }), []);
+/* 
+  역할 : 멤버 추가
+  인증 : ADMIN만 사용가능
+  기능 : 유저 정보 입력/저장
+  비고 : 회원가입 기능과의 차이점 -> Role, Status 속성을 프론트에서 바로 추가 가능
+*/
+export default function AddMemberModal({ modalOpen, toggleModal }) {
+  const initialValues = useMemo(() => ({
+      email: "",
+      password: "",
+      confirmPassword: "",  // 비밀번호 재확인 입력값값
+      nickName: "",
+      phoneNumber: "",
+      role: "",
+      status: "",
+      country: "",
+  }), []);
 
 
-    const handleSubmit = useCallback(async (dto) => {
-      const result = await signupAPI(dto);
-      alert(result?.success ? result?.message : "회원가입에 실패했습니다.");
-      if (result?.success) { setModal("add"); }
-    }, []);
+  // 회원가입 API
+  const handleSubmit = useCallback(async (dto) => {
+    const result = await signupAPI(dto);
+    alert(result?.message);
+
+    // 회원가입 성공 시 모달 닫기기
+    if (result?.success) { toggleModal("add"); }
+  }, []);
 
   return (
     <Modal
       open={modalOpen}
-      onClose={() => setModal("add")}
+      onClose={() => toggleModal("add")}
       disableEnforceFocus
       sx={{
         display: "flex",
@@ -73,6 +75,7 @@ export default function AddMemberModal({ modalOpen, setModal }) {
                   error={touched.email && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
                 />
+
                 <TextField
                   name="nickName"
                   label="Nick Name"
@@ -83,6 +86,7 @@ export default function AddMemberModal({ modalOpen, setModal }) {
                   error={touched.nickName && Boolean(errors.nickName)}
                   helperText={touched.nickName && errors.nickName}
                 />
+
                 <TextField
                   name="phoneNumber"
                   label="Phone Number"
@@ -94,6 +98,7 @@ export default function AddMemberModal({ modalOpen, setModal }) {
                   error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                   helperText={touched.phoneNumber && errors.phoneNumber}
                 />
+
                 <TextField
                   name="password"
                   label="password"
@@ -105,6 +110,7 @@ export default function AddMemberModal({ modalOpen, setModal }) {
                   error={touched.password && Boolean(errors.password)}
                   helperText={touched.password && errors.password}
                 />
+
                 <TextField
                   name="confirmPassword"
                   label="confirmPassword"
@@ -147,13 +153,14 @@ export default function AddMemberModal({ modalOpen, setModal }) {
                 </Button>
                 <Button
                   type="button"
-                  onClick={() => setModal("add")}
+                  onClick={() => toggleModal("add")}
                   sx={{ ...btnBlack, m: 0.5 }}
                   variant="outlined"
                 >
                   Cancel
                 </Button>
               </ButtonGroup>
+
             </Form>
           )}
         </Formik>

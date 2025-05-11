@@ -1,41 +1,34 @@
-import React from "react";
-import { Box, Stack, TextField } from "@mui/material";
+import React from 'react';
+import { Stack, TextField } from '@mui/material';
+import { Field } from 'formik';
 
-const FindIdBox = ({ formik }) => {
-  const { values, errors, touched, handleChange, handleBlur } = formik;
+/* 
+  역할 : Find 페이지 -> 회원 아이디(이메일) 찾기 박스
+  인증 : 모든 이용자 사용가능
+  기능 : 입력한 전화번호 & 닉네임 정보 초기화
+*/
+export default function FindIdBox({ formik: { touched, errors } }) {
   return (
-    <Box>
-      <Stack spacing={2}>
-        <Stack direction="row" spacing={1} alignItems="center">
-          <TextField
-            name="phoneNumber"
-            placeholder="000-0000-0000"
-            value={values.phoneNumber}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-            helperText={touched.phoneNumber && errors.phoneNumber}
-            fullWidth
-            size="small"
-          />
-        </Stack>
+    <Stack spacing={2}>
+      <Field
+        name="phoneNumber"
+        as={TextField}
+        placeholder="000-0000-0000"
+        error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+        helperText={touched.phoneNumber && errors.phoneNumber}
+        fullWidth
+        size="small"
+      />
 
-        <Stack direction="row" spacing={1} alignItems="center">
-          <TextField
-            name="nickName"
-            placeholder="Enter nickname"
-            value={values.nickName}
-            onChange={handleChange}
-            onBlur={handleBlur}
-            error={touched.nickName && Boolean(errors.nickName)}
-            helperText={touched.nickName && errors.nickName}
-            fullWidth
-            size="small"
-          />
-        </Stack>
-      </Stack>
-    </Box>
+      <Field
+        name="nickName"
+        as={TextField}
+        placeholder="Enter nickname"
+        error={touched.nickName && Boolean(errors.nickName)}
+        helperText={touched.nickName && errors.nickName}
+        fullWidth
+        size="small"
+      />
+    </Stack>
   );
-};
-
-export default FindIdBox;
+}

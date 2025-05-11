@@ -1,6 +1,9 @@
 import { connectSpring } from "../preAxios";
 import { responseStatus, errorStatus } from "../handleStatus"
 
+/* 
+  역할 : 서버 AiController와 소통
+*/
 const aiController = (url,type='post',data=null) => {
     const baseUrl = '/api/ai';
     if(type==='get') return connectSpring.get(baseUrl+url,data);

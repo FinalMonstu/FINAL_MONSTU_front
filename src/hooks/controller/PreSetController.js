@@ -1,6 +1,9 @@
 import { connectSpring } from "../preAxios";
 import { responseStatus, errorStatus } from "../handleStatus"
 
+/* 
+  역할 : 서버 PresetController와 소통
+*/
 const presetController = (url,type='post',data=null) => {
     const baseUrl = '/api/preset';
     if(type==='get') return connectSpring.get(baseUrl+url,data);

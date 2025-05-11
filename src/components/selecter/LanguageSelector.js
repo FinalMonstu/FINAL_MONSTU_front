@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { getLangList } from "../../hooks/controller/PreSetController";
 import { FormControl, MenuItem, Select } from "@mui/material";
 
-export default function LanguageSelect( {translation,updateTranslation,type} ) {
+export default function LanguageSelector( {translation,updateTranslation,type} ) {
     const [langList,setLangList] = useState([])
     
     // 언어 목록 초기화

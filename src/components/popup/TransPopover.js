@@ -1,6 +1,11 @@
 import React from "react";
 import { Popover, Typography } from "@mui/material";
 
+/* 
+  역할 : 게시물 페이지 -> 번역된 단어 화면에 표시
+  인증 : 모든 이용자 사용가능
+  기능 : 번역된 단어 화면에 표시
+*/
 export default function TransPopover({ anchorEl, setAnchorEl, translation }) {
   // Popover 닫기
   const handleClose = () => {
@@ -14,8 +19,7 @@ export default function TransPopover({ anchorEl, setAnchorEl, translation }) {
       anchorReference="anchorPosition" // 위치를 직접 지정
       anchorPosition={
         anchorEl
-          ? { top: anchorEl.getBoundingClientRect().top + window.scrollY - 37, 
-              left: anchorEl.getBoundingClientRect().left + window.scrollX }
+          ? { top: anchorEl.getBoundingClientRect().top + window.scrollY - 37, left: anchorEl.getBoundingClientRect().left + window.scrollX }
           : { top: 0, left: 0 }
       }
       transformOrigin={{

@@ -2,6 +2,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { getCounList } from "../../hooks/controller/PreSetController";
 
+/* 
+  역할 : 나라 목록 선택창
+  기능 : 나라 목록 초기화
+*/
 export default function CountrySelect ({value,onChange,allowNone=true}) {
     const [list,setList] = useState([])
 

@@ -1,24 +1,42 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { createContext, useContext, useCallback } from 'react';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 
-function SnackBar({snackBar,setSnackBar}) {
-    const { enqueueSnackbar } = useSnackbar();
+/* 
+  역할 : 화면에 메시지 표시
+  인증 : 모든 이용자 사용가능
+  비고 : Mui 라이브러리의  SnackContext 활용
+*/
+const SnackContext = createContext(() => {});
 
-    useEffect(() => {
-      if (!snackBar.msg) return;
-      enqueueSnackbar(snackBar.msg, {
-        variant: snackBar.option || "default",
-      });
-      // setSnackBar({ msg: "", option: "" });
-    }, [snackBar, enqueueSnackbar, setSnackBar]);
+//  Context 안에 담겨 있는 값(value) 을 꺼내 주는 훅
+export function useSnack() {
+  return useContext(SnackContext);
+}
 
-    return null;
-  }
-  
-export default function MultiSnackBar({ snackBar, setSnackBar }) {
+
+function InnerSnackProvider({ children }) {
+  const { enqueueSnackbar } = useSnackbar();
+  const showSnack = useCallback(
+    (variant, msg) => {
+      enqueueSnackbar(msg, { variant });
+    },
+    [enqueueSnackbar]
+  );
+
+  return (
+    <SnackContext.Provider value={showSnack}>
+      {children}
+    </SnackContext.Provider>
+  );
+}
+
+// 4) 최상위 Provider 컴포넌트
+export default function MultiSnackBar({ children }) {
   return (
     <SnackbarProvider maxSnack={3}>
-      <SnackBar snackBar={snackBar} setSnackBar={setSnackBar} />
+      <InnerSnackProvider>
+        {children}
+      </InnerSnackProvider>
     </SnackbarProvider>
   );
 }

@@ -1,5 +1,9 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
+/* 
+  역할 : 날짜 옵션 목록 선택창
+  기능 : 날짜 옵션 목록 초기화
+*/
 export default function DateOptionSelector({value,onChange}){
     const list = ["createdAt", "updatedAt"];
 

@@ -1,16 +1,13 @@
 import { Box, Typography } from "@mui/material";
-import styled from "styled-components";
 
-function Footer(){
+export default function Footer(){
     return(
         <Box
             component="footer"
             sx={{
                 py: 4,
-                px: 2,
-                mt: 'auto',
-                backgroundColor: (theme) => theme.palette.grey[100],
-                textAlign: 'center'
+                // backgroundColor: theme => theme.palette.grey[200],
+                textAlign: 'center',
             }}
             >
             <Typography variant="subtitle1" component="div" gutterBottom>
@@ -25,5 +22,3 @@ function Footer(){
         </Box>
     )
 }
-
-export default Footer;

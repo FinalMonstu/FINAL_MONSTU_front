@@ -1,102 +1,104 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Formik, Form } from "formik";
-import { Box, TextField, Button, Typography, Paper, Stack, Divider } from "@mui/material";
+import React, { useCallback } from "react";
+import { Formik, Form, Field } from "formik";
+import { Box, TextField, Button, Typography, Stack, Divider } from "@mui/material";
 import { LoginSchema } from "../../hooks/schema/SignSchema";
-import { LabelWithInput } from "../../components/input/LabelWithInput";
 import { btnBlack, inputStyle } from "../../styles/commonStyle";
 import { loginAPI } from "../../hooks/controller/AuthController";
-import MultiSnackBar from "../../components/popup/MultiSnackBar";
+import { useSnack } from "../../components/popup/MultiSnackBar";
 import { useAuth } from "../../components/authenticate/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { authPath, mainPath } from "../../hooks/urlManager";
+import AuthLinks from "../../components/links/AuthLinks";
 
-const LoginForm = () => {
+/* 
+  역할 : 로그인 페이지
+  인증 : 모든 사용자 사용가능
+  기능 : 로그인 기능
+  비고 : 로그인 성공 시 유저 정보 저장
+*/
+export default function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const initialLogin = useMemo(() => ({ email: "", password: "" }), []);
-  const [snackBar, setSnackBar] = useState({ msg: "", option: "error" });
+  const showSnack = useSnack();
 
-  const updateSnackBar = useCallback((field, value) => { setSnackBar((prev) => ({ ...prev, [field]: value })); }, []);
 
-  // 로그인 API 호출 후 JWT 토큰 저장
-  const handleLoginAPI = useCallback(
-    async (values) => {
+  // 로그인 API 호출 후 JWT 토큰 저장, 유저정보 저장
+  const handleLogin = useCallback(
+    async (values, { setSubmitting }) => {
       const result = await loginAPI(values);
       if (result.success) {
-        console.log("MemberInfo : ", JSON.stringify(result.data, null, 2));
         login(result.data);
-        navigate("/");
+        navigate(mainPath);
       } else {
-        updateSnackBar("option", "error");
-        updateSnackBar("msg", result.message);
+        showSnack("error", result.message);
       }
+      setSubmitting(false);
     },
-    [login, updateSnackBar, navigate]
+    [login]
   );
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box sx={{ padding: 4, width: 400,}}>
-        <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
+    <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box sx={{ width: 400, p: 4 }}>
+        <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
           Login
         </Typography>
-        <Divider sx={{ mb: 5, borderColor: "#C0C0C0" }} />
 
-        <Formik initialValues={initialLogin} validationSchema={LoginSchema} onSubmit={handleLoginAPI}>
-          {({ values, errors, touched, handleChange, handleBlur }) => (
+        <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
+
+        <Formik
+          initialValues={{ email: '', password: '' }}
+          validationSchema={LoginSchema}
+          onSubmit={handleLogin}
+        >
+          {({ errors, touched }) => (
             <Form>
-              <Stack spacing={2}>
+              <Stack spacing={3}>
 
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
                     ID (email)
                   </Typography>
-                  <TextField
+
+                  <Field
                     name="email"
+                    as={TextField}
                     fullWidth
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.email && Boolean(errors.email)}
-                    helperText={touched.email && errors.email}
+                    size="small"
                     sx={{ input: inputStyle }}
+                    error={touched.email && Boolean(errors.email)}
+                  />
+                </Stack>
+                
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
+                    Password
+                  </Typography>
+
+                  <Field
+                    name="password"
+                    as={TextField}
+                    type="password"
+                    fullWidth
+                    size="small"
+                    sx={{ input: inputStyle }}
+                    error={touched.password && Boolean(errors.password)}
                   />
                 </Stack>
 
-                <Stack direction="row" alignItems="center" spacing={2}>
-                    <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
-                      Password
-                    </Typography>
-                    <TextField
-                      name="password"
-                      type="password"
-                      fullWidth
-                      value={values.password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      error={touched.password && Boolean(errors.password)}
-                      helperText={touched.password && errors.password}
-                      sx={{ input: inputStyle }}
-                    />
-                </Stack>
-
-                <Button sx={btnBlack} type="submit" variant="contained" color="primary" fullWidth>
+                <Button type="submit" fullWidth sx={btnBlack} variant="contained">
                   LOGIN
                 </Button>
+
               </Stack>
             </Form>
           )}
         </Formik>
+
+        {/* 비밀번호 / 아이디 찾기, 회원가입 - 페이지 링크 */}
+        <AuthLinks/>
+
       </Box>
-      <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar} />
     </Box>
   );
 };
-
-export default LoginForm;

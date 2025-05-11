@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Box,
-  Typography,
-  IconButton,
-  FormControl,
-  Select,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import { Box,Typography,IconButton,FormControl,Select,MenuItem,Button } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { deletePostById, getUserPosts } from "../../hooks/controller/PostController";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +7,7 @@ import { postPath } from "../../hooks/urlManager";
 
 export default function MyPosts() {
     const navigate = useNavigate(); 
+    
     const [pageable, setPageable] = useState({
         page: 0,
         size: 6,
@@ -40,11 +34,6 @@ export default function MyPosts() {
         page: 0,           // 정렬 변경 시 1페이지로 리셋
         }));
     };
-
-    // 공개/비공개 변경 (TODO: 실제 API 연동)
-    //   const handleVisibilityChange = (id) => (e) => {
-    //     console.log("change visibility for", id, "->", e.target.value);
-    //   };
 
     // 삭제 (TODO: 실제 API 연동)
     const handleDelete = useCallback(async (id) => {

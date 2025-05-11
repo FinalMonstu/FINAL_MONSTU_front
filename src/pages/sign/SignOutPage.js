@@ -1,171 +1,131 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-  Button,
-} from "@mui/material";
-import { Formik, Form } from "formik";
-import { emailAuthSchema } from "../../hooks/schema/SignSchema";
-import { sendEmailCode, signOutAPI, verifyEmailCode } from "../../hooks/controller/AuthController";
-import { useNavigate } from "react-router-dom";
-import { btnBlack } from "../../styles/commonStyle";
-import MultiSnackBar from "../../components/popup/MultiSnackBar";
-import { useAuth } from "../../components/authenticate/AuthContext";
+import React, { useCallback, useState } from 'react';
+import { Box, Stack, Button, TextField, Typography, Divider } from '@mui/material';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../components/authenticate/AuthContext';
+import { useSnack } from '../../components/popup/MultiSnackBar';
+import { emailAuthSchema } from '../../hooks/schema/SignSchema';
+import { sendEmailCode, verifyEmailCode, signOutAPI } from '../../hooks/controller/AuthController';
+import { btnBlack } from '../../styles/commonStyle';
+import { mainPath } from '../../hooks/urlManager';
 
-function SignOutPage() {
+/* 
+  역할 : 회원 탈퇴 페이지
+  인증 : 인증된 사용자 사용가능
+  기능 :
+    이메일 인증 코드 전송 기능, 
+    이메일 인증 코드 확인 기능,
+  비고 : 이메일 인증 후 회원 탈퇴
+*/
+export default function SignOutPage() {
   const { userInfo } = useAuth();
   const navigate = useNavigate();
+  const showSnack = useSnack();
 
-  const [verifiCode, setVerifiCode] = useState({
-    id: null,
-    email: "",
-    code: "",
-  });
+  // 인증 코드
+  const [verifiCode, setVerifiCode] = useState({ id: null, email: userInfo.email, code: "" });
+  
+  // 코드 인증 상태
   const [codeCheck, setCodeCheck] = useState(false);
-  const [snackBar, setSnackBar] = useState({ msg: "", option: "error" });
 
-  const updateSnackBar = useCallback(
-    (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value })),
-    []
-  );
-  const updateVerifiCode = useCallback(
-    (field, value) => setVerifiCode((prev) => ({ ...prev, [field]: value })),
-    []
-  );
 
-  // 이메일 인증 코드 전송
-  const sendEmailCodeAPI = useCallback(async () => {
-    const result = await sendEmailCode({ ...verifiCode, email: userInfo.email });
-    if (result?.success) {
-      updateVerifiCode("id", result.data.id);
-      updateVerifiCode("email", result.data.email);
-    }
-    updateSnackBar("option", result?.success ? "info" : "error");
-    updateSnackBar("msg", result?.message);
-  }, [verifiCode, userInfo.email, updateVerifiCode, updateSnackBar]);
+  // 이메일 인증 코드 전송 - API
+  const sendCode = useCallback(async () => {
+    const { success, message, data } = await sendEmailCode({ ...verifiCode, email: userInfo.email });
+    showSnack(success ? "info" : "error", message);
+    // 인증 코드 정보 삽입
+    if (success) setVerifiCode({ id: data.id, email: data.email });
+  }, [verifiCode]);
+
 
   // 인증 코드 검증
-  const verifyCodeAPI = useCallback(
-    async (code) => {
-      const result = await verifyEmailCode({
-        ...verifiCode,
-        email: userInfo.email,
-        code,
-      });
-      if (result?.success) {
-        setCodeCheck(true);
-      }
-      updateSnackBar("option", result?.success ? "info" : "error");
-      updateSnackBar("msg", result?.message);
-    },
-    [verifiCode, userInfo.email, updateSnackBar]
-  );
+  const verifyCode = useCallback(async (code) => {
+    const { success, message } = await verifyEmailCode({ ...verifiCode, code });
+    showSnack(success ? "info" : "error", message);
+    setCodeCheck(success);
+  }, [verifiCode] );
+
 
   // 회원 탈퇴 API 호출
-  const signOut = useCallback(
-    async() => {
-        const result = await signOutAPI();
-        alert(result?.message);
-        if(result?.success) {navigate("/");}
+  const handleSignOut = useCallback( async() => {
+    const { success, message } = await signOutAPI();
+    if(success) {
+      alert(message);
+      navigate(mainPath);
+    }else{
+      showSnack('error', message);
     }
-  )
+  },[] )
 
 
   // 최종 폼 제출 (인증 완료 후 탈퇴 로직)
   const onSubmitForm = useCallback(
-    async (_, { setSubmitting }) => {
-      setSubmitting(true);
-      if (codeCheck) {
-        signOut();
-      } else {
-        alert("인증 코드를 먼저 확인해주세요.");
-      }
+    async (values, { setSubmitting }) => {
+      if (codeCheck) await handleSignOut();
+      else showSnack('error', '인증 코드를 먼저 확인해주세요.');
       setSubmitting(false);
-    },
-    [codeCheck, verifiCode.id, userInfo.email, navigate]
-  );
+  }, [codeCheck] );
+
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        bgcolor: "#fff",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box sx={{ width: 400 }}>
-        <Typography variant="h4" fontWeight="bold" align="center" gutterBottom>
+    <Box sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', bgcolor: '#fff' }}>
+      <Box sx={{ width: 400, p: 4 }}>
+        <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
           Sign Out
         </Typography>
         <Divider sx={{ mb: 3 }} />
 
         <Formik
-          initialValues={{ authCode: "" }}
-          validationSchema={emailAuthSchema.pick(["authCode"])}
+          initialValues={{ authCode: '' }}
+          validationSchema={emailAuthSchema.pick(['authCode'])}
           onSubmit={onSubmitForm}
         >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            isSubmitting,
-          }) => (
+          {({ values, touched, errors, isSubmitting }) => (
             <Form>
               <Stack spacing={2}>
-                {/* 이메일 (읽기전용) + 코드 전송 */}
-                <Stack direction="row" spacing={1} alignItems="flex-start">
+                {/* 이메일 표시 및 코드 전송 */}
+                <Stack direction="row" spacing={1} alignItems="center">
                   <TextField
+                    sx={{'& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: 'rgba(0, 0, 0, 0.87)',}}}
                     value={userInfo.email}
                     disabled
                     fullWidth
                     size="small"
                   />
-                  <Button
-                    variant="contained"
-                    sx={{ ...btnBlack, minWidth: 100 }}
-                    onClick={sendEmailCodeAPI}
-                  >
+                  <Button sx={btnBlack} variant="contained" onClick={sendCode}>
                     코드 전송
                   </Button>
                 </Stack>
 
                 {/* 인증 코드 입력 및 검증 */}
-                <Stack direction="row" spacing={1} alignItems="flex-start">
-                  <TextField
+                <Stack direction="row" spacing={1} alignItems="center">
+                  <Field
                     name="authCode"
+                    as={TextField}
                     placeholder="인증 코드 입력"
-                    value={values.authCode}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={!!(touched.authCode && errors.authCode)}
-                    helperText={touched.authCode && errors.authCode}
-                    disabled={codeCheck}
                     fullWidth
                     size="small"
+                    disabled={codeCheck}
+                    error={touched.authCode && Boolean(errors.authCode)}
+                    helperText={<ErrorMessage name="authCode" />}
                   />
                   <Button
-                    sx={{ ...btnBlack }}
+                    sx={btnBlack}
                     variant="contained"
                     disabled={codeCheck}
-                    onClick={() => verifyCodeAPI(values.authCode)}
+                    onClick={() => verifyCode(values.authCode)}
                   >
                     인증
                   </Button>
                 </Stack>
 
-                {/* 최종 탈퇴 버튼 */}
+                {/* 탈퇴 버튼 */}
                 <Button
-                  sx={{ ...btnBlack }}
                   type="submit"
                   variant="contained"
+                  fullWidth
                   disabled={isSubmitting}
+                  sx={btnBlack}
                 >
                   계정 탈퇴
                 </Button>
@@ -174,10 +134,6 @@ function SignOutPage() {
           )}
         </Formik>
       </Box>
-
-      <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar} />
     </Box>
   );
 }
-
-export default SignOutPage;

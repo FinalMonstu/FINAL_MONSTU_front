@@ -1,42 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Button,
-  Box,
-  Container,
-  Grid,
-  Card,
-  CardContent
-} from '@mui/material';
-import { styled } from '@mui/system';
+import { Button, Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { authPath, postPath } from "../hooks/urlManager";
-import Footer from '../components/Footer';
 import LitePosts from '../components/box/LitePosts';
 import Hero from '../components/box/Hero';
+import Footer from '../components/Footer';
 
-
-
-function Main() {
-
+/* 
+  역할 : 메인 페이지
+  인증 : 모든 사용자 사용가능
+  기능 : 
+    게시물 작성 페이지 이동,
+    공개 게시물 목록 표시
+*/
+export default function Main() {
   const navigate = useNavigate();
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-
-  }, []);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        // height: "100vh", // 전체 화면을 차지하도록 설정
-        overflow: "hidden", // 불필요한 스크롤 제거
-      }}
-    >
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}} >
       <Button onClick={()=>navigate(authPath.login)}>login</Button>
       <Button onClick={()=>navigate(authPath.signup)}>signup</Button>
       <Button onClick={()=>navigate(authPath.signout)}>signout</Button>
@@ -48,11 +28,11 @@ function Main() {
 
       <Hero/>
       
-      <LitePosts/>
+      <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+        <LitePosts />
+      </Box>
 
-      {/* <Footer/> */}
+      <Footer/>
     </Box>
   );
 }
-
-export default Main;

@@ -1,26 +1,30 @@
-import React, { memo } from "react";
 import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 
-function HistoryWordBox({ list, handleDelete }) {
+/* 
+  역할 : 게시물 페이지 -> 번역 단어 기록 관리 박스
+  인증 : 모든 사용자 사용가능
+  기능 : 
+    단어 표시 ,
+    단어 삭제 
+*/
+export default function HistoryWordBox({ list, handleDelete }) {
   return (
     <Box sx={{ p: 2, maxWidth: 400, margin: "auto" }}>
       <List>
         {list.map((item) => (
           <ListItem key={item.target} divider>
+
             <Button onClick={() => handleDelete(item.target)}>x</Button>
+
             <ListItemText
               primary={item.target}
               secondary={item.transed}
-              sx={{
-                "& .MuiListItemText-primary": { fontWeight: "bold" },
-                "& .MuiListItemText-secondary": { color: "gray" },
-              }}
+              sx={{ "& .MuiListItemText-primary": { fontWeight: "bold" }, "& .MuiListItemText-secondary": { color: "gray" } }}
             />
+            
           </ListItem>
         ))}
       </List>
     </Box>
   );
 }
-
-export default memo(HistoryWordBox);

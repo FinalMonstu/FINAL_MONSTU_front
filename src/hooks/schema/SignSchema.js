@@ -1,5 +1,9 @@
 import * as Yup from "yup";
 
+/* 
+  역할 : Formik에서 사용할 조건문 정의
+  비고: 라이브러리 Yup 사용
+*/
 
 const requiredMsg = "필수 항목입니다"
 

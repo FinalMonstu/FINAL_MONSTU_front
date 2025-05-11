@@ -3,7 +3,11 @@ import { Box, TextField } from "@mui/material";
 import DateOptionSelector from "./DateOptionSelector";
 import { useEffect, useState } from "react";
 
-export default function DateSelector({filters,setter}){
+/* 
+  역할 : 날짜 정보 세트 입력창 (날짜 종류 & 시작일 & 종료일)
+  기능 : 날짜 종류 & 시작일 & 종료일 정보 초기화
+*/
+export default function DateSelector({setter}){
     const [tempDateFilters, setTempDateFilters] = useState({
         dateOption: "",
         dateStart: "",

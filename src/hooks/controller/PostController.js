@@ -1,6 +1,9 @@
 import { connectSpring } from "../preAxios";
 import { responseStatus, errorStatus } from "../handleStatus"
 
+/* 
+  역할 : 서버 PostController와 소통
+*/
 const postController = (url,type='post',data=null) => {
     const baseUrl = '/api/post';
     if(type==='get') return connectSpring.get(baseUrl+url,data);
@@ -23,7 +26,7 @@ export const savePost = async (post) => {
 // 유저가 작성한 게시물 목록 반환 API
 export const getUserPosts = async (pageable) => {
     try {
-        const response = await postController(`/posts/me?page=${pageable.page}&size=${pageable.size}&sort=${encodeURIComponent(pageable.sort)}`, 'get');
+        const response = await postController(`/mine/all?page=${pageable.page}&size=${pageable.size}&sort=${encodeURIComponent(pageable.sort)}`, 'get');
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

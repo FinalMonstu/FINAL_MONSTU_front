@@ -1,274 +1,221 @@
-import React, { useCallback, useEffect, useState } from "react";
-import ContentBox from "../components/box/ContentBox";
-import HistoryWordBox from "../components/box/HistoryWordBox";
-import HistorySenBox from "../components/box/HistorySenBox";
-import { Box, Button, Typography } from "@mui/material";
-import LanguageSelector from "../components/selecter/LanguageSelector";
-import { hasWhitespace } from "../hooks/regexValid";
-import { trans } from "../hooks/controller/AiController";
-import TransPopover from "../components/popup/TransPopover";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Box, IconButton, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import PostOption from "../components/modal/PostOption";
 import SettingsIcon from '@mui/icons-material/Settings';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
-import PostInputModal from "../components/modal/PostInputModal";
-import MultiSnackBar from "../components/popup/MultiSnackBar";
-import { getPostById, savePost } from "../hooks/controller/PostController";
-import { useAuth } from "../components/authenticate/AuthContext";
-import { useParams } from "react-router-dom";
 
-function PostPage() {
+import { useAuth } from '../components/authenticate/AuthContext';
+import { useSnack } from '../components/popup/MultiSnackBar';
+import ContentBox from '../components/box/ContentBox';
+import HistoryWordBox from '../components/box/HistoryWordBox';
+import HistorySenBox from '../components/box/HistorySenBox';
+import LanguageSelector from '../components/selecter/LanguageSelector';
+import TransPopover from '../components/popup/TransPopover';
+import PostOption from '../components/modal/PostOption';
+import PostInputModal from '../components/modal/PostInputModal';
+
+import { getPostById, savePost } from '../hooks/controller/PostController';
+import { trans } from '../hooks/controller/AiController';
+import { hasWhitespace } from '../hooks/regexValid';
+import { mainPath } from '../hooks/urlManager';
+
+/* 역할 : 사용자가 텍스트를 하이라이팅 할때마다 번역된 결과를 화면에 표시 */
+export default function PostPage() {
   const { userInfo } = useAuth();
   const { id } = useParams();
-  const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
-  const [histWord,setHistWord] = useState([]);
-  const [histSentence,setHistSentence] = useState([]);
-  const [inputModal,setInputModal] = useState({ isModalOpen : false })  //PostInput Modal 속성
-  const [snackBar,setSnackBar] = useState({
-    msg : "",
-    option : "",
-  })
-
-  //Option Modal 속성
-  const [option,setOption] = useState({
-    viewWord : true,
-    viewSentence : true,
-  })
+  const navigate = useNavigate();
+  const showSnack = useSnack();
 
   const [post, setPost] = useState({
-    id : null,
-    title: "",   
-    content: "",
-    createdAt : null,
-    modifiedAt : null,
-    status : null,
-    isPublic : false,
-    authorEmail : userInfo?.email,
-    nickName : null,
-    tags : null,  //List<TagDTO>
+    id: Number(id),
+    title: '',
+    content: '',
+    createdAt: '',
+    modifiedAt: '',
+    status: '',
+    isPublic: false,
+    authorEmail: userInfo?.email || '',
+    nickName: '',
+    tags : [],  //List<TagDTO>
   });
 
-  // const [postByAi, setPostByAi] = useState({
-  //   title: "René Descartes",   
-  //   content: "It is not enough to have a good mind\nthe main thing is to use it well.",
-  // });
+  const [histWord,setHistWord] = useState([]);
+  const [histSentence,setHistSentence] = useState([]);
 
   const [translation, setTranslation] = useState({
-    id : "",  //단어 ID
-    memberId : "",  // 회원 ID
-    postId : "",  //게시물 ID
-    target: "",    // 번역할 단어 또는 문장
-    transed: "", // 번역된 단어 또는 문장
-    oriLang: "",      // 원본 언어
-    transLang: "Korean",    // 번역된 언어
-    genre : "", //WORD,SENTENCE
+    id : '',                         //단어 ID
+    memberId : userInfo?.id || '',   // 회원 ID
+    postId : id || '',               //게시물 ID
+    target: '',                      // 번역할 단어 또는 문장
+    transed: '',                     // 번역된 단어 또는 문장
+    oriLang: '',                     // 원본 언어
+    transLang: 'Korean',             // 번역된 언어
+    genre : '',                      //WORD,SENTENCE
   }); 
-  
 
-  // 상태 업데이트 헬퍼 함수들
-  const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
+  const [anchorEl, setAnchorEl] = useState(null);  // Popover의 위치를 저장할 상태
+  const [options,setOptions] = useState({ viewWord : true, viewSentence : true }) //Option Modal 속성
+  const [modal,setModal] = useState({ inputModal : false, optionsModal : false })  //PostInput Modal 속성
+
+
   const updatePost = useCallback((field, value) =>setPost((prev) => ({...prev, [field]: value, })), [] );
-  const updateOption = useCallback( (updater) => setOption((prev) => typeof updater === "function" ? updater(prev) : { ...prev, ...updater } ), [] );
-  const updateSnackBar = useCallback( (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value, })), [] );
+  const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
+  
+  // const updateOption = useCallback( (updater) => setOption((prev) => typeof updater === "function" ? updater(prev) : { ...prev, ...updater } ), [] );
+  const toggleOption = useCallback(field => { setOptions(prev => ({ ...prev, [field]: !prev[field] })); }, []);
+  const toggleModal = useCallback((field) => { setModal((prev) => ({ ...prev, [field]: !prev[field] })); }, []);
 
-  const deleteWord = useCallback( (target) => setHistWord((prev) => prev.filter((item) => item.target !== target)), [] );
-  const deleteSent = useCallback( (target) => setHistSentence((prev) => prev.filter((item) => item.target !== target)),  [] );
+  const deleteWord = useCallback( target => setHistWord(prev => prev.filter(item => item.target !== target)), [] );
+  const deleteSentence = useCallback( target => setHistSentence(prev => prev.filter(item => item.target !== target)), [] );
 
-  // History에 이미 값이 있으면 이미 추가된 요소의 transed를 반환환
-  const searchHistory = useCallback((translation) => {
-    const history = (translation?.genre === "SENTENCE") ? histSentence : histWord;
-    return history.find(e => e.target === translation.target)?.transed || null;
-  }, [translation.target,histSentence,histWord]);
+
+  // 게시물 ID를 이용하여 게시물 데이터를 받아오는 API
+  const fetchPost = useCallback( async ( ) => {
+      const {success, message, data} = await getPostById( id );
+      if (success) setPost(data);
+      else {
+        showSnack('error', message);
+        navigate(mainPath);
+      }
+  },[id]);
+
+  useEffect(()=>{
+    if(id > -1) fetchPost();
+  },[id])
+
 
   //  Text 번역 API
-  const fetchTrans = async () => {
-    const cachedTrans = searchHistory(translation);  //translation가 이미 History에 저장된 요소인지 확인
-    if (cachedTrans) { updateTranslation("transed", cachedTrans); return; } 
-    const result = await trans(translation);  // 번역 API
-    if (!result?.success || translation.target !== result?.data.target) { //번역 실패 시
-      updateSnackBar("option","error"); 
-      updateSnackBar("msg",result.message); 
-      return;} 
-    updateTranslation("transed", result.data.transed);  //translation.transed 초기화
-  };
+  const fetchTrans = useCallback(async () => {
+    const historyList = translation.genre === 'WORD' ? histWord : histSentence;
+    const cached = historyList.find(item => item.target === translation.target);
+    if (cached) {
+      updateTranslation('transed', cached.transed);
+      return;
+    }
+    const { success, message, data } = await trans(translation);
+    if (!success || translation.target !== data.target) {
+      showSnack('error', message);
+    } else {
+      updateTranslation('transed', data.transed);
+    }
+  }, [translation, histWord, histSentence, updateTranslation]);
 
-  // 게시물 데이터 DB에 저장 API
-  const savePostAPI = useCallback(
-    async ( updatedPost ) => {
-      const result = await savePost( updatedPost );
-      if (result?.success) {
-        updateSnackBar("option","info"); 
-        updatePost("id",result?.data.id);
-      }else{
-        if(result.status==403) result.message = "로그인이 필요합니다";
-        updateSnackBar("option","error"); 
-      }
-      updateSnackBar("msg",result.message); 
-    },[]);
 
-    // 게시물 ID를 이용하여 게시물 데이터를 받아오는 API
-    const fetchPostById = useCallback(
-      async ( ) => {
-        const result = await getPostById( id );
-        if (result?.success) {
-          setPost(result.data);
-        }else{
-          updateSnackBar("option","error"); 
-          updateSnackBar("msg",result.message); 
-        }
-    },[id]);
-  
   // 사용자가 텍스트를 드래그하면 Popover를 띄움
   const handleSelection = useCallback(() => {
-      const selection = window.getSelection();
-      if (!selection?.rangeCount) return;
-      const rect = selection.getRangeAt(0).getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) return;
-      setAnchorEl({ getBoundingClientRect: () => rect });
+    const sel = window.getSelection();
+    if (sel?.rangeCount) {
+      const rect = sel.getRangeAt(0).getBoundingClientRect();
+      if (rect.width && rect.height) setAnchorEl({ getBoundingClientRect: () => rect });
+    }
   }, []);
 
-  // WORD,SENTENCE 분별
-  const disGenre = useCallback((text) => { return !hasWhitespace(text.trim()) ? "WORD" : "SENTENCE";  },[])
+
+  // type 초기화 (예시: "WORD" 또는 "SENTENCE") , 번역
+  useEffect(() => {
+    const { target } = translation;
+    if (!target) return ;
+
+    // WORD,SENTENCE 분별
+    const genre = hasWhitespace(target.trim()) ? 'SENTENCE' : 'WORD';
+    if (translation.genre !== genre) updateTranslation('genre', genre);
+    fetchTrans(); //번역 API
+    handleSelection();  //번역된 텍스트를 화면에 표시
+  }, [translation.target]);
+
+
+  // History 리스트에 추가
+  useEffect(() => {
+    const { transed, genre, target } = translation;
+    if (!transed) return;
+    const listSetter = (genre === 'WORD') ? setHistWord : setHistSentence;
+    const list = (genre === 'WORD') ? histWord : histSentence;
+    if (!list.some(item => item.target === target)) listSetter(prev => [...prev, translation]);
+  }, [translation.transed, histWord, histSentence]);
+
+
+  // 게시물 데이터 DB에 저장 API
+  const savePostAPI = useCallback( async (dto) => {
+    let payLoad = {...dto, id : (dto.id === -1) ? null : dto.id }
+    const {success, message, status, data} = await savePost( payLoad );
+    if(status==403){
+      showSnack( "error", "로그인이 필요합니다");
+      return;
+    };
+    if (success) setPost(data)
+  },[post,updatePost]);
 
 
   // Log
   useEffect(()=>{
-    // console.log("post Object:", JSON.stringify(post, null, 2));
+    console.log("post Object:", JSON.stringify(post, null, 2));
     // console.log("Translation Object:", JSON.stringify(translation, null, 2));
-    // console.log("Option Object:", JSON.stringify(option, null, 2));
+    // console.log("options Object:", JSON.stringify(options, null, 2));
     // console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
     // console.log("histWord :", JSON.stringify(histWord, null, 2));
     // console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
-    // console.log("inputModal Object:", JSON.stringify(inputModal, null, 2));
-  },[translation,option,histWord,histSentence,post,inputModal])
+    // console.log("modal Object:", JSON.stringify(modal, null, 2));
+    // console.log("userInfo Object:", JSON.stringify(userInfo, null, 2));
+  },[translation,options,histWord,histSentence,post,modal,userInfo])
 
-  useEffect(()=>{
-    if(id!=null) fetchPostById()
-  },[id])
-
-  // type 초기화 (예시: "WORD" 또는 "SENTENCE") & 번역 APi이용
-  useEffect(() => {
-    if (!translation.target) return ;
-    const type = disGenre(translation.target);  // 단어,문장 분별
-    if (translation.genre !== type) updateTranslation("genre", type); 
-    fetchTrans(); //번역 API
-    handleSelection();  //번역된 텍스트를 화면에 표시
-  }, [translation.target]); 
-
-  // History 리스트에 추가
-  useEffect(() => {
-    if (!translation.transed || searchHistory(translation)!=null) return;
-    (translation.genre === "WORD" ? setHistWord : setHistSentence)(prev => [...prev, translation]);
-  }, [translation.transed]);
 
   return (
-    <Box sx={{
-      display: "flex",
-      flexDirection: "column",
-    }}>
-      {/* Title_Section & Menu_Option_Bar */}
-      <Box sx={{
-        display: "flex",
-        flexDirection: "row",
-      }}>
-          <Typography variant="h3" sx={{
-            boxSizing: "border-box",
-            width: "75vw",
-            minHeight: "5vh",
-            paddingLeft: "40px",
-            overflowY: "auto",
-            fontWeight: "bold"
-          }}>
-            {post.title}
-          </Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      {/* Header */}
+      <Box sx={{ display: 'flex', alignItems: 'center', px: 4, py: 2 }}>
 
-          {/* 게시물 수정 버튼, 문장 생성 API 버튼 */}
-          <Box sx={{ display: "flex", alignItems: "center", gap: 0 }}>
-            <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
-              <ControlPointIcon sx={{ fontSize: 33 }} />
-            </Button>
-            {/* 다음 챕터로 이동 버튼 */}
-            {/* <Button sx={{ color: "black", minWidth: "auto" }} onClick={() => setInputModal(prev => ({ ...prev, isModalOpen: true }))}>
-              <TripOriginSharpIcon sx={{ fontSize: 33 }} />
-            </Button> */}
-          </Box>
-          
-          <Box sx={{
-            boxSizing: "border-box",
-            width: "25vw",
-            height: "5vh",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "center",  // 가로 방향 가운데 정렬
-            alignItems: "center",       // 세로 방향 가운데 정렬
-          }}>
-            <LanguageSelector translation={translation} updateTranslation={updateTranslation} type="ori"/>
-            <ArrowForwardIcon sx={{padding:0.8,fontSize:"19px",color:"black",}}/>  {/* 화살표 아이콘 */}
-            <LanguageSelector translation={translation} updateTranslation={updateTranslation} type="trans"/>
-            <Button sx={{}} onClick={()=>updateOption(prev => ({ ...prev, isModalOpen : true}))}><SettingsIcon sx={{color:"black"}}/></Button>
-          </Box>
-      </Box>
+        <Typography variant="h3" sx={{ flex: 3, fontWeight: 'bold' }}>
+          {post.title}
+        </Typography>
 
-      {/* Content_Section & History_Words */}
-      <Box sx={{
-        display: "flex",
-        flexDirection: "row",
-      }}>
-        <Box sx={{
-          boxSizing: "border-box",
-          width: option.viewWord ? "75vw" : "100vw",
-          height: option.viewSentence ? "60vh" : "85vh",
-          overflowY: "auto"
-        }}>
-          <ContentBox translation={translation} updateTranslation={updateTranslation} post={post}/>
+        <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
+
+          {/* 자신이 작성한 게시물, 게로운 게시물 작성 상태 일때때 */}
+          { (userInfo?.email === post.authorEmail || Number(id) === -1) &&(
+            <IconButton onClick={() => toggleModal('inputModal')}>
+              <ControlPointIcon fontSize="large" />
+            </IconButton>
+          )}
+
+          <IconButton onClick={() => toggleModal('optionsModal')}>
+            <SettingsIcon />
+          </IconButton>
+
+          <LanguageSelector
+            translation={translation}
+            updateTranslation={updateTranslation}
+            type="ori"
+          />
+          <ArrowForwardIcon />
+
+          <LanguageSelector
+            translation={translation}
+            updateTranslation={updateTranslation}
+            type="trans"
+          />
+
         </Box>
-        {option.viewWord &&
-          <Box sx={{
-            boxSizing: "border-box",
-            width: "25vw",
-            height: option.viewSentence ? "60vh" : "85vh",
-            overflowY: "auto"
-          }}>
-            <HistoryWordBox list={histWord} handleDelete={deleteWord}/>
-          </Box>
-        }
       </Box>
 
-      {/* History_Sentences_Section & empty_Box */}
-        { option.viewSentence &&
-          <Box sx={{
-            display: "flex",
-            flexDirection: "row",
-          }}>
-            <Box sx={{
-              boxSizing: "border-box",
-              width: "75vw",
-              height: "25vh",
-              overflowY: "auto"
-            }}>
-              <HistorySenBox list={histSentence} handleDelete={deleteSent}/>
-            </Box>
-            <Box sx={{
-              boxSizing: "border-box",
-              width: "25vw",
-              height: "25vh",
-              overflowY: "auto"
-            }}>
-              {/* Empty_Box */}
-            </Box>
-          </Box>
-        }
+      {/* Content */}
+      <Box sx={{ display: 'flex', flex: 1 }}>
+        <Box sx={{ flex: options.viewWord ? 3 : 1, overflowY: 'auto', p: 4 }}>
+          <ContentBox translation={translation} updateTranslation={updateTranslation} post={post} />
+        </Box>
+        {options.viewWord && <HistoryWordBox list={histWord} handleDelete={deleteWord} />}
+      </Box>
 
-        {/* Popover 컴포넌트 (드래그한 텍스트에 대한 번역 표시) */}
-        <TransPopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} translation={translation} />
-        {/* Option Modal */}
-        <PostOption option={option} setOption={updateOption}/>
-        {/* 게시물 추가 Modal */}
-        <PostInputModal option={inputModal} setOption={setInputModal} post={post} setPost={setPost} savePost={savePostAPI}/>
-        {/* PopupBox */}
-        <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar}/>
+      {/* Sentence History */}
+      {options.viewSentence && ( <HistorySenBox list={histSentence} handleDelete={deleteSentence} /> )}
+
+      {/* Popovers & Modals */}
+      <TransPopover anchorEl={anchorEl} setAnchorEl={setAnchorEl} translation={translation} />
+
+      <PostOption isOpen={modal.optionsModal} toggleModal={toggleModal} toggleOption={toggleOption} />
+
+      <PostInputModal isOpen={modal.inputModal} toggleOption={toggleModal} post={post} setPost={setPost} savePost={savePostAPI}/>
+      
     </Box>
   );
 }
-
-export default PostPage;

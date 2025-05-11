@@ -1,4 +1,8 @@
 
+/* 
+  역할 : 프론트 URL 지정
+*/
+
 const myBaseURL = "/my";
 const adminURL = "/admin";
 const authBaseURL = "/auth";
@@ -26,7 +30,8 @@ export const authPath = {
   signout:   `${authBaseURL}/signout`,
 };
 
+// id가 -1 -> 새로운 게시물 작성
 export const postPath = {
   post: `${postBaseURL}/:id`,
-  to: (id = 1) => `${postBaseURL}/${id}`,
+  to: (id = null) => `${postBaseURL}/${id}`,
 };

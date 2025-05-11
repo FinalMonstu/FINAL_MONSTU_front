@@ -1,34 +1,26 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Box,
-  Checkbox,
-  TextField,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-} from "@mui/material";
+import { Box, TextField, Button } from "@mui/material";
 import CountrySelector from "../../selecter/CountrySelector";
 import MemberRoleSelector from "../../selecter/MemberRoleSelector";
 import MemberStatusSelector from "../../selecter/MemberStatusSelector";
 import DateSelector from "../../selecter/DateSelector";
 import { deleteMembers, findMember } from "../../../hooks/controller/MemberController";
-import MultiSnackBar from "../../popup/MultiSnackBar";
+import { useSnack } from "../../popup/MultiSnackBar";
 import AddMemberModal from "../../modal/admin/AddMemberModal";
 import DetailMember from "../../modal/admin/DetailMember";
+import SizeSelector from "../../selecter/SizeSelector";
+import MemberTable from "../../table/MemberTable";
 
-const pageSizeOptions = [10, 20, 50];
-
+/* 
+  역할 : 어드민 페이지 -> 회원관리 박스
+  인증 : ADMIN만 사용가능
+  기능 : 
+    회원 정보 필터링 검색,
+    회원 추가, 회원 삭제, 회원정보 상세보기
+*/
 export default function MembersBox() {
-  const [snackBar,setSnackBar] = useState({ msg : "", option : "", })
+  const showSnack = useSnack();
+
   const [filters, setFilters] = useState({
     email: "",
     nickname: "",
@@ -50,33 +42,33 @@ export default function MembersBox() {
     size: 20,
   })
 
+  // 모달 여닫이 옵션션
   const [modal,setModal] = useState({
     add : false,
   })
 
-  const [data,setData] = useState([])
-  const [selected, setSelected] = useState([]);
-  const [detail,setDetail] = useState(null);
+  const [data,setData] = useState([])   // Members Information
+  const [selected, setSelected] = useState([]); // 체크 박스 선택된 모든 요소 저장
+  const [detail,setDetail] = useState(null);  // 상세보기 게시물 ID 저장
 
+
+  // useState 속성 헨들러러
   const handleFilterChange = (key) => (e) => { setFilters((prev) => ({ ...prev, [key]: e.target.value }));};
-  const handlePageOptionChange = (key) => (e) => { setPageOption((prev) => ({ ...prev, [key]: e.target.value }));};
+  const toggleModal = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
+  const updatePageOptionChange = (field, value) => { setPageOption(prev => ({ ...prev, [field]: value })); };
   const updateFilters = useCallback( (field, value) => { setFilters((prev) => ({ ...prev, [field]: value })); }, [] );
-  const updateSnackBar = useCallback( (field, value) => setSnackBar((prev) => ({ ...prev, [field]: value, })), [] );
-  const handleModal = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
-  
 
-  const findMemberAPI = useCallback(
+
+  // 필터링 & 페이징 이용, 여러 유저 검색
+  const getFilterMemberAPI = useCallback(
     async ( {filter,pageable} ) => {
       const result = await findMember( {filter,pageable} );
-      if (result?.success) {
-        setData(result?.data.content);
-      }else{
-        updateSnackBar("option","error");
-        updateSnackBar("msg",result.message);
-      }
+      result?.success
+        ? setData(result?.data.content)
+        : showSnack("error", result.message);
   },[]);
 
-
+  // Reset 버튼, 필터링 조건 & 선택된 요소 초기화
   const handleResetBtn = () => {
     setFilters({
       countryCode: null,
@@ -115,21 +107,25 @@ export default function MembersBox() {
       number: 0,
       size: 20,
     }
-    findMemberAPI({filter,pageable});
+    getFilterMemberAPI({filter,pageable});
   };
 
   const handleDelete = useCallback(
     async ( ) => {
       const result = await deleteMembers( selected );
-      if (result?.success) {
-        updateSnackBar("option","info");
-        updateSnackBar("msg",result.message);
-      }else{
-        updateSnackBar("option","error");
-        updateSnackBar("msg",result.message);
-      }
+      result?.success 
+        ? showSnack("info", result.message)
+        : showSnack("error", result.message);
   },[selected]);
 
+  // 전체 체크박스스 선택했을 경우
+  const handleSelectAll = useCallback(() => {
+    selected.length === data.length
+      ? setSelected([])
+      : setSelected(data.map(r => r.memberId))
+  }, [selected, data]);
+
+  // 체크박스 하나만 선택했을 경우 
   const handleSelectOne = (id) => {
     setSelected(prev => 
       prev.includes(id)
@@ -144,24 +140,28 @@ export default function MembersBox() {
     // console.log("Origin dateFilters Object:", JSON.stringify(dateFilters, null, 2));
     // console.log("pageOption Object:", JSON.stringify(pageOption, null, 2));
     // console.log("modal Object:", JSON.stringify(modal, null, 2));
+    // console.log("data Object:", JSON.stringify(data, null, 2));
     // console.log("selected Object:", JSON.stringify(selected, null, 2));
-    console.log("detail Object:", JSON.stringify(detail, null, 2));
-  },[filters,dateFilters,pageOption,modal,selected,detail])
+    // console.log("detail Object:", JSON.stringify(detail, null, 2));
+  },[filters,dateFilters,pageOption,modal,selected,detail,data])
 
   return (
     <Box>
       {/* 필터 바 */}
       <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} mb={2}>
+
         <CountrySelector
           value={filters.countryCode}
           onChange={newValue => updateFilters("countryCode", newValue)}
         />
+
         <TextField
           size="small"
           label="Email"
           value={filters.email}
           onChange={handleFilterChange("email")}
         />
+
         <TextField
           size="small"
           label="Nickname"
@@ -180,26 +180,15 @@ export default function MembersBox() {
         />
 
         <DateSelector
-          filters={dateFilters}
           setter={setDateFilters}
         />
 
-        <FormControl size="small">
-          <InputLabel id="size-label">Size</InputLabel>
-          <Select
-            label="size-label"
-            value={pageOption.size}
-            onChange={handlePageOptionChange("size")}
-          >
-            {pageSizeOptions.map((v) => (
-              <MenuItem key={v} value={v}>
-                {v}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <SizeSelector
+          value={pageOption.size}
+          onChange={newValue => updatePageOptionChange("size", newValue)}
+        />
 
-        <Button variant="contained" onClick={()=>handleModal("add")}>
+        <Button variant="contained" onClick={()=>toggleModal("add")}>
           Add Member
         </Button>
         <Button variant="contained" color="error" onClick={handleDelete}>
@@ -213,62 +202,19 @@ export default function MembersBox() {
         </Button>
       </Box>
 
-      {/* 테이블 */}
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell padding="checkbox">
-                <Checkbox
-                  indeterminate={
-                    selected.length > 0 && selected.length < data.length
-                  }
-                  checked={data.length > 0 && selected.length === data.length}
-                  onChange={() =>
-                    setSelected(
-                      selected.length === data.length ? [] : data.map((r) => r.memberId)
-                    )
-                  }
-                />
-              </TableCell>
-              <TableCell>countryCode</TableCell>
-              <TableCell>email</TableCell>
-              <TableCell>nickname</TableCell>
-              <TableCell>role</TableCell>
-              <TableCell>status</TableCell>
-              <TableCell>created</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {data.map((row) => (
-              <TableRow key={row.memberId} hover
-                onClick={ ()=>{setDetail(row.memberId);} }
-              >
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selected.includes(row.memberId)}
-                    onChange={()=>handleSelectOne(row.memberId)}
-                  />
-                </TableCell>
-                <TableCell>{row.countryCode}</TableCell>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>{row.nickName}</TableCell>
-                <TableCell>{row.role}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{row.createdAt}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <MemberTable
+        data={data}
+        selected={selected}
+        onSelectAll={handleSelectAll}
+        onSelectOne={handleSelectOne}
+        onRowClick={setDetail}
+      />
 
       {/* Add Member Modal */}
-      <AddMemberModal modalOpen={modal.add} setModal={handleModal}/>
+      <AddMemberModal modalOpen={modal.add} toggleModal={toggleModal}/>
 
       {/* Member Detail Information Modal*/}
       <DetailMember memberId={detail} setter={setDetail}/>
-
-      <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar}/>
 
     </Box>
   );

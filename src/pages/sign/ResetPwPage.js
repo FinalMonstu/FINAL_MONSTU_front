@@ -1,47 +1,38 @@
-import React, { useCallback, useState } from "react";
-import {
-  Box,
-  Typography,
-  Divider,
-  TextField,
-  Button,
-  Stack
-} from "@mui/material";
+import React, { useCallback } from "react";
+import { Box, Typography, Divider, TextField, Button, Stack } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
+import { Formik, Form, Field } from "formik";
 import { confirmPwSchema } from "../../hooks/schema/SignSchema";
 import { resetPwAPI } from "../../hooks/controller/AuthController";
-import MultiSnackBar from "../../components/popup/MultiSnackBar";
+import { useSnack } from "../../components/popup/MultiSnackBar";
+import { authPath } from "../../hooks/urlManager";
 
-function ResetPwPage() {
-    const location = useLocation();
+/* 
+  역할 : 비밀번호 재설정 페이지
+  인증 : 모든 사용자 사용가능
+  기능 : 유저 비밀번호 정보 수정
+*/
+export default function ResetPwPage() {
+    const { state } = useLocation();
     const navigate = useNavigate();
-    const [snackBar, setSnackBar] = useState({ msg: "", option: "error" });
-    const emailFromState = location.state?.email || "";
+    const showSnack = useSnack();
 
-    const initialValues = {
-        email: emailFromState,
-        password: "",
-        confirmPassword: ""
-    };
-
-    const updateSnackBar = useCallback((field, value) => { setSnackBar((prev) => ({ ...prev, [field]: value })); }, []);
+    const email = state?.email ?? '';
 
 
+    //비밀번호 번경
     const resetPw = useCallback(async (dto) => {
         const result = await resetPwAPI(dto);
         const message = result.message;
         if(result.success){
             alert(message); 
-            navigate("/login");
+            navigate(authPath.login, { replace: true });
         }else{
-            updateSnackBar("option", "error");
-            updateSnackBar("msg", message);
+            showSnack("error", result.message);
         }
-
     },[])
+
 
     const onSubmit = (values, { setSubmitting }) => {
         resetPw({
@@ -53,116 +44,89 @@ function ResetPwPage() {
 
     return (
         <Box
-        sx={{
-            height: "100vh",
-            bgcolor: "#fff",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-        }}
-        >
-        <Box
             sx={{
-            width: 500,
-            p: 4,
+                height: '100vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                bgcolor: '#fff',
             }}
         >
-            <Box sx={{ textAlign: "center", mb: 2 }}>
-            <Typography variant="h4" fontWeight="bold" gutterBottom>
-                MonStu
-            </Typography>
-            <Divider sx={{ mb: 3 }} />
+            <Box sx={{ width: 500, p: 4 }}>
+                <Typography variant="h4" fontWeight="bold" textAlign="center">
+                    MonStu
+                </Typography>
+
+                <Divider sx={{ my: 3 }} />
+
+                <Formik
+                    initialValues={{ email, password: '', confirmPassword: '' }}
+                    validationSchema={confirmPwSchema}
+                    onSubmit={onSubmit}
+                >
+                    {({ values, errors, touched, isSubmitting }) => (
+                        <Form>
+                            <Stack spacing={3}>
+                                <Field
+                                    name="email"
+                                    as={TextField}
+                                    label="Email"
+                                    value={values.email}
+                                    disabled
+                                    size="small"
+                                    fullWidth
+                                />
+
+                                <Field
+                                    name="password"
+                                    as={TextField}
+                                    label="New Password"
+                                    type="password"
+                                    placeholder="Enter new password"
+                                    error={touched.password && Boolean(errors.password)}
+                                    helperText={touched.password && errors.password}
+                                    size="small"
+                                    fullWidth
+                                />
+
+                                <Box>
+                                    <Typography variant="body1" fontWeight="bold" mb={1}>
+                                        Confirm Password
+                                    </Typography>
+                                    <Stack direction="row" spacing={1} alignItems="center">
+                                        <Field
+                                            name="confirmPassword"
+                                            as={TextField}
+                                            placeholder="Confirm new password"
+                                            type="password"
+                                            error={touched.confirmPassword && Boolean(errors.confirmPassword)}
+                                            helperText={touched.confirmPassword && errors.confirmPassword}
+                                            size="small"
+                                            fullWidth
+                                        />
+                                        {values.password &&
+                                            values.confirmPassword &&
+                                                values.password === values.confirmPassword && (
+                                                    <CheckIcon color="success" />
+                                            )
+                                        }
+                                    </Stack>
+                                </Box>
+
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    disabled={isSubmitting}
+                                    sx={{ backgroundColor: 'black', '&:hover': { backgroundColor: '#333' } }}
+                                    fullWidth
+                                >
+                                    Change my Password
+                                </Button>
+                            </Stack>
+                        </Form>
+                    )}
+                </Formik>
             </Box>
-
-            <Formik
-            initialValues={initialValues}
-            validationSchema={confirmPwSchema}
-            onSubmit={onSubmit}
-            >
-            {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                isSubmitting,
-            }) => (
-                <Form>
-                <Stack spacing={2}>
-                    {/* Email (disabled) */}
-                    <Typography variant="body1" fontWeight="bold">
-                    Email
-                    </Typography>
-                    <TextField
-                    name="email"
-                    value={values.email}
-                    disabled
-                    size="small"
-                    />
-
-                    {/* New Password */}
-                    <Typography variant="body1" fontWeight="bold">
-                    New Password
-                    </Typography>
-                    <TextField
-                    name="password"
-                    placeholder="Enter new password"
-                    type="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    error={touched.password && Boolean(errors.password)}
-                    helperText={touched.password && errors.password}
-                    size="small"
-                    fullWidth
-                    />
-
-                    {/* Confirm Password with conditional check icon */}
-                    <Typography variant="body1" fontWeight="bold">
-                    Confirm Password
-                    </Typography>
-                    <Stack direction="row" spacing={1} alignItems="center">
-                    <TextField
-                        name="confirmPassword"
-                        placeholder="Confirm new password"
-                        type="password"
-                        value={values.confirmPassword}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        error={touched.confirmPassword && Boolean(errors.confirmPassword)}
-                        helperText={touched.confirmPassword && errors.confirmPassword}
-                        size="small"
-                        fullWidth
-                    />
-                    {values.password &&
-                        values.confirmPassword &&
-                        values.password === values.confirmPassword && (
-                        <CheckIcon color="success" />
-                        )}
-                    </Stack>
-
-                    {/* Change my Password 버튼 */}
-                    <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={isSubmitting}
-                    sx={{
-                        backgroundColor: "black",
-                        color: "white",
-                        "&:hover": { backgroundColor: "#333" },
-                    }}
-                    fullWidth
-                    >
-                    Change my Password
-                    </Button>
-                </Stack>
-                </Form>
-            )}
-            </Formik>
-        </Box>
-        <MultiSnackBar snackBar={snackBar} setSnackBar={updateSnackBar} />
         </Box>
     );
 }
-
-export default ResetPwPage;

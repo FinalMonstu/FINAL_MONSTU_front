@@ -1,19 +1,22 @@
-import { Box, Modal, Typography,Button, ButtonGroup  } from "@mui/material";
-import React from "react";
-import { btnSmallBlack } from "../../styles/commonStyle";
+import { Box, Modal, Button, ButtonGroup, IconButton  } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
-export default function PostOption({option,setOption}) {
+/* 
+  역할 : 게시물 페이지 -> 게시물에 페이지에 번역기록(단어,문장) 표시 여부 결정
+  인증 : 모든 이용자 사용가능
+  기능 : 
+    단어&문장 번역기록 보이기 / 안보이기 설정
+*/
+export default function PostOption({isOpen, toggleModal, toggleOption}) {
+
+    const handleClose = () => toggleModal('optionsModal');
+
     return(
         <Modal
-            open={option.isModalOpen}
-            onClose={() => setOption(prev => ({ ...prev, isModalOpen: false }))}
+            open={isOpen}
+            onClose={handleClose}
             disableEnforceFocus
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-            }}
+            sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
         >
             <Box sx={{
                 position: "relative",
@@ -28,22 +31,18 @@ export default function PostOption({option,setOption}) {
                 alignItems: "center",
                 rowGap: 2            
             }} >
-                <Button 
-                    sx={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
-                        minWidth: "auto",
-                        padding: "4px 8px",
-                        color: "black"
-                    }}
-                    onClick={()=> setOption(prev => ({...prev, isModalOpen : false}))}
-                ><CloseIcon/></Button>
+
+                <IconButton
+                    size="small"
+                    sx={{ position: 'absolute', top: 8, right: 8 }}
+                    onClick={handleClose}
+                >
+                    <CloseIcon fontSize="small" />
+                </IconButton>
+
                 <ButtonGroup variant="text" aria-label="Basic button group">
-                    <Button onClick={()=> setOption(prev => ({...prev, viewWord : false, viewSentence : false}))}>NONE</Button>
-                    <Button onClick={() => setOption(prev => ({ ...prev, viewWord : !prev.viewWord }))}> WORD </Button>
-                    <Button onClick={() => setOption(prev => ({ ...prev, viewSentence : !prev.viewSentence }))}> SENTENCE </Button>
-                    <Button onClick={()=> setOption(prev => ({...prev, viewWord : true, viewSentence : true}))}>All</Button>
+                    <Button onClick={() => toggleOption("viewWord")}> WORD </Button>
+                    <Button onClick={() => toggleOption("viewSentence")}> SENTENCE </Button>
                 </ButtonGroup>
             </Box>
         </Modal>
