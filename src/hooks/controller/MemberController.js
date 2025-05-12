@@ -13,11 +13,15 @@ const memberController = (url,type='post',data=null) => {
 }
 
 // 필터링된 멤버 데이터 반환 API
-export const findMember = async ({filter,pageable}) => {
+export const filterMemberAPI = async ({filter,pageable}) => {
     console.log("filter:", JSON.stringify(filter, null, 2));
     console.log("pageable:", JSON.stringify(pageable, null, 2));
     try {
-        const response = await memberController(`/filter`, 'post',filter,{params:{pageable}});
+        const response = await memberController(
+            `/filter?page=${pageable.page}&size=${pageable.size}`, 
+            'post',
+            filter
+        )
         console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
@@ -39,7 +43,7 @@ export const getMemberAPI = async (id) => {
 };
 
 
-// Find Member By ID - API
+// Update Member - API
 export const updateMemberAPI = async (dto) => {
     console.log("dto:", JSON.stringify(dto, null, 2));
     try {
@@ -57,6 +61,17 @@ export const deleteMembers = async (list) => {
     try {
         const response = await memberController(`/delete`, 'post', list);
         return responseStatus(response);
+    }catch(error){
+        return errorStatus(error);
+    }     
+};
+
+
+// Get My Infomation - API
+export const myInfo = async () => {
+    try {
+        const response = await memberController(`/me`, 'get');
+        return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
     }     

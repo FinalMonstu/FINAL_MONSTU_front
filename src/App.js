@@ -15,7 +15,6 @@ import FindIdPage from './pages/sign/FindIdPage';
 import SignOutPage from './pages/sign/SignOutPage';
 import MyPage from './pages/myPage/MyPage';
 import { adminPath, authPath, mainPath, myPath, postPath, } from './hooks/urlManager';
-import MyPosts from './pages/myPage/MyPosts';
 import AdminPage from './pages/admin/AdminPage';
 import AdminRoute from './components/authenticate/AdminRoute';
 
@@ -39,7 +38,6 @@ function App() {
     { path: authPath.signout, element: <SignOutPage /> }, /* 회원 탈퇴 페이지 */
 
     { path: myPath.my, element: <MyPage /> }, /* 마이 페이지 페이지 */
-    { path: myPath.posts, element: <MyPosts /> }, /* 마이 페이지 페이지 */
   ];
 
   const adminRoutes = [

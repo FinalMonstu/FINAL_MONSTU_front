@@ -1,7 +1,7 @@
 import React from "react";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
-const pageSizeOptions = [10, 20, 50];
+const pageSizeOptions = [3,10, 20, 50];
 
 export default function SizeSelector ({value,onChange}) {
     return(
@@ -10,7 +10,7 @@ export default function SizeSelector ({value,onChange}) {
           <Select
             label="size-label"
             value={value || 10}
-            onChange={e => onChange(e.target.value)}
+            onChange={e => onChange({ size: e.target.value })}
           >
             {pageSizeOptions.map((v) => (
               <MenuItem key={v} value={v}>

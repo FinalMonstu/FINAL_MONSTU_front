@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, Stack, TablePagination } from "@mui/material";
 import CountrySelector from "../../selecter/CountrySelector";
 import MemberRoleSelector from "../../selecter/MemberRoleSelector";
 import MemberStatusSelector from "../../selecter/MemberStatusSelector";
 import DateSelector from "../../selecter/DateSelector";
-import { deleteMembers, findMember } from "../../../hooks/controller/MemberController";
+import { deleteMembers, filterMemberAPI } from "../../../hooks/controller/MemberController";
 import { useSnack } from "../../popup/MultiSnackBar";
 import AddMemberModal from "../../modal/admin/AddMemberModal";
 import DetailMember from "../../modal/admin/DetailMember";
-import SizeSelector from "../../selecter/SizeSelector";
-import MemberTable from "../../table/MemberTable";
+import MemberTable from "../../table/admin/MemberTable";
 
 /* 
   역할 : 어드민 페이지 -> 회원관리 박스
@@ -38,11 +37,11 @@ export default function MembersBox() {
   const [pageOption, setPageOption] = useState({
     totalElements: 0,
     totalPages: 0,
-    number: 0,
+    page: 0,
     size: 20,
   })
 
-  // 모달 여닫이 옵션션
+  // 모달 여닫이 옵션
   const [modal,setModal] = useState({
     add : false,
   })
@@ -55,17 +54,33 @@ export default function MembersBox() {
   // useState 속성 헨들러러
   const handleFilterChange = (key) => (e) => { setFilters((prev) => ({ ...prev, [key]: e.target.value }));};
   const toggleModal = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
-  const updatePageOptionChange = (field, value) => { setPageOption(prev => ({ ...prev, [field]: value })); };
   const updateFilters = useCallback( (field, value) => { setFilters((prev) => ({ ...prev, [field]: value })); }, [] );
 
+  const handlePageChange = (event, newPage) => {
+      setPageOption(prev => ({ ...prev, page: newPage }));
+      handleSearchBtn({ page: newPage, size: pageOption.size });
+  };
+  const handleRowsPerPageChange = (event) => {
+      const newSize = parseInt(event.target.value, 10);
+      setPageOption(prev => ({ ...prev, size: newSize, page: 0 }));
+      handleSearchBtn({ page: 0, size: newSize });
+  };
 
   // 필터링 & 페이징 이용, 여러 유저 검색
   const getFilterMemberAPI = useCallback(
     async ( {filter,pageable} ) => {
-      const result = await findMember( {filter,pageable} );
-      result?.success
-        ? setData(result?.data.content)
-        : showSnack("error", result.message);
+      const {success, message, data } = await filterMemberAPI( {filter,pageable} );
+      if(success){
+        setData(data.content);
+        setPageOption(prev => ({ ...prev,
+          totalElements: data.totalElements,
+          totalPages: data.totalPages,
+          page: data.number,
+          size: data.size,
+        }));
+      }else{
+        showSnack("error", message);
+      }
   },[]);
 
   // Reset 버튼, 필터링 조건 & 선택된 요소 초기화
@@ -85,40 +100,38 @@ export default function MembersBox() {
     setPageOption({
       totalElements: 0,
       totalPages: 0,
-      number: 0,
+      page: 0,
       size: 20,
     })
     setSelected([]);
   };
 
-  const handleSearchBtn = () => {
-    const filter = {
-      email : filters?.email,
-      nickname : filters?.nickname,
-      countryCode : filters.countryCode ? filters.countryCode : null,
-      role : filters.role ? filters.role : null,
-      status : filters.status ? filters.status : null,
-
-      dateOption : dateFilters?.dateOption,
-      dateStart : dateFilters?.dateStart,
-      dateEnd : dateFilters?.dateEnd,
-    }
-    const pageable = {
-      number: 0,
-      size: 20,
-    }
-    getFilterMemberAPI({filter,pageable});
-  };
+  const handleSearchBtn = useCallback(
+    ({ page = pageOption.page, size = pageOption.size } = {}) => {
+      const filter = {
+        email:       filters.email,
+        nickname:    filters.nickname,
+        countryCode: filters.countryCode,
+        role:        filters.role,
+        status:      filters.status,
+        dateOption:  dateFilters.dateOption,
+        dateStart:   dateFilters.dateStart,
+        dateEnd:     dateFilters.dateEnd,
+      };
+      getFilterMemberAPI({ filter, pageable: { page, size } });
+    },
+    [filters, dateFilters, getFilterMemberAPI, pageOption.page, pageOption.size]
+  );
 
   const handleDelete = useCallback(
     async ( ) => {
-      const result = await deleteMembers( selected );
-      result?.success 
-        ? showSnack("info", result.message)
-        : showSnack("error", result.message);
+      const {success, message} = await deleteMembers( selected );
+      success 
+        ? showSnack("info", message)
+        : showSnack("error", message);
   },[selected]);
 
-  // 전체 체크박스스 선택했을 경우
+  // 전체 체크박스 선택했을 경우
   const handleSelectAll = useCallback(() => {
     selected.length === data.length
       ? setSelected([])
@@ -180,27 +193,37 @@ export default function MembersBox() {
         />
 
         <DateSelector
-          setter={setDateFilters}
+            dateOption={dateFilters.dateOption}
+            dateStart={dateFilters.dateStart}
+            dateEnd={dateFilters.dateEnd}
+            onChange={newValues => setDateFilters(prev => ({ ...prev, ...newValues }))}
         />
 
-        <SizeSelector
-          value={pageOption.size}
-          onChange={newValue => updatePageOptionChange("size", newValue)}
-        />
-
-        <Button variant="contained" onClick={()=>toggleModal("add")}>
-          Add Member
-        </Button>
-        <Button variant="contained" color="error" onClick={handleDelete}>
-          DELETE
-        </Button>
-        <Button variant="outlined" onClick={handleResetBtn}>
-          RESET
-        </Button>
-        <Button variant="contained" onClick={handleSearchBtn}>
-          Search
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button variant="contained" onClick={()=>toggleModal("add")}>
+            Add Member
+          </Button>
+          <Button variant="contained" color="error" onClick={handleDelete}>
+            DELETE
+          </Button>
+          <Button variant="outlined" onClick={handleResetBtn}>
+            RESET
+          </Button>
+          <Button variant="contained" onClick={handleSearchBtn}>
+            Search
+          </Button>
+        </Stack>
       </Box>
+
+      <TablePagination
+        component="div"
+        count={pageOption.totalElements}      // 전체 아이템 수
+        page={pageOption.page}                // 0-based 현재 페이지
+        onPageChange={handlePageChange}
+        rowsPerPage={pageOption.size}         // 한 페이지당 항목 수
+        onRowsPerPageChange={handleRowsPerPageChange}
+        rowsPerPageOptions={[5, 10, 20, 50]}   // 선택 가능한 옵션
+      />
 
       <MemberTable
         data={data}
@@ -215,6 +238,7 @@ export default function MembersBox() {
 
       {/* Member Detail Information Modal*/}
       <DetailMember memberId={detail} setter={setDetail}/>
+
 
     </Box>
   );

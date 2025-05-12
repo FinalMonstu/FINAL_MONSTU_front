@@ -12,7 +12,6 @@ export const mainPath = "/";
 
 export const myPath = {
     my:   `${myBaseURL}`,
-    posts:   `${myBaseURL}/posts`,
 };
 
 export const adminPath = {

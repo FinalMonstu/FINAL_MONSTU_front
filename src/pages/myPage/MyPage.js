@@ -1,23 +1,25 @@
-import React from "react";
-import { Box, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { myPath, postPath } from "../../hooks/urlManager";
+import { Box } from "@mui/material";
+import { useState } from "react";
+import MemberSideBar from "../../components/sidebar/MemberSideBar";
+import MyInfoTable from "../../components/table/my/MyInfoTable";
 
 function MyPage() {
-
-  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [child,setChild] = useState("MyInfoBox");
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh", // 전체 화면을 차지하도록 설정
-        overflow: "hidden", // 불필요한 스크롤 제거
-      }}
-    >
-      <Button onClick={()=>navigate(myPath.posts)}>My Posts</Button>
-    </Box>
+      <Box display="flex" height="100vh">
+          <MemberSideBar 
+              open={sidebarOpen} 
+              onToggle={() => setSidebarOpen((o) => !o)} 
+              setChild = {setChild}
+          />
+  
+          <Box flexGrow={1} p={2}>
+              {child === "MyInfoBox" && <MyInfoTable />}
+              {/* {child === "PostsBox"    && <PostsBox />} */}
+          </Box>
+      </Box>
   );
 }
 

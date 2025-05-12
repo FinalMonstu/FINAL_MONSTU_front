@@ -4,20 +4,12 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 
-/* 
-  역할 : 어드민 페이지 -> 사이드드 박스
-  인증 : ADMIN만 사용가능
-  기능 : 
-    회원 관리 컴포넌트 적용
-*/
-
 const menuItems = [
-  { label: "회원 관리", icon: <ManageAccountsIcon />, child: "MembersBox"  },
+  { label: "내 정보", icon: <ManageAccountsIcon />, child: "MyInfoBox"  },
   { label: "게시물 관리", icon: <MenuBookIcon />, child: "PostsBox" },
-//   { label: "공지사항 관리", icon: <CampaignIcon />, child: "MembersBox"  },
 ];
 
-export default function AdminSidebar({ open, onToggle, setChild }) {
+export default function MemberSideBar({ open, onToggle, setChild }) {
     return (
         <Box
             bgcolor="grey.100"

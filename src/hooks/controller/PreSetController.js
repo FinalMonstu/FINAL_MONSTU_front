@@ -41,7 +41,7 @@ export const getMemStatus = async () => {
     }catch(error){
         return errorStatus(error);
     }     
-}
+};
 
 // 멤버 상태코드 목록 반환 API
 export const getMemRole = async () => {
@@ -52,4 +52,15 @@ export const getMemRole = async () => {
     }catch(error){
         return errorStatus(error);
     }     
-};;
+};
+
+// 게시물물 상태코드 목록 반환 API
+export const getPostStatus = async () => {
+    try {
+        const response = await presetController(`/post/status`, 'get',);
+        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
+        return responseStatus(response,response.data);
+    }catch(error){
+        return errorStatus(error);
+    }     
+}
