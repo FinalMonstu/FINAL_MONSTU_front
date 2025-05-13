@@ -71,10 +71,14 @@ export const deleteMembers = async (list) => {
 export const myInfo = async () => {
     try {
         const response = await memberController(`/me`, 'get');
+        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
     }     
 };
+
+
+
 
 

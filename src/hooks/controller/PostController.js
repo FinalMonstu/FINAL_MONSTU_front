@@ -25,9 +25,13 @@ export const savePost = async (post) => {
 };
 
 // 유저가 작성한 게시물 목록 반환 API
-export const getUserPosts = async (pageable) => {
+export const myPosts = async ({page,size,sortValue, sortOrder}) => {
     try {
-        const response = await postController(`/mine/all?page=${pageable.page}&size=${pageable.size}&sort=${encodeURIComponent(pageable.sort)}`, 'get');
+        const response = await postController(
+            `/me/posts`,'get',
+            { params: { page, size, sort: `${sortValue},${sortOrder}` }}
+        )
+        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -35,9 +39,12 @@ export const getUserPosts = async (pageable) => {
 };
 
 // Public 게시물 목록 반환 API
-export const getPublicPosts = async (pageable) => {
+export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
     try {
-        const response = await postController(`/posts?page=${pageable.page}&size=${pageable.size}&sort=${encodeURIComponent(pageable.sort)}`, 'get');
+        const response = await postController(
+            `/posts`, 'get', 
+            { params: { page, size, sort: `${sortValue},${sortOrder}` }}
+        );
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

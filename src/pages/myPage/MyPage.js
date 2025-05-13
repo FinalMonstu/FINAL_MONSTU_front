@@ -2,8 +2,9 @@ import { Box } from "@mui/material";
 import { useState } from "react";
 import MemberSideBar from "../../components/sidebar/MemberSideBar";
 import MyInfoTable from "../../components/table/my/MyInfoTable";
+import MyPostsBox from "../../components/box/my/MyPostsBox";
 
-function MyPage() {
+export default function MyPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [child,setChild] = useState("MyInfoBox");
 
@@ -16,11 +17,9 @@ function MyPage() {
           />
   
           <Box flexGrow={1} p={2}>
-              {child === "MyInfoBox" && <MyInfoTable />}
-              {/* {child === "PostsBox"    && <PostsBox />} */}
+              {child === "MyInfoBox" && <MyInfoTable/>}
+              {child === "MyPosts"    && <MyPostsBox/>}
           </Box>
       </Box>
   );
 }
-
-export default MyPage;

@@ -54,7 +54,7 @@ export default function MyInfoTable() {
 
           <TableRow>
             <TableCell component="th">country</TableCell>
-            <TableCell>{data.country ?? '-'}</TableCell>
+            <TableCell>{data.countryCode ?? '-'}</TableCell>
           </TableRow>
 
           <TableRow>

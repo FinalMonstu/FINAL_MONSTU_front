@@ -1,9 +1,9 @@
 import { Button, Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { authPath, postPath } from "../hooks/urlManager";
-import LitePosts from '../components/box/LitePosts';
 import Hero from '../components/box/Hero';
 import Footer from '../components/Footer';
+import PublicPostsBox from '../components/box/PublicPostsBox';
 
 /* 
   역할 : 메인 페이지
@@ -29,7 +29,7 @@ export default function Main() {
       <Hero/>
       
       <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-        <LitePosts />
+        <PublicPostsBox />
       </Box>
 
       <Footer/>

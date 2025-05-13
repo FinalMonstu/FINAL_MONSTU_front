@@ -22,9 +22,7 @@ export default function MemberRoleSelect({value,onChange,allowNone=true}){
                 value={value || ""}
                 onChange={e => onChange(e.target.value)}
             >
-                {allowNone && 
-                    <MenuItem value=""> <em>None</em> </MenuItem>
-                }
+                {allowNone && <MenuItem value=""> <em>None</em> </MenuItem> }
                 
                 {list.map((v) => (
                     <MenuItem key={v} value={v}>

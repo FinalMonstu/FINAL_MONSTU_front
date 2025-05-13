@@ -4,15 +4,12 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
   역할 : 날짜 옵션 목록 선택창
   기능 : 날짜 옵션 목록 초기화
 */
-export default function DateOptionSelector({value,onChange,addValue}){
-    const extra =
-        typeof addValue === 'string'
-        ? [addValue]
-        : Array.isArray(addValue)
-        ? addValue
-        : [];
-
-  const list = [...extra, 'createdAt', 'updatedAt'];
+export default function DateOptionSelector({value,onChange,values,allowNone=true}){
+    // const extra =
+    //     typeof addValue === 'string'
+    //     ? [addValue]
+    //     : Array.isArray(addValue)
+    //     ? addValue
 
     return(
         <FormControl size="small" sx={{ minWidth: 130 }}>
@@ -22,8 +19,8 @@ export default function DateOptionSelector({value,onChange,addValue}){
                 value={value || ""}
                 onChange={onChange}
             >
-                <MenuItem value=""> <em>None</em> </MenuItem> 
-                {list.map((v) => (
+                {allowNone && <MenuItem value=""> <em>None</em> </MenuItem> }
+                {values.map((v) => (
                     <MenuItem key={v} value={v}>
                         {v}
                     </MenuItem>

@@ -6,7 +6,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 const menuItems = [
   { label: "내 정보", icon: <ManageAccountsIcon />, child: "MyInfoBox"  },
-  { label: "게시물 관리", icon: <MenuBookIcon />, child: "PostsBox" },
+  { label: "게시물 관리", icon: <MenuBookIcon />, child: "MyPosts" },
 ];
 
 export default function MemberSideBar({ open, onToggle, setChild }) {
