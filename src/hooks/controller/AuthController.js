@@ -25,6 +25,7 @@ export const emailAvail = async (text) => {
 export const sendEmailCode = async (dto) => {
     try {
         const response = await authController(`/email/send`, 'post',dto);
+        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

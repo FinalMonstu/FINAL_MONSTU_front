@@ -14,7 +14,7 @@ export default function PublicPostsBox() {
         totalPages: 0,
         totalElements: 0,
         page: 0,
-        size: 3,
+        size: 6,
         sortValue: "createdAt",
         sortOrder: "desc",
     });

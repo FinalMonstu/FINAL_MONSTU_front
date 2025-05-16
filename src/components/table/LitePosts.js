@@ -1,7 +1,11 @@
-import { Box, Grid, Typography, Button, Card, CardContent } from "@mui/material";
+import { Box, Grid, Typography, Button, Card, CardContent, IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { postPath } from "../../hooks/urlManager";
 import dayjs from "dayjs";
+import { deletePostAPI } from "../../hooks/controller/PostController";
+import { useCallback } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useSnack } from "../popup/MultiSnackBar";
 
 const outerContainer = {
   display: "flex",
@@ -44,10 +48,19 @@ const dateBoxStyles = {
   pt: 0,
 };
 
-export default function LitePosts({ posts }) {
+export default function LitePosts({ posts,onDelete }) {
     const navigate = useNavigate();
+    const showSnack = useSnack();
 
     const cardOnClick = (id) => { navigate(postPath.to(id)) }
+
+    const handleDelete = useCallback(async (id,e) => {
+        e.stopPropagation();
+        const { success, message } = await deletePostAPI(id);
+        showSnack( (success) ? "info" : "error", message);
+        if(success) onDelete(id);
+    }, [onDelete]);
+    
 
     return (
         <Box sx={outerContainer}>
@@ -61,6 +74,21 @@ export default function LitePosts({ posts }) {
                                     sx={cardStyles}
                                     onClick={() => cardOnClick(post.id)}
                                 >
+                                    <IconButton
+                                        size="small"
+                                        onClick={(e) => handleDelete(post.id, e)}
+                                        sx={{
+                                        position: "absolute",
+                                        top: 8,
+                                        right: 8,
+                                        backgroundColor: "rgba(255,255,255,0.8)",
+                                        "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
+                                        zIndex: 1
+                                        }}
+                                    >
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography variant="h6" noWrap gutterBottom>
                                             {post.title}

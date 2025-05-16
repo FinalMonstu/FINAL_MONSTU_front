@@ -1,4 +1,4 @@
-import { Modal, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel, IconButton, Box } from "@mui/material";
+import { Modal, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel} from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 
 /* 
@@ -25,6 +25,7 @@ export default function PostInputModal({ isOpen, toggleOption, post, setPost, sa
     const updated = { ...post, ...tempPost };
     console.log("updated Object:", JSON.stringify(updated, null, 2));
     if (autoSave) savePost(updated);
+    setPost(updated)
     handleClose();
   }, [post, setPost, tempPost, autoSave]);
 

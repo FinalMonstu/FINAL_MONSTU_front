@@ -11,6 +11,7 @@ export default function DateSelector({addValue, dateOption, dateStart, dateEnd, 
     return (
         <Box display="flex" alignItems="center" gap={1}>
             <DateOptionSelector
+                values={addValue}
                 addValue={addValue}
                 value={dateOption || ""}
                 onChange={e => onChange({ dateOption: e.target.value })}

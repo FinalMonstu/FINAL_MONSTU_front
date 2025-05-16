@@ -7,7 +7,6 @@ import BooleanSelector from "../../selecter/BooleanSelector";
 import ViewCountSelector from "../../selecter/ViewCountSelector";
 import PostsTable from "../../table/admin/PostsTable";
 import DetailPost from "../../modal/admin/DetailPost";
-import PostStatusSelect from "../../selecter/PostStatusSelector";
 
 export default function PostsBox() {
     const showSnack = useSnack();
@@ -16,7 +15,6 @@ export default function PostsBox() {
         isPublic: null,
         title: '',
         authorId: null,
-        status : null
     });
     
     const [dateFilters, setDateFilters] = useState({
@@ -114,14 +112,16 @@ export default function PostsBox() {
         }
         filterPost({ filter, pageable: { page, size } });
         },
-        [filters, dateFilters, viewFilters]
+        [filters, dateFilters, viewFilters, pageOption.page, pageOption.size]
     );
 
     const handleDelete = useCallback( async ( ) => {
         const {success, message} = await deletePosts( selected );
-        success 
-            ? showSnack("info", message)
-            : showSnack("error", message);
+        showSnack( (success) ? "info" : "error", message);
+        if(success) {
+            setSelected([]);
+            handleSearchBtn();
+        }
     },[selected]);
     
     // 전체 체크박스 선택했을 경우
@@ -179,12 +179,6 @@ export default function PostsBox() {
                         onChange={handleFilterChange("authorId")}
                     />
 
-                    <PostStatusSelect 
-                        value={filters.status}
-                        onChange={newValue => updateFilter("status",newValue)}
-                        allowNone={false}
-                    />
-
                     <ViewCountSelector
                         viewCount={viewFilters.viewCount}
                         viewCountOption={viewFilters.viewCountOption}
@@ -192,7 +186,7 @@ export default function PostsBox() {
                     />
 
                     <DateSelector
-                        addValue={['lastViewAt']}
+                        addValue={['createdAt','modifiedAt','lastViewAt']}
                         dateOption={dateFilters.dateOption}
                         dateStart={dateFilters.dateStart}
                         dateEnd={dateFilters.dateEnd}

@@ -126,9 +126,8 @@ export default function MembersBox() {
   const handleDelete = useCallback(
     async ( ) => {
       const {success, message} = await deleteMembers( selected );
-      success 
-        ? showSnack("info", message)
-        : showSnack("error", message);
+      if(success) {handleSearchBtn()}
+      showSnack( (success) ? "info" : "error", message);
   },[selected]);
 
   // 전체 체크박스 선택했을 경우
@@ -193,6 +192,7 @@ export default function MembersBox() {
         />
 
         <DateSelector
+            addValue={['createdAt','updatedAt']}
             dateOption={dateFilters.dateOption}
             dateStart={dateFilters.dateStart}
             dateEnd={dateFilters.dateEnd}
@@ -234,10 +234,10 @@ export default function MembersBox() {
       />
 
       {/* Add Member Modal */}
-      <AddMemberModal modalOpen={modal.add} toggleModal={toggleModal}/>
+      <AddMemberModal modalOpen={modal.add} toggleModal={toggleModal} onSuccess={handleSearchBtn}/>
 
       {/* Member Detail Information Modal*/}
-      <DetailMember memberId={detail} setter={setDetail}/>
+      <DetailMember memberId={detail} setter={setDetail} onSuccess={handleSearchBtn} />
 
 
     </Box>

@@ -42,6 +42,16 @@ export const getMemberAPI = async (id) => {
     }     
 };
 
+// Reactivate Member - API
+export const setReactivateAPI = async () => {
+    try {
+        const response = await memberController(`/reactivate`, 'post');
+        return responseStatus(response);
+    }catch(error){
+        return errorStatus(error);
+    }     
+};
+
 
 // Update Member - API
 export const updateMemberAPI = async (dto) => {
@@ -59,7 +69,7 @@ export const updateMemberAPI = async (dto) => {
 // Set Member's Status to 'Delete' - API
 export const deleteMembers = async (list) => {
     try {
-        const response = await memberController(`/delete`, 'post', list);
+        const response = await memberController(`/delete/all`, 'post', list);
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);

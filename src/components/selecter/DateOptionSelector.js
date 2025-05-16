@@ -20,7 +20,7 @@ export default function DateOptionSelector({value,onChange,values,allowNone=true
                 onChange={onChange}
             >
                 {allowNone && <MenuItem value=""> <em>None</em> </MenuItem> }
-                {values.map((v) => (
+                {values?.map((v) => (
                     <MenuItem key={v} value={v}>
                         {v}
                     </MenuItem>

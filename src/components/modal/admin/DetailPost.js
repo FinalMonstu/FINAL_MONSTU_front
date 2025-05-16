@@ -5,7 +5,6 @@ import { btnBlack } from "../../../styles/commonStyle";
 import { useSnack } from "../../popup/MultiSnackBar";
 import { getDetailPostAPI, updatePostAPI } from "../../../hooks/controller/PostController";
 import { UpdateSchema } from "../../../hooks/schema/PostSchema";
-import PostStatusSelect from "../../selecter/PostStatusSelector";
 import BooleanSelector from "../../selecter/BooleanSelector";
 
 export default function DetailPost({ postId, setter }){
@@ -18,7 +17,6 @@ export default function DetailPost({ postId, setter }){
             content:     postInfo?.content     ?? "",
             createdAt:   postInfo?.createdAt   ?? "",
             modifiedAt:  postInfo?.modifiedAt  ?? "",
-            status:      postInfo?.status      ?? "",
             isPublic:    postInfo?.isPublic ? true : false,
             authorId:    postInfo?.authorId    ?? "",
             nickName:    postInfo?.nickName    ?? "",
@@ -41,7 +39,6 @@ export default function DetailPost({ postId, setter }){
             id : dto.postId,
             title : dto.title,
             content : dto.content,
-            status : dto.status,
             isPublic : dto.isPublic
         }
         const {success, message} = await updatePostAPI(updatePost);
@@ -113,11 +110,6 @@ export default function DetailPost({ postId, setter }){
 
                             <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
     
-                            <PostStatusSelect 
-                                value={values.status}
-                                onChange={newValue => setFieldValue('status', newValue)}
-                                allowNone={false}
-                            />
                             <BooleanSelector 
                                 value={values.isPublic}
                                 onChange={newValue => setFieldValue("isPublic", newValue)}
@@ -147,14 +139,14 @@ export default function DetailPost({ postId, setter }){
                                 label="title"
                                 required
                                 value={values.title}
-                                onChange={newValue => setFieldValue("title", newValue)}
+                                onChange={e => setFieldValue("title", e.target.value)}
                                 error={touched.title && Boolean(errors.title)}
                                 helperText={<ErrorMessage name="title" />}
                             />
                             <TextField
                                 label="content"
                                 value={values.content}
-                                onChange={newValue => setFieldValue("content", newValue)}
+                                onChange={e => setFieldValue("content", e.target.value)}
                                 fullWidth
                                 multiline
                                 rows={8}

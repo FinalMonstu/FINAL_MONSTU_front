@@ -4,7 +4,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
-import { myPosts } from "../../../hooks/controller/PostController";
+import { deletePost, myPosts } from "../../../hooks/controller/PostController";
 import LitePosts from "../../table/LitePosts";
 import DateOptionSelector from "../../selecter/DateOptionSelector";
 import PageMoreButton from "../../button/PageMoreButton";
@@ -20,8 +20,15 @@ export default function MyPostsBox() {
         size: 6,
         sortValue: "createdAt",
         sortOrder: "desc",
-    });
+  });
 
+  const handleRemovePost = (deletedId) => {
+    setPageable((prev) => ({
+      ...prev,
+      content: prev.content.filter((p) => p.id !== deletedId),
+      totalElements: prev.totalElements - 1
+    }));
+  };
 
   const fetchPosts = useCallback(async () => {
     const { page, size, sortValue, sortOrder } = pageable;
@@ -37,9 +44,7 @@ export default function MyPostsBox() {
     });
   }, [pageable.page, pageable.size, pageable.sortValue, pageable.sortOrder]);
 
-
   useEffect(() => { fetchPosts(); }, [fetchPosts]);
-
 
   const handleSortValueChange = (e) => {
     setPageable((prev) => ({
@@ -77,7 +82,7 @@ export default function MyPostsBox() {
       </Box>
 
       {/* 게시물 리스트 */}
-      <LitePosts posts={pageable.content}/>
+      <LitePosts posts={pageable.content} onDelete={handleRemovePost}/>
       <PageMoreButton pageable={pageable} setPageable={setPageable}/>
     </Box>
   );

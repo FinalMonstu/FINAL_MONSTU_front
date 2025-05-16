@@ -52,10 +52,11 @@ export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
 };
 
 // 게시물 ID를 이용하여 삭제 API
-export const deletePostById = async (id) => {
+export const deletePostAPI = async (id) => {
     console.log("id: "+id);
     try {
         const response = await postController(`/${id}`, 'delete');
+        console.log("Response.data:", JSON.stringify(response, null, 2));
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);

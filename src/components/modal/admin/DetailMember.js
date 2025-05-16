@@ -14,7 +14,7 @@ import { useSnack } from "../../popup/MultiSnackBar";
   인증 : 어드민 사용가능
   기능 : 회원 정보 수정정
 */
-export default function DetailMember({ memberId, setter }){
+export default function DetailMember({ memberId, setter, onSuccess }){
 
     const showSnack = useSnack();
     const [memberInfo,setMemberInfo] = useState(null)
@@ -39,16 +39,17 @@ export default function DetailMember({ memberId, setter }){
         if(result?.success){
             showSnack("info", result.message);
             setter(null);
+            onSuccess(); 
         }else{
             alert("수정에 실패했습니다.");
         }
-    }, []);
+    }, [setter,onSuccess]);
 
     // 멤버 ID 사용, 멤버 정보 조회 API & memberInfo 값 삽입
     const fetch = useCallback(async (id) => {
         const result = await getMemberAPI(id);
         if(result.success) setMemberInfo(result.data);
-    }, []);
+    }, [setMemberInfo]);
 
 
     useEffect(()=>{

@@ -14,7 +14,7 @@ import { signupAPI } from "../../../hooks/controller/AuthController";
   기능 : 유저 정보 입력/저장
   비고 : 회원가입 기능과의 차이점 -> Role, Status 속성을 프론트에서 바로 추가 가능
 */
-export default function AddMemberModal({ modalOpen, toggleModal }) {
+export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
   const initialValues = useMemo(() => ({
       email: "",
       password: "",
@@ -29,11 +29,13 @@ export default function AddMemberModal({ modalOpen, toggleModal }) {
 
   // 회원가입 API
   const handleSubmit = useCallback(async (dto) => {
-    const result = await signupAPI(dto);
-    alert(result?.message);
+    const {success,message} = await signupAPI(dto);
+    alert(message);
 
-    // 회원가입 성공 시 모달 닫기기
-    if (result?.success) { toggleModal("add"); }
+    if (success) { 
+      onSuccess();
+      toggleModal("add"); 
+    }
   }, []);
 
   return (
@@ -149,7 +151,7 @@ export default function AddMemberModal({ modalOpen, toggleModal }) {
                   variant="contained"
                   onClick={ submitForm }
                 >
-                  Update
+                  Add
                 </Button>
                 <Button
                   type="button"

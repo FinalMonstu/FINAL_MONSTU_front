@@ -67,13 +67,6 @@ export default function SignUpPage () {
 
 
   // 회원가입
-  const handleSignupAPI = useCallback(async (values) => {
-    const {success, message} = await signupAPI(values);
-    alert(message);
-    if(success) navigate(authPath.login);
-  }, []);
-
-
   const handleSubmit = useCallback(async (values, { setSubmitting }) => {
     if (!checks.codeCheck) {
       showSnack('error', '이메일 인증을 완료해주세요');
@@ -86,12 +79,10 @@ export default function SignUpPage () {
     setSubmitting(false);
   }, [checks.codeCheck]);
 
-
-
   // Log
   useEffect(()=>{
     // console.log("verifiCode Object:", JSON.stringify(verifiCode, null, 2));
-    console.log("checks Object:", JSON.stringify(checks, null, 2));
+    // console.log("checks Object:", JSON.stringify(checks, null, 2));
     // console.log("initialValues Object:", JSON.stringify(initialValues, null, 2));
   },[verifiCode, checks, initialValues])
 

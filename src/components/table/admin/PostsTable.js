@@ -24,7 +24,6 @@ export default function PostsTable({
                 </TableCell>
                 <TableCell>author_id</TableCell>
                 <TableCell>is_public</TableCell>
-                <TableCell>status</TableCell>
                 <TableCell>title</TableCell>
                 <TableCell>modified_at</TableCell>
                 <TableCell>created_at</TableCell>
@@ -47,11 +46,10 @@ export default function PostsTable({
                   </TableCell>
                   <TableCell>{row?.authorId}</TableCell>
                   <TableCell>{row?.isPublic?.toString()}</TableCell>
-                  <TableCell>{row?.status}</TableCell>
                   <TableCell>{row?.title}</TableCell>
                   <TableCell>{row?.modifiedAt ?? '—'}</TableCell>
                   <TableCell>{row?.createdAt}</TableCell>
-                  <TableCell>{row?.viewCount}</TableCell>
+                  <TableCell>{row?.viewCount ?? '--'}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

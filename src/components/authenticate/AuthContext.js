@@ -9,16 +9,12 @@ const AuthContext = createContext({
   logout: () => {},
 });
 
-
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
-
+export const useAuth = () => { return useContext(AuthContext); };
 
 export const AuthProvider = ({ children }) => {
-  // 검증 상태 Boolean 형태로 저장
+  // 검증 상태
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  // 로그인 상태인 유저 정보 저장
+  // 유저 정보 저장
   const [userInfo, setUserInfo] = useState(null);
 
 
