@@ -8,10 +8,8 @@ import axios from "axios";
 */
 
 export const connectSpring = axios.create({    
-    baseURL: 'https://localhost',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true, // 쿠키 포함
+    baseURL: process.env.NODE_ENV === 'production' ? '' : 'https://localhost',
+    headers: { 'Content-Type': 'application/json' },
+    withCredentials: true,
 });
 

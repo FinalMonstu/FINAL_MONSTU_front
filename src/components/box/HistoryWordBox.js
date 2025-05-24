@@ -9,7 +9,7 @@ import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 */
 export default function HistoryWordBox({ list, handleDelete }) {
   return (
-    <Box sx={{ p: 2, maxWidth: 400, margin: "auto" }}>
+    <Box sx={{ p: 3, maxHeight: 800, overflowY: 'auto','&::-webkit-scrollbar':{display: 'none'}, }}>
       <List>
         {list.map((item) => (
           <ListItem key={item.target} divider>

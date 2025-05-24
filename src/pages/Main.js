@@ -1,9 +1,10 @@
-import { Button, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import { authPath, postPath } from "../hooks/urlManager";
 import Hero from '../components/box/Hero';
 import Footer from '../components/Footer';
 import PublicPostsBox from '../components/box/PublicPostsBox';
+import Header from '../components/Header';
+import AuthPassPage from './AuthPassPage';
 
 /* 
   역할 : 메인 페이지
@@ -13,26 +14,32 @@ import PublicPostsBox from '../components/box/PublicPostsBox';
     공개 게시물 목록 표시
 */
 export default function Main() {
-  const navigate = useNavigate();
-
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}} >
-      <Button onClick={()=>navigate(authPath.login)}>login</Button>
-      <Button onClick={()=>navigate(authPath.signup)}>signup</Button>
-      <Button onClick={()=>navigate(authPath.signout)}>signout</Button>
-      <Button onClick={()=>navigate(authPath.find)}>find</Button>
-      <Button onClick={()=>navigate(authPath.resetPw)}>ResetPw</Button>
-      <Button onClick={()=>navigate(authPath.foundEmail)}>Email Found</Button>
+    <AuthPassPage>
 
-      <Button onClick={()=>navigate(postPath.post)}>post</Button>
-
-      <Hero/>
-      
-      <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
-        <PublicPostsBox />
+      <Box sx={{ height: "60px", flexShrink: 0 }}>
+        <Header />
       </Box>
+      
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}} >
+        {/* <Button onClick={()=>navigate(authPath.login)}>login</Button>
+        <Button onClick={()=>navigate(authPath.signup)}>signup</Button>
+        <Button onClick={()=>navigate(authPath.signout)}>signout</Button>
+        <Button onClick={()=>navigate(authPath.find)}>find</Button>
+        <Button onClick={()=>navigate(authPath.resetPw)}>ResetPw</Button>
+        <Button onClick={()=>navigate(authPath.foundEmail)}>Email Found</Button>
 
-      <Footer/>
-    </Box>
+        <Button onClick={()=>navigate(postPath.post)}>post</Button> */}
+
+        <Hero/>
+        
+        <Box sx={{ flexGrow: 1, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', }}>
+          <PublicPostsBox />
+        </Box>
+
+        <Footer/>
+      </Box>
+    </AuthPassPage>
+    
   );
 }

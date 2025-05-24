@@ -6,6 +6,7 @@ import { deletePostAPI } from "../../hooks/controller/PostController";
 import { useCallback } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSnack } from "../popup/MultiSnackBar";
+import { useAuth } from "../authenticate/AuthContext";
 
 const outerContainer = {
   display: "flex",
@@ -48,7 +49,8 @@ const dateBoxStyles = {
   pt: 0,
 };
 
-export default function LitePosts({ posts,onDelete }) {
+export default function LitePosts({ posts, onDelete }) {
+    const { userInfo } = useAuth();
     const navigate = useNavigate();
     const showSnack = useSnack();
 
@@ -74,20 +76,22 @@ export default function LitePosts({ posts,onDelete }) {
                                     sx={cardStyles}
                                     onClick={() => cardOnClick(post.id)}
                                 >
-                                    <IconButton
-                                        size="small"
-                                        onClick={(e) => handleDelete(post.id, e)}
-                                        sx={{
-                                        position: "absolute",
-                                        top: 8,
-                                        right: 8,
-                                        backgroundColor: "rgba(255,255,255,0.8)",
-                                        "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
-                                        zIndex: 1
-                                        }}
-                                    >
-                                        <DeleteIcon fontSize="small" />
-                                    </IconButton>
+                                    {   (userInfo?.role === 'ADMIN' || userInfo?.id === post.authorId) &&
+                                        <IconButton
+                                            size="small"
+                                            onClick={(e) => handleDelete(post.id, e)}
+                                            sx={{
+                                            position: "absolute",
+                                            top: 8,
+                                            right: 8,
+                                            backgroundColor: "rgba(255,255,255,0.8)",
+                                            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
+                                            zIndex: 1
+                                            }}
+                                        >
+                                            <DeleteIcon fontSize="small" />
+                                        </IconButton>
+                                    }
 
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography variant="h6" noWrap gutterBottom>

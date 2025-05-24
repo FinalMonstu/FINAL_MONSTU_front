@@ -1,5 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
+import TransPopover from "../popup/TransPopover";
 
 /* 
   역할 : Post 페이지 -> 게시물 Content 표시시
@@ -9,18 +10,46 @@ import { Box, Typography } from "@mui/material";
     하이라이팅된 화면 위치 정보 초기화
 */
 export default function ContentBox({ translation, updateTranslation, post }) {
-  
+  const boxRef = useRef(null);
+  const [anchorPosition, setAnchorPosition] = useState(null);
+
   const handleHighlightText = useCallback(() => {
-    const selectionObj = window.getSelection();
-    const selection = selectionObj ? selectionObj.toString().trim() : "";
-    if (selection && translation.target !== selection) {
-      updateTranslation("target", selection);
+    const sel = window.getSelection();
+    if (!sel || sel.isCollapsed) {
+      setAnchorPosition(null);
+      return;
+    }
+
+    const text = sel.toString().trim();
+    if (text && translation.target !== text) {
+      updateTranslation("target", text);
+    }
+
+    const range = sel.getRangeAt(0);
+    const rects = Array.from(range.getClientRects());
+    if (rects.length > 0) {
+      const r = rects[0];
+      setAnchorPosition({
+        top:  r.top  + window.scrollY,
+        left: r.left + window.scrollX,
+      });
     }
   }, [translation.target, updateTranslation]);
 
   return (
-    <Box sx={{ padding: "40px" }} onMouseUp={handleHighlightText}>
-      <Typography sx={{ whiteSpace: "pre-wrap" }}>{post.content}</Typography>
+    <Box
+      ref={boxRef}
+      sx={{ position: "relative", padding: "40px" }}
+      onMouseUp={handleHighlightText}
+    >
+      <Typography sx={{ whiteSpace: "pre-wrap" }}>
+        {post.content}
+      </Typography>
+      <TransPopover
+        anchorPosition={anchorPosition}
+        onClose={() => setAnchorPosition(null)}
+        translation={translation}
+      />
     </Box>
   );
 }

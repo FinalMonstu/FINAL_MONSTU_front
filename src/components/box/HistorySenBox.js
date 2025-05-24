@@ -9,7 +9,7 @@ import { Box, Button, List, ListItem, ListItemText } from "@mui/material";
 */
 export default function HistorySenBox({ list, handleDelete }) {
   return (
-    <Box sx={{ p: 3 }}>
+    <Box sx={{ p: 3, maxHeight: 180, overflowY: 'auto','&::-webkit-scrollbar':{display: 'none'}, }}>
       <List>
         {list.length > 0 ? (
           list.map(({ target, transed }) => (

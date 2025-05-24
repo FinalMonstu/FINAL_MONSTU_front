@@ -47,9 +47,6 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Box sx={{ height: "60px", flexShrink: 0 }}>
-          <Header />
-        </Box>
         <Routes>
           {publicRoutes.map((route, index) => (
             <Route key={index} path={route.path} element={ route.element } />

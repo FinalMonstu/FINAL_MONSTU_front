@@ -9,12 +9,12 @@ import { btnBlack } from "../styles/commonStyle";
 import { useNavigate } from 'react-router-dom';
 import { adminPath, authPath, mainPath, myPath } from '../hooks/urlManager';
 
-function Header() {
+export default function Header() {
     const { isAuthenticated, userInfo, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleLogin = React.useCallback(() => { navigate(authPath.login); }, [navigate]);
-    
+
     const handleLogout = React.useCallback(() => {
         logout();
         navigate(mainPath);
@@ -59,6 +59,4 @@ function Header() {
             </AppBar>
         </Box>
     );
-  }
-  
-  export default Header;
+};

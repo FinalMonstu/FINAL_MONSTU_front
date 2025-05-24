@@ -19,6 +19,13 @@ export default function PublicPostsBox() {
         sortOrder: "desc",
     });
 
+    const handleRemovePost = (deletedId) => {
+        setPageable((prev) => ({
+        ...prev,
+        content: prev.content.filter((p) => p.id !== deletedId),
+        totalElements: prev.totalElements - 1
+        }));
+    };
 
     // 게시글 조회
     const fetchPosts = useCallback(async () => {
@@ -44,8 +51,8 @@ export default function PublicPostsBox() {
 
     return (
         <Box>
-            <LitePosts posts={pageable.content}/>
+            <LitePosts posts={pageable.content} onDelete={handleRemovePost}/>
             <PageMoreButton pageable={pageable} setPageable={setPageable}/>
         </Box>
     );
-}
+} 
