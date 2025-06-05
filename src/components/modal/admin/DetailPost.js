@@ -7,7 +7,7 @@ import { getDetailPostAPI, updatePostAPI } from "../../../hooks/controller/PostC
 import { UpdateSchema } from "../../../hooks/schema/PostSchema";
 import BooleanSelector from "../../selecter/BooleanSelector";
 
-export default function DetailPost({ postId, setter }){
+export default function DetailPost({ postId, setter, refreshList }){
     const showSnack = useSnack();
     const [postInfo,setPostInfo] = useState(null)
 
@@ -45,22 +45,15 @@ export default function DetailPost({ postId, setter }){
         if(success){
             showSnack("info", message);
             setter(null);
+            refreshList();
         }else{
             alert("수정에 실패했습니다.");
         }
     }, []);
 
 
-    useEffect(()=>{
-        if(postId) fetch(postId);
-    },[postId])
+    useEffect(()=>{ if(postId) fetch(postId) },[postId])
     
-    // Log
-    useEffect(()=>{
-        console.log("postInfo.data:", JSON.stringify(postInfo, null, 2));
-    },[postInfo])
-
-
     return (
             <Modal
                 open={postId!=null}

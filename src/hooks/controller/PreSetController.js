@@ -13,7 +13,6 @@ const presetController = (url,type='post',data=null) => {
 export const getLangList = async () => {
     try {
         const response = await presetController(`/lang`, 'get',);
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -24,7 +23,6 @@ export const getLangList = async () => {
 export const getCounList = async () => {
     try {
         const response = await presetController(`/coun`, 'get',);
-        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -35,7 +33,6 @@ export const getCounList = async () => {
 export const getMemStatus = async () => {
     try {
         const response = await presetController(`/mem/status`, 'get',);
-        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -46,7 +43,6 @@ export const getMemStatus = async () => {
 export const getMemRole = async () => {
     try {
         const response = await presetController(`/mem/role`, 'get',);
-        // console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

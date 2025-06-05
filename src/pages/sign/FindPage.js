@@ -77,12 +77,6 @@ export default function FindPage() {
     [tabValue,codeCheck,verifiCode.email,findId]
   );
 
-  //Log
-  useEffect(()=>{
-    console.log("codeCheck Object:", JSON.stringify(codeCheck, null, 2));
-  },[codeCheck])
-
-
   return (
     <Box
       sx={{

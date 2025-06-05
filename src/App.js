@@ -1,11 +1,9 @@
-import { useState } from 'react';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Main from './pages/Main';
 import PostPage from './pages/PostPage';
 import SignUpPage from './pages/sign/SignUpPage';
 import LoginPage from './pages/sign/LoginPage';
-import Header from './components/Header';
 import { Box } from '@mui/material';
 import PrivateRoute from './components/authenticate/PrivateRoute';
 import {AuthProvider} from './components/authenticate/AuthContext'
@@ -17,6 +15,8 @@ import MyPage from './pages/myPage/MyPage';
 import { adminPath, authPath, mainPath, myPath, postPath, } from './hooks/urlManager';
 import AdminPage from './pages/admin/AdminPage';
 import AdminRoute from './components/authenticate/AdminRoute';
+import Header from './components/Header';
+import AuthPassPage from './pages/AuthPassPage';
 
 function App() {
 
@@ -47,19 +47,29 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          {publicRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={ route.element } />
-          ))}
 
-          {privateRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={ <PrivateRoute> {route.element} </PrivateRoute> } />
-          ))}
+        <AuthPassPage>
 
-          {adminRoutes.map((route, index) => (
-            <Route key={index} path={route.path} element={ <AdminRoute> {route.element} </AdminRoute> } />
-          ))}
-        </Routes>
+          <Box sx={{ height: "60px", flexShrink: 0 }}>
+            <Header />
+          </Box>
+          
+          <Routes>
+            {publicRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={ route.element } />
+            ))}
+
+            {privateRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={ <PrivateRoute> {route.element} </PrivateRoute> } />
+            ))}
+
+            {adminRoutes.map((route, index) => (
+              <Route key={index} path={route.path} element={ <AdminRoute> {route.element} </AdminRoute> } />
+            ))}
+          </Routes>
+
+        </AuthPassPage>
+        
       </BrowserRouter>
     </AuthProvider>
   );

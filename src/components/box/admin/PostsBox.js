@@ -128,30 +128,13 @@ export default function PostsBox() {
     const handleSelectAll = useCallback(() => {
         selected.length === data.length
             ? setSelected([])
-            : setSelected(data.map(r => r.postId))
+            : setSelected(data.map(r => r.id))
     }, [selected, data]);
 
     // 체크박스 하나만 선택했을 경우 
     const handleSelectOne = (id) => {
-        setSelected(prev => 
-            prev.includes(id)
-            ? prev.filter(i => i !== id)  // 이미 있으면 제거
-            : [...prev, id]               // 없으면 추가
-        );
+        setSelected(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
     };
-
-
-    // Log
-    useEffect(()=>{
-        console.log("filters Object:", JSON.stringify(filters, null, 2));
-        // console.log("dateFilters Object:", JSON.stringify(dateFilters, null, 2));
-        // console.log("pageOption Object:", JSON.stringify(pageOption, null, 2));
-        // console.log("viewFilters Object:", JSON.stringify(viewFilters, null, 2));
-        // console.log("data Object:", JSON.stringify(data, null, 2));
-        console.log("selected Object:", JSON.stringify(selected, null, 2));
-        console.log("detail Object:", JSON.stringify(detail, null, 2));
-    },[filters,dateFilters,pageOption,viewFilters,selected,detail,data])
-
 
     return(
         <Box>
@@ -227,7 +210,7 @@ export default function PostsBox() {
             />
 
             {/* Post Detail Information Modal*/}
-            <DetailPost postId={detail} setter={setDetail}/>
+            <DetailPost postId={detail} setter={setDetail} refreshList={handleSearchBtn}/>
         </Box>
     )
 }

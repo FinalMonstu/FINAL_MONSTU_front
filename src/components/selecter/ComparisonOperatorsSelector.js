@@ -11,7 +11,7 @@ export default function ComparisonOperatorsSelector({value,onChange}){
                 value={value || ""}
                 onChange={onChange}
             >
-                <MenuItem value=""> <em>None</em> </MenuItem> 
+                <MenuItem value={null}> <em>None</em> </MenuItem> 
                 {list.map((v) => (
                     <MenuItem key={v} value={v}>
                         {v}

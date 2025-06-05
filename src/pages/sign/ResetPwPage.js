@@ -7,6 +7,7 @@ import { confirmPwSchema } from "../../hooks/schema/SignSchema";
 import { resetPwAPI } from "../../hooks/controller/AuthController";
 import { useSnack } from "../../components/popup/MultiSnackBar";
 import { authPath } from "../../hooks/urlManager";
+import { useAuth } from "../../components/authenticate/AuthContext";
 
 /* 
   역할 : 비밀번호 재설정 페이지
@@ -14,6 +15,7 @@ import { authPath } from "../../hooks/urlManager";
   기능 : 유저 비밀번호 정보 수정
 */
 export default function ResetPwPage() {
+    const {logout} = useAuth();
     const { state } = useLocation();
     const navigate = useNavigate();
     const showSnack = useSnack();
@@ -26,6 +28,7 @@ export default function ResetPwPage() {
         const result = await resetPwAPI(dto);
         const message = result.message;
         if(result.success){
+            logout();
             alert(message); 
             navigate(authPath.login, { replace: true });
         }else{

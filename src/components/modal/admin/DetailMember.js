@@ -56,12 +56,6 @@ export default function DetailMember({ memberId, setter, onSuccess }){
         if(memberId) fetch(memberId);
     },[memberId])
 
-    // Log
-    useEffect(()=>{
-        console.log("memberInfo.data:", JSON.stringify(memberInfo, null, 2));
-    },[memberInfo])
-
-
     return (
         <Modal
             open={memberId!=null}

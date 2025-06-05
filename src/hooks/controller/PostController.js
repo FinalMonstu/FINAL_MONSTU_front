@@ -14,10 +14,9 @@ const postController = (url,type='post',data=null) => {
 
 // 게시물 데이터 DB에 저장 API
 export const savePost = async (post) => {
-    console.log("post.data:", JSON.stringify(post, null, 2));
+    console.log("Request :", JSON.stringify(post, null, 2));
     try {
         const response = await postController(`/save`, 'post',post);
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -31,7 +30,6 @@ export const myPosts = async ({page,size,sortValue, sortOrder}) => {
             `/me/posts`,'get',
             { params: { page, size, sort: `${sortValue},${sortOrder}` }}
         )
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -53,10 +51,8 @@ export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
 
 // 게시물 ID를 이용하여 삭제 API
 export const deletePostAPI = async (id) => {
-    console.log("id: "+id);
     try {
         const response = await postController(`/${id}`, 'delete');
-        console.log("Response.data:", JSON.stringify(response, null, 2));
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -65,10 +61,8 @@ export const deletePostAPI = async (id) => {
 
 // 게시물 ID를 이용하여 게시글 받아오는는 API
 export const getPostById = async (id) => {
-    console.log("id: "+id);
     try {
         const response = await postController(`/${id}`, 'get');
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -77,15 +71,12 @@ export const getPostById = async (id) => {
 
 // 필터링된 게시물 데이터 반환 API
 export const filterPostAPI = async ({filter,pageable}) => {
-    console.log("filter.data:", JSON.stringify(filter, null, 2));
-    console.log("pageable.data:", JSON.stringify(pageable, null, 2));
     try {
         const response = await postController(
             `/filter?page=${pageable.page}&size=${pageable.size}`, 
             'post',
             filter
         )
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -95,10 +86,8 @@ export const filterPostAPI = async ({filter,pageable}) => {
 
 // Find Post By ID - API
 export const getDetailPostAPI = async (id) => {
-    console.log("id:", JSON.stringify(id, null, 2));
     try {
         const response = await postController(`/detail/${id}`, 'get');
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -108,10 +97,8 @@ export const getDetailPostAPI = async (id) => {
 
 // Update Post - API
 export const updatePostAPI = async (dto) => {
-    console.log("dto:", JSON.stringify(dto, null, 2));
     try {
         const response = await postController(`/update`, 'put', dto);
-        console.log("Response.data:", JSON.stringify(response.data, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

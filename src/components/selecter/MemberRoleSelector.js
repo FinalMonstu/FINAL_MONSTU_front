@@ -19,10 +19,10 @@ export default function MemberRoleSelect({value,onChange,allowNone=true}){
             <InputLabel id="role-label">Role</InputLabel>
             <Select
                 label="role-label"
-                value={value || ""}
+                value={value || null}
                 onChange={e => onChange(e.target.value)}
             >
-                {allowNone && <MenuItem value=""> <em>None</em> </MenuItem> }
+                {allowNone && <MenuItem value={null}> <em>None</em> </MenuItem>}
                 
                 {list.map((v) => (
                     <MenuItem key={v} value={v}>

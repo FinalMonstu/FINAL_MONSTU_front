@@ -23,7 +23,6 @@ export default function PostInputModal({ isOpen, toggleOption, post, setPost, sa
   // 저장 버튼 클릭 시, 부모의 post 업데이트 및 모달 닫기
   const save = useCallback(() => {
     const updated = { ...post, ...tempPost };
-    console.log("updated Object:", JSON.stringify(updated, null, 2));
     if (autoSave) savePost(updated);
     setPost(updated)
     handleClose();
@@ -33,12 +32,6 @@ export default function PostInputModal({ isOpen, toggleOption, post, setPost, sa
   useEffect(() => {
     setTempPost({ title: post.title || '', content: post.content || '' });
   }, [post]);
-
-
-  // Log
-  useEffect(()=>{
-    console.log("autoSave Object:", JSON.stringify(autoSave, null, 2));
-  },[autoSave])
 
 
   return (

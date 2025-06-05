@@ -34,15 +34,17 @@ export default function PostPage() {
   //   content : '[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다'
   // }
 
+  
+
   const [post, setPost] = useState({
-    id: Number(id),
+    postId: Number(id),
     title: sample.title,
     content: sample.content,
     createdAt: '',
     modifiedAt: '',
     status: '',
     isPublic: false,
-    authorEmail: userInfo?.email || '',
+    authorId: userInfo?.id || '',
     nickName: '',
   });
 
@@ -136,19 +138,11 @@ export default function PostPage() {
     if (success) setPost(data)
   },[post,updatePost]);
 
-
-  // Log
   useEffect(()=>{
-    console.log("post Object:", JSON.stringify(post, null, 2));
-    // console.log("Translation Object:", JSON.stringify(translation, null, 2));
-    // console.log("options Object:", JSON.stringify(options, null, 2));
-    // console.log("histWord Object:", JSON.stringify(histWord.length, null, 2));
-    // console.log("histWord :", JSON.stringify(histWord, null, 2));
-    // console.log("histSentence Object:", JSON.stringify(histSentence.length, null, 2));
-    // console.log("modal Object:", JSON.stringify(modal, null, 2));
-    // console.log("userInfo Object:", JSON.stringify(userInfo, null, 2));
-  },[translation,options,histWord,histSentence,post,modal,userInfo])
-
+    // console.log("title:", JSON.stringify(post.title, null, 2));
+    // console.log("content:", JSON.stringify(post.content, null, 2));
+    console.log("postId:", JSON.stringify(post.postId, null, 2));
+  },[post.title,post.content,post.postId])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>

@@ -1,6 +1,5 @@
-import React from 'react';
 import { Table, TableBody, TableCell, TableContainer,TableHead, TableRow, Checkbox, Paper} from '@mui/material';
-
+import dayjs from 'dayjs';
 
 export default function PostsTable({
     data, selected,
@@ -34,21 +33,21 @@ export default function PostsTable({
             <TableBody>
               {data.map(row => (
                 <TableRow
-                  key={row.postId}
+                  key={row.id}
                   hover
-                  onClick={() => onRowClick(row.postId)}
+                  onClick={() => onRowClick(row.id)}
                 >
                   <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
                     <Checkbox
-                      checked={selected.includes(row.postId)}
-                      onChange={() => onSelectOne(row.postId)}
+                      checked={selected.includes(row.id)}
+                      onChange={() => onSelectOne(row.id)}
                     />
                   </TableCell>
                   <TableCell>{row?.authorId}</TableCell>
                   <TableCell>{row?.isPublic?.toString()}</TableCell>
                   <TableCell>{row?.title}</TableCell>
-                  <TableCell>{row?.modifiedAt ?? '—'}</TableCell>
-                  <TableCell>{row?.createdAt}</TableCell>
+                  <TableCell>{row?.modifiedAt ? dayjs(row.modifiedAt).format('YYYY-MM-DD HH:mm') : '—'}</TableCell>
+                  <TableCell>{row?.createdAt ? dayjs(row.modifiedAt).format('YYYY-MM-DD HH:mm') : '—'}</TableCell>
                   <TableCell>{row?.viewCount ?? '--'}</TableCell>
                 </TableRow>
               ))}

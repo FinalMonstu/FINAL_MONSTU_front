@@ -13,6 +13,7 @@ import { myInfo, setReactivateAPI } from '../../../hooks/controller/MemberContro
 import { useSnack } from '../../popup/MultiSnackBar';
 import { useNavigate } from 'react-router-dom';
 import { authPath } from '../../../hooks/urlManager';
+import { useAuth } from '../../authenticate/AuthContext';
 
 export default function MyInfoTable() {
   const navigate = useNavigate();
@@ -31,7 +32,9 @@ export default function MyInfoTable() {
 
   useEffect(() => { fetch(); }, [fetch]);
 
-  const handleChangePassword = () => { navigate(authPath.resetPw, { state: { email: data.email } })};
+  const handleChangePassword = () => { 
+    navigate(authPath.resetPw, { state: { email: data.email } });
+  };
   const handleSignOut = () => { navigate(authPath.signout)};
   
   return (

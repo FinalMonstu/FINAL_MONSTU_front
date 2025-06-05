@@ -15,12 +15,6 @@ import AuthPassPage from './AuthPassPage';
 */
 export default function Main() {
   return (
-    <AuthPassPage>
-
-      <Box sx={{ height: "60px", flexShrink: 0 }}>
-        <Header />
-      </Box>
-      
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh'}} >
         {/* <Button onClick={()=>navigate(authPath.login)}>login</Button>
         <Button onClick={()=>navigate(authPath.signup)}>signup</Button>
@@ -39,7 +33,5 @@ export default function Main() {
 
         <Footer/>
       </Box>
-    </AuthPassPage>
-    
   );
 }

@@ -12,10 +12,6 @@ import MemberTable from "../../table/admin/MemberTable";
 
 /* 
   역할 : 어드민 페이지 -> 회원관리 박스
-  인증 : ADMIN만 사용가능
-  기능 : 
-    회원 정보 필터링 검색,
-    회원 추가, 회원 삭제, 회원정보 상세보기
 */
 export default function MembersBox() {
   const showSnack = useSnack();
@@ -42,9 +38,7 @@ export default function MembersBox() {
   })
 
   // 모달 여닫이 옵션
-  const [modal,setModal] = useState({
-    add : false,
-  })
+  const [modal,setModal] = useState({ add : false })
 
   const [data,setData] = useState([])   // Members Information
   const [selected, setSelected] = useState([]); // 체크 박스 선택된 모든 요소 저장
@@ -145,17 +139,6 @@ export default function MembersBox() {
         : [...prev, id]               // 없으면 추가
     );
   };
-
-  // Log
-  useEffect(()=>{
-    // console.log("filters Object:", JSON.stringify(filters, null, 2));
-    // console.log("Origin dateFilters Object:", JSON.stringify(dateFilters, null, 2));
-    // console.log("pageOption Object:", JSON.stringify(pageOption, null, 2));
-    // console.log("modal Object:", JSON.stringify(modal, null, 2));
-    // console.log("data Object:", JSON.stringify(data, null, 2));
-    // console.log("selected Object:", JSON.stringify(selected, null, 2));
-    // console.log("detail Object:", JSON.stringify(detail, null, 2));
-  },[filters,dateFilters,pageOption,modal,selected,detail,data])
 
   return (
     <Box>

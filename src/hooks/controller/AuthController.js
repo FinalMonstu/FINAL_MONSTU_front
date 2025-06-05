@@ -25,7 +25,6 @@ export const emailAvail = async (text) => {
 export const sendEmailCode = async (dto) => {
     try {
         const response = await authController(`/email/send`, 'post',dto);
-        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -36,17 +35,14 @@ export const sendEmailCode = async (dto) => {
 export const verifyEmailCode = async (dto) => {
     try {
         const response = await authController(`/email/verify`, 'post',dto);
-        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
-        console.log("error:", JSON.stringify(error.response.data, null, 2));
         return errorStatus(error);
     }     
 };
 
 // 회원가입
 export const signupAPI = async (dto) => {
-    console.log("SignUp Reqest: ", JSON.stringify(dto, null, 2));
     try {
         const response = await authController(`/signup`, 'post',dto);
         return responseStatus(response,response.data);
@@ -88,7 +84,6 @@ export const resetPwAPI = async (dto) => {
 export const findIdAPI = async (dto) => {
     try {
         const response = await authController(`/email/find`, 'post',dto);
-        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data.email);
     }catch(error){
         return errorStatus(error);
@@ -99,7 +94,6 @@ export const findIdAPI = async (dto) => {
 export const meAPI = async () => {
     try {
         const response = await authController(`/me`, 'get');
-        console.log("response:", JSON.stringify(response, null, 2));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);

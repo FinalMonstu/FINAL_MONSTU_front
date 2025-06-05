@@ -18,9 +18,7 @@ export const AuthProvider = ({ children }) => {
   // 유저 정보 저장
   const [userInfo, setUserInfo] = useState(null);
   // 접근 코드 검증 상태
-  const [pass, setPass] = useState(
-    () => sessionStorage.getItem('authPass') === 'true'
-  );
+  const [pass, setPass] = useState( () => sessionStorage.getItem('authPass') === 'true' );
 
   const login = useCallback((dto) => {
     setIsAuthenticated(true);

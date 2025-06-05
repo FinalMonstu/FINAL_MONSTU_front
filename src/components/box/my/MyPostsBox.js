@@ -1,10 +1,7 @@
 import { useSnack } from "../../popup/MultiSnackBar";
 import { useCallback, useEffect, useState } from "react";
-import {
-  Box,
-  Button,
-} from "@mui/material";
-import { deletePost, myPosts } from "../../../hooks/controller/PostController";
+import { Box, Button } from "@mui/material";
+import { myPosts } from "../../../hooks/controller/PostController";
 import LitePosts from "../../table/LitePosts";
 import DateOptionSelector from "../../selecter/DateOptionSelector";
 import PageMoreButton from "../../button/PageMoreButton";

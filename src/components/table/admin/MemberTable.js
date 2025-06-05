@@ -1,5 +1,6 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer,TableHead, TableRow, Checkbox, Paper} from '@mui/material';
+import dayjs from 'dayjs';
 
 /* 
   역할 : 어드민 페이지 -> 회원 간단 정보 목록 표시
@@ -50,12 +51,12 @@ export default function MemberTable({
                   onChange={() => onSelectOne(row.memberId)}
                 />
               </TableCell>
-              <TableCell>{row.countryCode}</TableCell>
-              <TableCell>{row.email}</TableCell>
-              <TableCell>{row.nickName}</TableCell>
-              <TableCell>{row.role}</TableCell>
-              <TableCell>{row.status}</TableCell>
-              <TableCell>{row.createdAt}</TableCell>
+              <TableCell>{row?.countryCode}</TableCell>
+              <TableCell>{row?.email}</TableCell>
+              <TableCell>{row?.nickName}</TableCell>
+              <TableCell>{row?.role}</TableCell>
+              <TableCell>{row?.status}</TableCell>
+              <TableCell>{row?.createdAt ? dayjs(row.modifiedAt).format('YYYY-MM-DD HH:mm') : '—'}</TableCell>
             </TableRow>
           ))}
         </TableBody>

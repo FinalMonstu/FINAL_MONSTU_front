@@ -13,7 +13,7 @@ export default function DateSelector({addValue, dateOption, dateStart, dateEnd, 
             <DateOptionSelector
                 values={addValue}
                 addValue={addValue}
-                value={dateOption || ""}
+                value={dateOption || null}
                 onChange={e => onChange({ dateOption: e.target.value })}
             />
 

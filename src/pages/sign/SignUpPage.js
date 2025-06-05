@@ -79,14 +79,6 @@ export default function SignUpPage () {
     setSubmitting(false);
   }, [checks.codeCheck]);
 
-  // Log
-  useEffect(()=>{
-    // console.log("verifiCode Object:", JSON.stringify(verifiCode, null, 2));
-    // console.log("checks Object:", JSON.stringify(checks, null, 2));
-    // console.log("initialValues Object:", JSON.stringify(initialValues, null, 2));
-  },[verifiCode, checks, initialValues])
-
-
   return (
     <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <Box sx={{ p: 4, width: '100%', maxWidth: 600 }}>

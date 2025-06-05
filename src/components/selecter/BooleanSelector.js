@@ -9,7 +9,7 @@ export default function BooleanSelector({value,onChange,label,allowNone=true}) {
                 value={value}
                 onChange={e => onChange(e.target.value)}
             >
-                {allowNone && <MenuItem value=""> <em>None</em> </MenuItem>}
+                {allowNone && <MenuItem value={null}> <em>None</em> </MenuItem>}
                 <MenuItem value="true"> true </MenuItem>
                 <MenuItem value="false"> false </MenuItem>
             </Select>
