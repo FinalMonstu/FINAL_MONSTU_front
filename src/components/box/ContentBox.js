@@ -1,9 +1,9 @@
-import React, { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import TransPopover from "../popup/TransPopover";
 
 /*
-  역할 : Post 페이지 -> 게시물 Content 표시
+  Post 페이지 -> 게시물 Content 표시
 */
 export default function ContentBox({ translation, updateTranslation, post }) {
   const boxRef = useRef(null);

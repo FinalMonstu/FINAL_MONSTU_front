@@ -1,12 +1,10 @@
-import React from 'react';
 import { Stack, Button, TextField } from '@mui/material';
 import { Field } from 'formik';
 
 /* 
   역할 : Find 페이지 -> 회원 비밀번호 재설정 박스
   인증 : 모든 이용자 사용가능
-  기능 : 
-    입력한 이메일, 인증 코드 정보 초기화 / 버튼을 통한 함수 실행
+  기능 : 입력한 이메일, 인증 코드 정보 초기화 / 버튼을 통한 함수 실행
 */
 const ResetPwBox = ({ formik: { touched, errors, values }, sendCode, verifyCode }) => {
   return (

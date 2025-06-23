@@ -1,6 +1,6 @@
-import { Box, Button, ButtonGroup, Stack, TablePagination, TextField } from "@mui/material";
+import { Box, Button, Stack, TablePagination, TextField } from "@mui/material";
 import { useSnack } from "../../popup/MultiSnackBar";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { deletePosts, filterPostAPI } from "../../../hooks/controller/PostController";
 import DateSelector from "../../selecter/DateSelector";
 import BooleanSelector from "../../selecter/BooleanSelector";
@@ -54,7 +54,7 @@ export default function PostsBox() {
     };
     
 
-    //필터링 & 페이징 이용, 여러 게시물물 검색
+    //필터링 & 페이징 이용, 여러 게시물 검색
     const filterPost = useCallback(
         async ( {filter,pageable} ) => {
         const {success, data, message} = await filterPostAPI( {filter,pageable} );
@@ -138,7 +138,6 @@ export default function PostsBox() {
 
     return(
         <Box>
-            {/* 필터 바 */}
             <Box display="flex" alignItems="center" flexWrap="wrap" gap={1} mb={2}>
                 <Box display="flex" alignItems="center" flexWrap="wrap" gap={1}>
                     <BooleanSelector 

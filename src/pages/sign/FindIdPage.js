@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography, Divider, Button, Stack } from '@mui/material';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import { useLocation, useNavigate } from 'react-router-dom';

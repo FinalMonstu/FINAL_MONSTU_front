@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { getPublicPosts } from "../../hooks/controller/PostController";
 import { useSnack } from "../popup/MultiSnackBar";
 import LitePosts from "../table/LitePosts";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import PageMoreButton from "../button/PageMoreButton";
 
 

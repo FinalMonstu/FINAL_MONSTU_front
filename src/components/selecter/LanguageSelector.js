@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { getLangList } from "../../hooks/controller/PreSetController";
 import { FormControl, MenuItem, Select } from "@mui/material";
 
@@ -23,7 +23,7 @@ export default function LanguageSelector( {translation,updateTranslation,type} )
           value={type === "ori" ? translation?.oriLang : translation?.transLang || ""}
           onChange={(e) => updateTranslation(type === "ori" ? "oriLang" : "transLang", e.target.value)}
           displayEmpty
-          renderValue={(selected) => selected || "Select"} // 기본 표시값
+          renderValue={(selected) => selected || "Select"} 
         >
           {langList.map((lang) => (
             <MenuItem key={lang} value={lang} sx={{ fontSize: 13, minHeight: 30 }}>

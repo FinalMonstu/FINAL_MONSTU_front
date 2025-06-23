@@ -1,4 +1,3 @@
-import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -8,23 +7,24 @@ import { useAuth } from './authenticate/AuthContext';
 import { btnBlack } from "../styles/commonStyle";
 import { useNavigate } from 'react-router-dom';
 import { adminPath, authPath, mainPath, myPath } from '../hooks/urlManager';
+import { useCallback } from 'react';
 
 export default function Header() {
     const { isAuthenticated, userInfo, logout } = useAuth();
     const navigate = useNavigate();
 
-    const handleLogin = React.useCallback(() => { navigate(authPath.login); }, [navigate]);
+    const handleLogin = useCallback(() => { navigate(authPath.login); }, [navigate]);
 
-    const handleLogout = React.useCallback(() => {
+    const handleLogout = useCallback(() => {
         logout();
         navigate(mainPath);
     }, [logout, navigate]);
 
-    const handleHome = React.useCallback(() => { navigate(mainPath); }, [navigate]);
+    const handleHome = useCallback(() => { navigate(mainPath); }, [navigate]);
 
-    const handleMyPage = React.useCallback(() => { navigate(myPath.my); }, [navigate]);
+    const handleMyPage = useCallback(() => { navigate(myPath.my); }, [navigate]);
 
-    const handleAdminPage = React.useCallback(() => { navigate(adminPath.admin); }, [navigate]);
+    const handleAdminPage = useCallback(() => { navigate(adminPath.admin); }, [navigate]);
 
 
     const Authenticated = () => (

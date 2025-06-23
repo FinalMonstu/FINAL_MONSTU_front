@@ -63,13 +63,11 @@ export default function MyPostsBox() {
 
   return (
     <Box>
-      {/* ── 헤더 (정렬) */}
       <Box display="flex" justifyContent="flex-end" alignItems="center" mb={2} gap={1}>
         <Button variant="outlined" size="small" onClick={handleSortToggle}>
           {pageable.sortOrder === "asc" ? "오래된 순" : "최신 순"}
         </Button>
 
-        {/* 정렬 값 선택 */}
         <DateOptionSelector 
           value={pageable.sortValue} 
           onChange={handleSortValueChange}
@@ -78,7 +76,6 @@ export default function MyPostsBox() {
         />
       </Box>
 
-      {/* 게시물 리스트 */}
       <LitePosts posts={pageable.content} onDelete={handleRemovePost}/>
       <PageMoreButton pageable={pageable} setPageable={setPageable}/>
     </Box>

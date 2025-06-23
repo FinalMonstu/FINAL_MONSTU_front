@@ -1,19 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Paper,
-  Button,
-  Box
-} from '@mui/material';
+import { useCallback, useEffect, useState } from 'react';
+import { TableContainer, Table, TableBody, TableRow, TableCell, Paper, Button, Box } from '@mui/material';
 import { myInfo, setReactivateAPI } from '../../../hooks/controller/MemberController';
 import { useSnack } from '../../popup/MultiSnackBar';
 import { useNavigate } from 'react-router-dom';
 import { authPath } from '../../../hooks/urlManager';
-import { useAuth } from '../../authenticate/AuthContext';
 
 export default function MyInfoTable() {
   const navigate = useNavigate();

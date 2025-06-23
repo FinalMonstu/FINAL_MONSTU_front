@@ -6,11 +6,7 @@ export default function Footer(){
     return(
         <Box
             component="footer"
-            sx={{
-                py: 4,
-                // backgroundColor: theme => theme.palette.grey[200],
-                textAlign: 'center',
-            }}
+            sx={{ py: 4, textAlign: 'center' }}
             >
             <Typography variant="subtitle1" component="div" gutterBottom>
                 MonStu

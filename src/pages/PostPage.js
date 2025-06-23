@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Box, IconButton, Typography } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -29,13 +29,6 @@ export default function PostPage() {
     content : '[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다'
   }
 
-  // const sample = {
-  //   title : "오른쪽 '+' 버튼을 눌러 보세요",
-  //   content : '[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다'
-  // }
-
-  
-
   const [post, setPost] = useState({
     postId: Number(id),
     title: sample.title,
@@ -62,7 +55,7 @@ export default function PostPage() {
     genre : '',                      //WORD,SENTENCE
   }); 
 
-  const [options,setOptions] = useState({ viewWord : true, viewSentence : true })  //Option Modal 속성 - 단어 기록 & 문장 기록록
+  const [options,setOptions] = useState({ viewWord : true, viewSentence : true })  //Option Modal 속성 - 단어 기록 & 문장 기록
   const [modal,setModal] = useState({ inputModal : false, optionsModal : false })  //PostInput Modal 속성
 
 
@@ -137,12 +130,6 @@ export default function PostPage() {
     };
     if (success) setPost(data)
   },[post,updatePost]);
-
-  useEffect(()=>{
-    // console.log("title:", JSON.stringify(post.title, null, 2));
-    // console.log("content:", JSON.stringify(post.content, null, 2));
-    console.log("postId:", JSON.stringify(post.postId, null, 2));
-  },[post.title,post.content,post.postId])
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>

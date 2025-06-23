@@ -1,5 +1,3 @@
-// Hero.js
-import React from "react";
 import { Box, Button, Typography } from "@mui/material";
 import heroImage from '../../assets/wallpapers.jpg';
 import { useNavigate } from "react-router-dom";
@@ -17,7 +15,7 @@ const HeroSection = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-  px: 4,                      // 좌우 여백
+  px: 4,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   '&::before': {
@@ -45,7 +43,7 @@ export default function Hero(){
         position: 'relative',
         zIndex: 2,
         ml:  20,
-        maxWidth: '40%',      // 텍스트 박스 최대 너비
+        maxWidth: '40%',
       }}>
         <Typography variant="h3" component="h2" gutterBottom>
           Try it free!
@@ -68,12 +66,12 @@ export default function Hero(){
       <Box sx={{
         position: 'relative',
         zIndex: 2,
-        width: '35%',         // 컨테이너 너비
-        maxWidth: '400px',   // 최대 너비
-        maxHeight: '600px',  // 최대 높이
-        aspectRatio: '9/16',  // 세로형 비율 고정
+        width: '35%',
+        maxWidth: '400px',
+        maxHeight: '600px',
+        aspectRatio: '9/16',
         overflow: 'hidden',
-        borderRadius: 2,      // 모서리 둥글게
+        borderRadius: 2,
       }}>
         <Box
           component="iframe"

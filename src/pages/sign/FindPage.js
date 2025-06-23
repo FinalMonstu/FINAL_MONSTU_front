@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Formik, Form } from 'formik';
 import { Box, Button, Divider, Tab, Tabs, Typography } from '@mui/material';
 import { useSnack } from '../../components/popup/MultiSnackBar';
@@ -12,8 +12,7 @@ import { authPath } from '../../hooks/urlManager';
 /* 
   역할 : 비밀번호/아이디(이메일) 찾기 페이지
   인증 : 모든 사용자 사용가능
-  기능 : 
-    Tab 패턴, 비밀번호 찾기 또는 아이디(이메일) 찾기 컴포넌트로 이동
+  기능 : Tab 패턴, 비밀번호 찾기 또는 아이디(이메일) 찾기 컴포넌트로 이동
 */
 export default function FindPage() {
   const navigate = useNavigate();

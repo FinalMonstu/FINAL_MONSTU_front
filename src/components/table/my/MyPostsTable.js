@@ -1,15 +1,5 @@
-import React from "react";
-import PropTypes from "prop-types";
 import dayjs from "dayjs";
-import {
-  TableContainer,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
-  Paper,
-} from "@mui/material";
+import { TableContainer,Table,TableHead,TableRow,TableCell,TableBody,Paper } from "@mui/material";
 
 export default function MyPostsTable({ posts, onRowClick }) {
   return (

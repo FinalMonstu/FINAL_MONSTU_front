@@ -5,12 +5,6 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
   기능 : 날짜 옵션 목록 초기화
 */
 export default function DateOptionSelector({value,onChange,values,allowNone=true}){
-    // const extra =
-    //     typeof addValue === 'string'
-    //     ? [addValue]
-    //     : Array.isArray(addValue)
-    //     ? addValue
-
     return(
         <FormControl size="small" sx={{ minWidth: 130 }}>
             <InputLabel id="dateOption-label">Date Option</InputLabel>

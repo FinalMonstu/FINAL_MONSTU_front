@@ -1,5 +1,4 @@
 import { Box, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
 import ComparisonOperatorsSelector from "./ComparisonOperatorsSelector";
 
 

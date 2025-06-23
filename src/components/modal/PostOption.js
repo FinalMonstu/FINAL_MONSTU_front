@@ -4,8 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 /* 
   역할 : 게시물 페이지 -> 게시물에 페이지에 번역기록(단어,문장) 표시 여부 결정
   인증 : 모든 이용자 사용가능
-  기능 : 
-    단어&문장 번역기록 보이기 / 안보이기 설정
+  기능 : 단어&문장 번역기록 보이기 / 안보이기 설정
 */
 export default function PostOption({isOpen, toggleModal, toggleOption}) {
 

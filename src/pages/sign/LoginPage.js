@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import { Formik, Form, Field } from "formik";
 import { Box, TextField, Button, Typography, Stack, Divider } from "@mui/material";
 import { LoginSchema } from "../../hooks/schema/SignSchema";
@@ -7,7 +7,7 @@ import { loginAPI } from "../../hooks/controller/AuthController";
 import { useSnack } from "../../components/popup/MultiSnackBar";
 import { useAuth } from "../../components/authenticate/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { authPath, mainPath } from "../../hooks/urlManager";
+import { mainPath } from "../../hooks/urlManager";
 import AuthLinks from "../../components/links/AuthLinks";
 
 /* 

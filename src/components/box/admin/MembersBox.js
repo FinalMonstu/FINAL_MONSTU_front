@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Box, TextField, Button, Stack, TablePagination } from "@mui/material";
 import CountrySelector from "../../selecter/CountrySelector";
 import MemberRoleSelector from "../../selecter/MemberRoleSelector";
@@ -11,7 +11,7 @@ import DetailMember from "../../modal/admin/DetailMember";
 import MemberTable from "../../table/admin/MemberTable";
 
 /* 
-  역할 : 어드민 페이지 -> 회원관리 박스
+  어드민 페이지의 회원관리 박스
 */
 export default function MembersBox() {
   const showSnack = useSnack();
@@ -45,7 +45,7 @@ export default function MembersBox() {
   const [detail,setDetail] = useState(null);  // 상세보기 게시물 ID 저장
 
 
-  // useState 속성 헨들러러
+  // useState 속성 헨들러
   const handleFilterChange = (key) => (e) => { setFilters((prev) => ({ ...prev, [key]: e.target.value }));};
   const toggleModal = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
   const updateFilters = useCallback( (field, value) => { setFilters((prev) => ({ ...prev, [field]: value })); }, [] );

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useCallback } from 'react';
+import { createContext, useContext, useCallback } from 'react';
 import { SnackbarProvider, useSnackbar } from 'notistack';
 
 /* 
@@ -8,7 +8,6 @@ import { SnackbarProvider, useSnackbar } from 'notistack';
 */
 const SnackContext = createContext(() => {});
 
-//  Context 안에 담겨 있는 값(value) 을 꺼내 주는 훅
 export function useSnack() {
   return useContext(SnackContext);
 }

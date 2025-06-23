@@ -17,7 +17,7 @@ export default function DetailPost({ postId, setter, refreshList }){
             content:     postInfo?.content     ?? "",
             createdAt:   postInfo?.createdAt   ?? "",
             modifiedAt:  postInfo?.modifiedAt  ?? "",
-            isPublic:    postInfo?.isPublic ? true : false,
+            isPublic:    postInfo?.isPublic    ? true : false,
             authorId:    postInfo?.authorId    ?? "",
             nickName:    postInfo?.nickName    ?? "",
             logId:       postInfo?.logId       ?? "",
