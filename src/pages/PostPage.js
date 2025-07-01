@@ -53,6 +53,7 @@ export default function PostPage() {
     oriLang: '',                     // 원본 언어
     transLang: 'Korean',             // 번역된 언어
     genre : '',                      //WORD,SENTENCE
+    createdAt : null,                //생성시간
   }); 
 
   const [options,setOptions] = useState({ viewWord : true, viewSentence : true })  //Option Modal 속성 - 단어 기록 & 문장 기록
@@ -65,8 +66,15 @@ export default function PostPage() {
   const toggleOption = useCallback((field) => { setOptions(prev => ({ ...prev, [field]: !prev[field] })); }, []);
   const toggleModal = useCallback((field) => { setModal((prev) => ({ ...prev, [field]: !prev[field] })); }, []);
 
-  const deleteWord = useCallback( (target) => setHistWord(prev => prev.filter(item => item.target !== target)), [] );
-  const deleteSentence = useCallback( (target) => setHistSentence(prev => prev.filter(item => item.target !== target)), [] );
+  const deleteWord = useCallback((createdAt) => { 
+    setHistWord(prev => prev.filter(item => item.createdAt !== createdAt)); 
+    setTranslation(prev => ({ ...prev, transed: '', target: '' }));
+  }, []);
+
+  const deleteSentence = useCallback((createdAt) => { 
+    setHistSentence(prev => prev.filter(item => item.createdAt !== createdAt)); 
+    setTranslation(prev => ({ ...prev, transed: '', target: '' }));
+  }, []);
 
 
   // 게시물 ID를 이용, 게시물 데이터 초기화 API
@@ -81,6 +89,10 @@ export default function PostPage() {
 
   useEffect(()=>{ if(id > -1) fetchPost(); },[id])
 
+    useEffect(()=> {
+      console.log("histSentence:", JSON.stringify(histSentence, null, 2));
+      console.log("histWord:", JSON.stringify(histWord, null, 2));
+    },[histSentence,histWord])
 
   //  Text 번역 API
   const fetchTrans = useCallback(async () => {
@@ -91,11 +103,18 @@ export default function PostPage() {
     const cached = historyList.find(item => (item.target === translation.target) && (item.transLang === translation.transLang));
     if (cached) { return updateTranslation('transed', cached.transed); }
 
-    const { success, message, data } = await trans(translation);
-    (!success || translation.target !== data.target)
-      ? showSnack('error', message)
-      : updateTranslation('transed', data.transed);
+   const { success, message, data } = await trans(translation);
+    if (!success || translation.target !== data.target) {
+      showSnack('error', message);
+      return;
+    }
+
+    updateTranslation('transed', data.transed);
+    updateTranslation('createdAt', Date.now());
+
   }, [translation, histWord, histSentence, updateTranslation]);
+
+ 
 
 
   // type 초기화 (예시: "WORD" 또는 "SENTENCE") , 번역
@@ -112,19 +131,23 @@ export default function PostPage() {
 
   // History 리스트에 추가
   useEffect(() => {
-    const { transed, genre, target } = translation;
-    if (!transed) return;
+    const { transed, genre, target, createdAt  } = translation;
+    if (!transed || !createdAt) return;
     const listSetter = (genre === 'WORD') ? setHistWord : setHistSentence;
     const list = (genre === 'WORD') ? histWord : histSentence;
-    if (!list.some(item => (item.target === target)&&(item.transLang === translation.transLang))) listSetter(prev => [...prev, translation]);
-  }, [translation.transed, histWord, histSentence]);
+    const exists = list.some(item => item.createdAt === createdAt);
+
+    if (!exists) {
+      listSetter(prev => [...prev, { ...translation }]);
+    }
+  }, [translation.transed]);
 
 
   // 게시물 데이터 DB에 저장 API
   const savePostAPI = useCallback( async (dto) => {
     let payLoad = {...dto, id : (dto.id === -1) ? null : dto.id }
     const {success, message, status, data} = await savePost( payLoad );
-    if(status==403){
+    if(!success){
       showSnack( "error", "게시물을 저장하려면 로그인이 필요합니다");
       return;
     };

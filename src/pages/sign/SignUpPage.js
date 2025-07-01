@@ -123,7 +123,7 @@ export default function SignUpPage () {
                       sx={{ input: inputStyle }}
                     />
                     <Button sx={btnBlack} disabled={checks.codeCheck} onClick={sendCode}>
-                      인증코드 전송
+                      인증코드 받기
                     </Button>
                     <Button sx={btnBlack} disabled={checks.codeCheck} onClick={verifyCode}>
                       인증코드 확인
