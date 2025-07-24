@@ -20,7 +20,7 @@ export default function TransPopover({ anchorPosition, onClose, translation }) {
       PaperProps={{ style: { pointerEvents: "auto" } }}
     >
       <Typography sx={{ p: 0.5, border: "1px solid black" }}>
-        {translation.transed}
+        {translation.translatedText}
       </Typography>
     </Popover>
   );

@@ -17,8 +17,8 @@ export default function ContentBox({ translation, updateTranslation, post }) {
     }
 
     const text = sel.toString().trim();
-    if (text && translation.target !== text) {
-      updateTranslation("target", text);
+    if (text && translation.originalText !== text) {
+      updateTranslation("originalText", text);
     }
 
     const range = sel.getRangeAt(0);
@@ -30,7 +30,7 @@ export default function ContentBox({ translation, updateTranslation, post }) {
         left: r.left + window.scrollX,
       });
     }
-  }, [translation.target, updateTranslation]);
+  }, [translation.originalText, updateTranslation]);
 
   return (
     <Box

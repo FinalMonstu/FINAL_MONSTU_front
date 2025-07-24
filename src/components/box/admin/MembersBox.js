@@ -4,7 +4,7 @@ import CountrySelector from "../../selecter/CountrySelector";
 import MemberRoleSelector from "../../selecter/MemberRoleSelector";
 import MemberStatusSelector from "../../selecter/MemberStatusSelector";
 import DateSelector from "../../selecter/DateSelector";
-import { deleteMembers, filterMemberAPI } from "../../../hooks/controller/MemberController";
+import { deleteMembers, filterMemberAPI } from "../../../hooks/controller/AdminController";
 import { useSnack } from "../../popup/MultiSnackBar";
 import AddMemberModal from "../../modal/admin/AddMemberModal";
 import DetailMember from "../../modal/admin/DetailMember";

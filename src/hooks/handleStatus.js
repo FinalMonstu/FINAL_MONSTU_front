@@ -91,6 +91,13 @@ export function errorStatus(error){
                 message : message || 'Already Exists.'
             }; 
             break; 
+        case 409:   //HttpStatus.TOO_MANY_REQUESTS
+            result =  { 
+                status: 429,
+                success : false, 
+                message : message || 'Too Many Requests. Please try again later'
+            }; 
+            break;
         case 500:   //HttpStatus.INTERNAL_SERVER_ERROR
             result =  { 
                 status: 500,

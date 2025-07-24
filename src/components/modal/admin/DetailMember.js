@@ -6,7 +6,7 @@ import MemberStatusSelector from "../../selecter/MemberStatusSelector";
 import CountrySelect from "../../selecter/CountrySelector";
 import { UpdateSchema } from "../../../hooks/schema/SignSchema";
 import { btnBlack } from "../../../styles/commonStyle";
-import { getMemberAPI, updateMemberAPI } from "../../../hooks/controller/MemberController";
+import { getMemberAPI, updateMemberAPI } from "../../../hooks/controller/AdminController";
 import { useSnack } from "../../popup/MultiSnackBar";
 
 /* 

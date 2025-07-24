@@ -7,6 +7,7 @@ import CountrySelect from "../../selecter/CountrySelector";
 import { SignSchema } from "../../../hooks/schema/SignSchema";
 import { btnBlack } from "../../../styles/commonStyle";
 import { signupAPI } from "../../../hooks/controller/AuthController";
+import { createMemberAPI } from "../../../hooks/controller/AdminController";
 
 /* 
   역할 : 멤버 추가
@@ -29,7 +30,7 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
 
   // 회원가입 API
   const handleSubmit = useCallback(async (dto) => {
-    const {success,message} = await signupAPI(dto);
+    const {success,message} = await createMemberAPI(dto);
     alert(message);
 
     if (success) { 

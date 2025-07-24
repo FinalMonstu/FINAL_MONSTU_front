@@ -1,7 +1,8 @@
 import { Box, Button, Stack, TablePagination, TextField } from "@mui/material";
 import { useSnack } from "../../popup/MultiSnackBar";
 import { useCallback, useState } from "react";
-import { deletePosts, filterPostAPI } from "../../../hooks/controller/PostController";
+import { filterPostAPI } from "../../../hooks/controller/PostController";
+import { deletePosts } from "../../../hooks/controller/AdminController";
 import DateSelector from "../../selecter/DateSelector";
 import BooleanSelector from "../../selecter/BooleanSelector";
 import ViewCountSelector from "../../selecter/ViewCountSelector";

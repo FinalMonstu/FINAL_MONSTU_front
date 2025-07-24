@@ -16,6 +16,7 @@ import { getPostById, savePost } from '../hooks/controller/PostController';
 import { trans } from '../hooks/controller/AiController';
 import { hasWhitespace } from '../hooks/regexValid';
 import { mainPath } from '../hooks/urlManager';
+import { useTranslationMapper } from '../hooks/mapper/TranslationMapper';
 
 /* 역할 : 사용자가 텍스트를 하이라이팅 할때마다 번역된 결과를 화면에 표시 */
 export default function PostPage() {
@@ -23,6 +24,7 @@ export default function PostPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const showSnack = useSnack();
+  const { toRequest, fromResponse } = useTranslationMapper();
 
   const sample = {
     title : "오른쪽 '+' 버튼을 눌러 보세요",
@@ -37,7 +39,7 @@ export default function PostPage() {
     modifiedAt: '',
     status: '',
     isPublic: false,
-    authorId: userInfo?.id || '',
+    authorId: userInfo?.memberId || '',
     nickName: '',
   });
 
@@ -45,15 +47,12 @@ export default function PostPage() {
   const [histSentence,setHistSentence] = useState([]);
 
   const [translation, setTranslation] = useState({
-    id : '',                         //단어 ID
-    memberId : userInfo?.id || '',   // 회원 ID
-    postId : id || null,               //게시물 ID
-    target: '',                      // 번역할 단어 또는 문장
-    transed: '',                     // 번역된 단어 또는 문장
-    oriLang: '',                     // 원본 언어
-    transLang: 'Korean',             // 번역된 언어
-    genre : '',                      //WORD,SENTENCE
-    createdAt : null,                //생성시간
+    originalText: '',                // 번역할 단어 또는 문장
+    translatedText: '',              // 번역된 단어 또는 문장
+    sourceLang: '',                  // 원본 언어
+    targetLang: 'Korean',                // 번역 언어 (예시: 'Korean'로 기본값)
+    textUnit: '',                    // 'WORD' 또는 'SENTENCE'
+    createdAt: null,                 // 생성시간
   }); 
 
   const [options,setOptions] = useState({ viewWord : true, viewSentence : true })  //Option Modal 속성 - 단어 기록 & 문장 기록
@@ -61,19 +60,31 @@ export default function PostPage() {
 
 
   const updatePost = useCallback((field, value) =>setPost((prev) => ({...prev, [field]: value, })), [] );
-  const updateTranslation = useCallback( (field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
+  const updateTranslation = useCallback((field, value) => setTranslation((prev) => ({ ...prev, [field]: value, })),  []);
   
   const toggleOption = useCallback((field) => { setOptions(prev => ({ ...prev, [field]: !prev[field] })); }, []);
   const toggleModal = useCallback((field) => { setModal((prev) => ({ ...prev, [field]: !prev[field] })); }, []);
 
   const deleteWord = useCallback((createdAt) => { 
     setHistWord(prev => prev.filter(item => item.createdAt !== createdAt)); 
-    setTranslation(prev => ({ ...prev, transed: '', target: '' }));
+    setTranslation(prev => ({ ...prev, translatedText: '', originalText: '' }));
   }, []);
 
   const deleteSentence = useCallback((createdAt) => { 
     setHistSentence(prev => prev.filter(item => item.createdAt !== createdAt)); 
-    setTranslation(prev => ({ ...prev, transed: '', target: '' }));
+    setTranslation(prev => ({ ...prev, translatedText: '', originalText: '' }));
+  }, []);
+
+  // translation 객체 초기화
+  const resetTranslation = useCallback((newSourceLang, newTargetLang) => {
+    setTranslation({
+      originalText: '',
+      translatedText: '',
+      sourceLang: newSourceLang ?? '',
+      targetLang: newTargetLang ?? 'ko',
+      textUnit: '',
+      createdAt: null,
+    });
   }, []);
 
 
@@ -88,59 +99,64 @@ export default function PostPage() {
   },[id]);
 
   useEffect(()=>{ if(id > -1) fetchPost(); },[id])
-
-    useEffect(()=> {
-      console.log("histSentence:", JSON.stringify(histSentence, null, 2));
-      console.log("histWord:", JSON.stringify(histWord, null, 2));
-    },[histSentence,histWord])
-
+  useEffect(()=>{ console.log("userInfo:", userInfo); },[])
   //  Text 번역 API
   const fetchTrans = useCallback(async () => {
-    if(translation.target.length > 115) showSnack('error','번역은 최대 115자까지 가능합니다')
+    if(translation.originalText.length > 115) showSnack('error','번역은 최대 115자까지 가능합니다')
+
+    // textUnit을 직접 계산
+    const textUnit = hasWhitespace(translation.originalText.trim()) ? 'SENTENCE' : 'WORD';
 
     // 이미 번역된 단어인지 검증
-    const historyList = translation.genre === 'WORD' ? histWord : histSentence;
-    const cached = historyList.find(item => (item.target === translation.target) && (item.transLang === translation.transLang));
-    if (cached) { return updateTranslation('transed', cached.transed); }
+    const historyList = textUnit === 'WORD' ? histWord : histSentence;
+    const cached = historyList.find(item => (item.originalText === translation.originalText) && (item.targetLang === translation.targetLang));
+    if (cached) { return updateTranslation('translatedText', cached.translatedText); }
 
-   const { success, message, data } = await trans(translation);
-    if (!success || translation.target !== data.target) {
+    // 매핑 적용: 프론트 데이터를 백엔드 요청 형태로 변환
+    const requestData = { ...translation, textUnit }; // textUnit을 강제로 덮어씀
+    const { success, message, data } = await trans(requestData);
+    // 매핑 적용: 백엔드 응답을 프론트 형태로 변환
+    if(!success){
       showSnack('error', message);
       return;
     }
-
-    updateTranslation('transed', data.transed);
+    const mappedData = fromResponse(data);
+    if (!success || translation.originalText !== mappedData.originalText) {
+      showSnack('error', message);
+      return;
+    }
+    updateTranslation('translatedText', mappedData.translatedText);
     updateTranslation('createdAt', Date.now());
 
-  }, [translation, histWord, histSentence, updateTranslation]);
+  }, [translation, histWord, histSentence, updateTranslation, toRequest, fromResponse]);
 
  
 
 
   // type 초기화 (예시: "WORD" 또는 "SENTENCE") , 번역
   useEffect(() => {
-    const { target } = translation;
-    if (!target) return ;
+    const { originalText } = translation;
+    if (!originalText) return ;
 
     // WORD,SENTENCE 분별
-    const genre = hasWhitespace(target.trim()) ? 'SENTENCE' : 'WORD';
-    if (translation.genre !== genre) updateTranslation('genre', genre);
+    const textUnit = hasWhitespace(originalText.trim()) ? 'SENTENCE' : 'WORD';
+    if (translation.textUnit !== textUnit) updateTranslation('textUnit', textUnit);
     fetchTrans(); //번역 API
-  }, [translation.target]);
+  }, [translation.originalText]);
 
 
   // History 리스트에 추가
   useEffect(() => {
-    const { transed, genre, target, createdAt  } = translation;
-    if (!transed || !createdAt) return;
-    const listSetter = (genre === 'WORD') ? setHistWord : setHistSentence;
-    const list = (genre === 'WORD') ? histWord : histSentence;
+    const { translatedText, textUnit, originalText, createdAt  } = translation;
+    if (!translatedText || !createdAt) return;
+    const listSetter = (textUnit === 'WORD') ? setHistWord : setHistSentence;
+    const list = (textUnit === 'WORD') ? histWord : histSentence;
     const exists = list.some(item => item.createdAt === createdAt);
 
     if (!exists) {
-      listSetter(prev => [...prev, { ...translation }]);
+      listSetter(prev => [...prev, JSON.parse(JSON.stringify(translation))]);
     }
-  }, [translation.transed]);
+  }, [translation.translatedText]);
 
 
   // 게시물 데이터 DB에 저장 API
@@ -166,7 +182,7 @@ export default function PostPage() {
         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 1 }}>
 
           {/* 자신이 작성한 게시물, 새로운 게시물 작성 상태 일때 */}
-          { (userInfo?.id === post.authorId || Number(id) === -1) &&(
+          { (userInfo?.memberId === post.authorId || Number(id) === -1) &&(
             <IconButton onClick={() => toggleModal('inputModal')}>
               <ControlPointIcon fontSize="large" />
             </IconButton>
@@ -180,6 +196,7 @@ export default function PostPage() {
             translation={translation}
             updateTranslation={updateTranslation}
             type="ori"
+            resetTranslation={resetTranslation}
           />
           <ArrowForwardIcon />
 
@@ -187,6 +204,7 @@ export default function PostPage() {
             translation={translation}
             updateTranslation={updateTranslation}
             type="trans"
+            resetTranslation={resetTranslation}
           />
 
         </Box>

@@ -5,18 +5,19 @@ import { responseStatus, errorStatus } from "../handleStatus"
   역할 : 서버 PostController와 소통
 */
 const postController = (url,type='post',data=null) => {
-    const baseUrl = '/api/post';
-    if(type==='get') return connectSpring.get(baseUrl+url,data);
-    if(type==='post') return connectSpring.post(baseUrl+url,data);
-    if(type==='put') return connectSpring.put(baseUrl+url,data);
+    const baseUrl = '/api/v2/posts';
+    if(type==='get')    return connectSpring.get(baseUrl+url,data);
+    if(type==='post')   return connectSpring.post(baseUrl+url,data);
+    if(type==='put')    return connectSpring.put(baseUrl+url,data);
+    if(type==='patch')  return connectSpring.patch(baseUrl+url,data);
     if(type==='delete') return connectSpring.delete(baseUrl+url,data);
 }
 
 // 게시물 데이터 DB에 저장 API
 export const savePost = async (post) => {
-    console.log("Request :", JSON.stringify(post, null, 2));
+    console.log("post:", post);
     try {
-        const response = await postController(`/save`, 'post',post);
+        const response = await postController(``, 'post',post);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -27,7 +28,7 @@ export const savePost = async (post) => {
 export const myPosts = async ({page,size,sortValue, sortOrder}) => {
     try {
         const response = await postController(
-            `/me/posts`,'get',
+            `/me`,'get',
             { params: { page, size, sort: `${sortValue},${sortOrder}` }}
         )
         return responseStatus(response,response.data);
@@ -36,11 +37,13 @@ export const myPosts = async ({page,size,sortValue, sortOrder}) => {
     }     
 };
 
+// view 쿼리 타입으로 같이 보내기기
 // Public 게시물 목록 반환 API
 export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
+    const view = 'summary';
     try {
         const response = await postController(
-            `/posts`, 'get', 
+            ``, 'get', 
             { params: { page, size, sort: `${sortValue},${sortOrder}` }}
         );
         return responseStatus(response,response.data);
@@ -63,6 +66,7 @@ export const deletePostAPI = async (id) => {
 export const getPostById = async (id) => {
     try {
         const response = await postController(`/${id}`, 'get');
+        console.log(JSON.stringify(response.data));
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -70,49 +74,31 @@ export const getPostById = async (id) => {
 };
 
 // 필터링된 게시물 데이터 반환 API
-export const filterPostAPI = async ({filter,pageable}) => {
+export const filterPostAPI = async ({filter, pageable}) => {
+    // filter 객체의 각 필드를 쿼리 파라미터로 변환
+    const params = {
+        page: pageable.page,
+        size: pageable.size,
+        ...filter
+    };
+
+    // null 또는 빈 문자열인 값은 쿼리에서 제외
+    Object.keys(params).forEach(key => {
+        if (params[key] === null || params[key] === '') {
+            delete params[key];
+        }
+    });
+
     try {
-        const response = await postController(
-            `/filter?page=${pageable.page}&size=${pageable.size}`, 
-            'post',
-            filter
-        )
-        return responseStatus(response,response.data);
-    }catch(error){
+        const response = await postController(`/search`, 'get',{ params });
+        return responseStatus(response, response.data);
+    } catch (error) {
         return errorStatus(error);
-    }       
+    }
 };
 
 
-// Find Post By ID - API
-export const getDetailPostAPI = async (id) => {
-    try {
-        const response = await postController(`/detail/${id}`, 'get');
-        return responseStatus(response,response.data);
-    }catch(error){
-        return errorStatus(error);
-    }     
-};
 
 
-// Update Post - API
-export const updatePostAPI = async (dto) => {
-    try {
-        const response = await postController(`/update`, 'put', dto);
-        return responseStatus(response,response.data);
-    }catch(error){
-        return errorStatus(error);
-    }     
-};
 
-
-// Set Post's Status to 'Delete' - API
-export const deletePosts = async (list) => {
-    try {
-        const response = await postController(`/delete`, 'post', list);
-        return responseStatus(response);
-    }catch(error){
-        return errorStatus(error);
-    }     
-};
 

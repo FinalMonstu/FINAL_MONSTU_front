@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
-import { meAPI } from '../../hooks/controller/AuthController';
+import { myInfo } from '../../hooks/controller/MemberController';
 
 /* 역할 : 인증 상태 관리 */
 const AuthContext = createContext({
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     let isMounted = true;
 
     (async () => {
-      const result = await meAPI();
+      const result = await myInfo();
       if (!isMounted) return;
       result.success ? login(result.data) : logout();
     })();

@@ -9,14 +9,14 @@ export default function HistoryWordBox({ list, handleDelete }) {
   return (
     <Box sx={{ p: 3, maxHeight: 800, overflowY: 'auto','&::-webkit-scrollbar':{display: 'none'}, }}>
       <List>
-        {list.map(({ createdAt, target, transed }) => (
+        {list.map(({ createdAt, originalText, translatedText }) => (
           <ListItem key={createdAt} divider>
 
             <Button onClick={() => handleDelete(createdAt)}>x</Button>
 
             <ListItemText
-              primary={target}
-              secondary={transed}
+              primary={originalText}
+              secondary={translatedText}
               sx={{ "& .MuiListItemText-primary": { fontWeight: "bold" }, "& .MuiListItemText-secondary": { color: "gray" } }}
             />
             

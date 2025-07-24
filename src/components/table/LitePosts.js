@@ -76,7 +76,7 @@ export default function LitePosts({ posts, onDelete }) {
                                     sx={cardStyles}
                                     onClick={() => cardOnClick(post.id)}
                                 >
-                                    {   (userInfo?.role === 'ADMIN' || userInfo?.id === post.authorId) &&
+                                    {   (userInfo?.role === 'ADMIN' || userInfo?.memberId === post.authorId) &&
                                         <IconButton
                                             size="small"
                                             onClick={(e) => handleDelete(post.id, e)}

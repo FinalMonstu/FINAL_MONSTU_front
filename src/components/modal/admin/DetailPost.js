@@ -3,7 +3,7 @@ import { Modal, Paper, Button, ButtonGroup, TextField, Divider } from "@mui/mate
 import { Formik, Form, ErrorMessage } from "formik";
 import { btnBlack } from "../../../styles/commonStyle";
 import { useSnack } from "../../popup/MultiSnackBar";
-import { getDetailPostAPI, updatePostAPI } from "../../../hooks/controller/PostController";
+import { getDetailPostAPI, updatePostAPI } from "../../../hooks/controller/AdminController";
 import { UpdateSchema } from "../../../hooks/schema/PostSchema";
 import BooleanSelector from "../../selecter/BooleanSelector";
 

@@ -5,16 +5,18 @@ import { responseStatus, errorStatus } from "../handleStatus"
   역할 : 서버 AuthController와 소통
 */
 const authController = (url,type='post',data=null) => {
-    const baseUrl = '/api/auth';
+    const baseUrl = '/api/v2/auth';
     if(type==='get') return connectSpring.get(baseUrl+url,data);
     if(type==='post') return connectSpring.post(baseUrl+url,data);
+    if(type==='put') return connectSpring.put(baseUrl+url,data);
+    if(type==='patch') return connectSpring.patch(baseUrl+url,data);
     if(type==='delete') return connectSpring.delete(baseUrl+url,data);
 }
 
 // 이메일 중복 검사
-export const emailAvail = async (text) => {
+export const emailAvail = async (email) => {
     try {
-        const response = await authController(`/email/avail?email=${text}`, 'get');
+        const response = await authController(`/email-avail?email=${email}`, 'get');
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -22,9 +24,9 @@ export const emailAvail = async (text) => {
 };
 
 // 이메일 인증 코드 전송
-export const sendEmailCode = async (dto) => {
+export const sendEmailCode = async (request) => {
     try {
-        const response = await authController(`/email/send`, 'post',dto);
+        const response = await authController(`/email-code`, 'post',request);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -32,9 +34,9 @@ export const sendEmailCode = async (dto) => {
 };
 
 // 인증 코드 검증
-export const verifyEmailCode = async (dto) => {
+export const verifyEmailCode = async (request) => {
     try {
-        const response = await authController(`/email/verify`, 'post',dto);
+        const response = await authController(`/email-code/verify`, 'post',request);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -42,9 +44,9 @@ export const verifyEmailCode = async (dto) => {
 };
 
 // 회원가입
-export const signupAPI = async (dto) => {
+export const signupAPI = async (request) => {
     try {
-        const response = await authController(`/signup`, 'post',dto);
+        const response = await authController(`/signup`, 'post', request);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -61,9 +63,9 @@ export const signOutAPI = async () => {
     }     
 };
 
-export const loginAPI = async (dto) => {
+export const loginAPI = async (request) => {
     try {
-        const response = await authController(`/login`, 'post',dto);
+        const response = await authController(`/login`, 'post', request);
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -71,9 +73,9 @@ export const loginAPI = async (dto) => {
 };
 
 // 비밀번호 재설정
-export const resetPwAPI = async (dto) => {
+export const resetPwAPI = async (request) => {
     try {
-        const response = await authController(`/repassword`, 'post',dto);
+        const response = await authController(`/password`, 'post', request);
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -81,9 +83,9 @@ export const resetPwAPI = async (dto) => {
 };
 
 // ID 찾기 -> 전화번호, 닉네임을 사용해서 ID찾기
-export const findIdAPI = async (dto) => {
+export const findIdAPI = async (request) => {
     try {
-        const response = await authController(`/email/find`, 'post',dto);
+        const response = await authController(`/email-find`, 'post', request);
         return responseStatus(response,response.data.email);
     }catch(error){
         return errorStatus(error);
@@ -91,11 +93,11 @@ export const findIdAPI = async (dto) => {
 };
 
 // 로그인한 사용자 정보 반환환
-export const meAPI = async () => {
-    try {
-        const response = await authController(`/me`, 'get');
-        return responseStatus(response,response.data);
-    }catch(error){
-        return errorStatus(error);
-    }     
-};
+// export const meAPI = async () => {
+//     try {
+//         const response = await authController(`/me`, 'get');
+//         return responseStatus(response,response.data);
+//     }catch(error){
+//         return errorStatus(error);
+//     }     
+// };
