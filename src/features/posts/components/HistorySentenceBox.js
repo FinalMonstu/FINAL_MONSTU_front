@@ -5,14 +5,14 @@ import {
   listItemSx,
   deleteBtnSx,
   listItemTextSx
-} from '../styles/HistoryWordBoxStyles';
+} from '../styles/HistorySentenceBoxStyles';
 
 /* 
-  역할 : 게시물 페이지 -> 번역 단어 기록 관리 박스
+  역할 : 게시물 페이지 -> 번역 문장 기록 관리 박스
   인증 : 모든 사용자 사용가능
-  기능 : 단어 표시 ,단어 삭제 
+  기능 : 기록 표시 , 기록 삭제 
 */
-export default function HistoryWordBox({ list, handleDelete, sx }) {
+export default function HistorySentenceBox({ list, handleDelete, sx }) {
   return (
     <Box sx={{ ...rootSx, ...sx }}>
       <List sx={listSx}>
@@ -35,4 +35,4 @@ export default function HistoryWordBox({ list, handleDelete, sx }) {
       </List>
     </Box>
   );
-}
+} 

@@ -4,6 +4,7 @@ import TransPopover from "../../translate/components/TransPopover";
 
 /*
   Post 페이지 -> 게시물 Content 표시
+  하이라이팅한 문자 위치 파악/반환
 */
 export default function ContentBox({ translation, updateTranslation, post }) {
   const boxRef = useRef(null);

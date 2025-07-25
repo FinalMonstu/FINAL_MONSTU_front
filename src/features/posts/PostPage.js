@@ -8,7 +8,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useAuth } from '../auth/hooks/AuthContext';
 import ContentBox from './components/ContentBox';
 import HistoryWordBox from './components/HistoryWordBox';
-import HistorySenBox from './components/HistorySenBox';
+import HistorySenBox from './components/HistorySentenceBox';
 import LanguageSelector from '../preset/components/LanguageSelector';
 import PostOption from './components/PostOption';
 import PostInputModal from './components/PostInputModal';
@@ -18,6 +18,16 @@ import { hasWhitespace } from '../../common/hooks/regexValid';
 import { mainPath } from '../../common/hooks/urlManager'; 
 import { useSnack } from '../../common/components/MultiSnackBar';
 import { useTranslationMapper } from '../translate/hooks/TranslationMapper';
+import {
+  rootSx,
+  headerSx,
+  headerTitleSx,
+  headerRightSx,
+  contentWrapSx,
+  contentSx,
+  historyWrapSx,
+  historyBoxSx
+} from './styles/PostPageStyles';
 
 /* 역할 : 사용자가 텍스트를 하이라이팅 할때마다 번역된 결과를 화면에 표시 */
 export default function PostPage() {
@@ -182,25 +192,11 @@ export default function PostPage() {
 
 
   return (
-    <Box sx={{
-      minHeight: '100vh',
-      bgcolor: '#f7f8fa',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
+    <Box sx={rootSx}>
       {/* Header */}
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        px: 4, py: 2,
-        bgcolor: '#fff',
-        boxShadow: 1,
-        borderRadius: 2,
-        mb: 2
-      }}>
-        <Typography variant="h4" fontWeight="bold">{post.title}</Typography>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={headerSx}>
+        <Typography variant="h4" sx={headerTitleSx}>{post.title}</Typography>
+        <Box sx={headerRightSx}>
           <LanguageSelector
             translation={translation}
             updateTranslation={updateTranslation}
@@ -226,40 +222,20 @@ export default function PostPage() {
       </Box>
 
       {/* Content */}
-      <Box sx={{
-        display: 'flex',
-        flex: 1,
-        gap: 2,
-        px: 4,
-        pb: 4
-      }}>
+      <Box sx={contentWrapSx}>
         {/* 번역 입력/결과 */}
-        <Box sx={{
-          flex: 3,
-          bgcolor: '#fff',
-          borderRadius: 2,
-          boxShadow: 1,
-          p: 3,
-          minHeight: 400,
-          overflowY: 'auto'
-        }}>
+        <Box sx={contentSx}>
           <ContentBox translation={translation} updateTranslation={updateTranslation} post={post} />
         </Box>
         {/* 히스토리 */}
-        <Box sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2,
-          minHeight: 400,
-        }}>
+        <Box sx={historyWrapSx}>
           {options.viewWord && (
-            <Box sx={{ flex: 1, display: 'flex' }}>
+            <Box sx={historyBoxSx}>
               <HistoryWordBox list={histWord} handleDelete={deleteWordFromHistory} sx={{ width: '100%', boxShadow: 1, borderRadius: 2, bgcolor: '#fff', height: '100%' }} />
             </Box>
           )}
           {options.viewSentence && (
-            <Box sx={{ flex: 1, display: 'flex' }}>
+            <Box sx={historyBoxSx}>
               <HistorySenBox list={histSentence} handleDelete={deleteSentenceFromHistory} sx={{ width: '100%', boxShadow: 1, borderRadius: 2, bgcolor: '#fff', height: '100%' }} />
             </Box>
           )}
@@ -267,7 +243,7 @@ export default function PostPage() {
       </Box>
 
       {/* 옵션/입력 모달 */}
-      <PostOption isOpen={modal.optionsModal} toggleModal={toggleModal} toggleOption={toggleOption} />
+      <PostOption isOpen={modal.optionsModal} toggleModal={toggleModal} toggleOption={toggleOption} options={options} />
       <PostInputModal isOpen={modal.inputModal} toggleOption={toggleModal} post={post} setPost={setPost} savePost={savePostAPI }/>
     </Box>
   );

@@ -8,47 +8,16 @@ import { postPath } from "../../../common/hooks/urlManager";
 import { deletePostAPI } from "../PostController";
 import { useSnack } from "../../../common/components/MultiSnackBar";
 import { useAuth } from "../../auth/hooks/AuthContext";
+import {
+  rootSx,
+  titleSx,
+  infoRowSx,
+  scrollContainer,
+  gridProps,
+  cardStyles,
+  iconButtonStyles
+} from '../styles/LitePostStyles';
 
-const outerContainer = {
-  display: "flex",
-  flexDirection: "column",
-  height: "100%",
-  p: 2,
-};
-
-const scrollContainer = {
-  flexGrow: 1,
-  overflowY: "auto",
-  mb: 2,
-  "&::-webkit-scrollbar": { display: "none", },
-};
-
-const gridProps = {
-  container: true,
-  spacing: { xs: 1, sm: 2, md: 3 },
-  rowSpacing: 3,
-  justifyContent: "center",
-  alignItems: "flex-start",
-};
-
-const cardStyles = {
-  display: "flex",
-  flexDirection: "column",
-  height: "100%",
-  cursor: "pointer",
-  border: "1px solid rgba(0,0,0,0.12)",
-  borderRadius: 2,
-  transition: "transform 0.2s, box-shadow 0.2s",
-  "&:hover": {
-    transform: "scale(1.02)",
-    boxShadow: 3,
-  },
-};
-
-const dateBoxStyles = {
-  p: 2,
-  pt: 0,
-};
 
 export default function LitePosts({ posts, onDelete }) {
     const { userInfo } = useAuth();
@@ -66,7 +35,7 @@ export default function LitePosts({ posts, onDelete }) {
     
 
     return (
-        <Box sx={outerContainer}>
+        <Box sx={rootSx}>
             <Box sx={scrollContainer}>
                 <Grid {...gridProps}>
                     {Array.isArray(posts) && posts.length > 0 ? (
@@ -81,25 +50,18 @@ export default function LitePosts({ posts, onDelete }) {
                                         <IconButton
                                             size="small"
                                             onClick={(e) => handleDelete(post.id, e)}
-                                            sx={{
-                                            position: "absolute",
-                                            top: 8,
-                                            right: 8,
-                                            backgroundColor: "rgba(255,255,255,0.8)",
-                                            "&:hover": { backgroundColor: "rgba(255,255,255,1)" },
-                                            zIndex: 1
-                                            }}
+                                            sx={iconButtonStyles}
                                         >
                                             <DeleteIcon fontSize="small" />
                                         </IconButton>
                                     }
 
                                     <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography variant="h6" noWrap gutterBottom>
+                                        <Typography variant="h6" noWrap gutterBottom sx={titleSx}>
                                             {post.title}
                                         </Typography>
                                     </CardContent>
-                                    <Box sx={dateBoxStyles}>
+                                    <Box sx={infoRowSx}>
                                         <Typography variant="body2" color="text.secondary" noWrap>
                                             {dayjs(post.createdAt).format("YY-MM-DD")}
                                         </Typography>

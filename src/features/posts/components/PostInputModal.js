@@ -1,5 +1,19 @@
 import { Modal, Button, ButtonGroup, TextField, Paper, Switch, FormControlLabel} from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
+import {
+  modalSx,
+  paperSx,
+  titleSx,
+  labelSx,
+  labelContentSx,
+  textFieldSx,
+  textAreaSx,
+  switchWrapSx,
+  saveBtnSx,
+  cancelBtnSx,
+  btnRowSx,
+  switchSx
+} from '../styles/PostInputModalStyles';
 
 /* 
   역할 : 게시물 페이지 -> 게시물 삽입/저장장
@@ -43,50 +57,57 @@ export default function PostInputModal({ isOpen, toggleOption, post, setPost, sa
       open={isOpen}
       onClose={handleClose}
       disableEnforceFocus
-      sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+      sx={modalSx}
     >
       <Paper
         component="form"
         onSubmit={(e) => e.preventDefault()}
-        sx={{
-          width: { xs: '90%', sm: 500 },
-          p: 3,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'stretch',
-          gap: 2,
-        }}
+        sx={paperSx}
       >
-
+        <div style={titleSx}>게시물 작성/수정</div>
+        <div style={labelSx}>제목</div>
         <TextField
-          label="Title"
+          placeholder="제목을 입력하세요"
           value={tempPost.title}
           onChange={handleChange('title')}
           fullWidth
+          variant="outlined"
+          sx={textFieldSx}
         />
-
+        <div style={labelContentSx}>내용</div>
         <TextField
-          label="Content"
+          placeholder="내용을 입력하세요"
           value={tempPost.content}
           onChange={handleChange('content')}
           fullWidth
           multiline
-          rows={8}
+          rows={7}
+          variant="outlined"
+          sx={textAreaSx}
         />
-
-        <FormControlLabel
-          control={<Switch checked={autoSave} onChange={handleToggleAutoSave} />}
-          label="내 페이지에 저장"
-        />
-
-        <ButtonGroup sx={{ alignSelf: 'flex-end' }}>
-          <Button variant="contained" onClick={()=> save()}>
+        <div style={switchWrapSx}>
+          <FormControlLabel
+            control={<Switch checked={autoSave} onChange={handleToggleAutoSave} sx={switchSx} />}
+            label={<span style={{ color: '#1976d2', fontWeight: 600, fontSize: 15 }}>내 페이지에 저장</span>}
+            sx={{ m: 0 }}
+          />
+        </div>
+        <div style={btnRowSx}>
+          <Button
+            variant="contained"
+            onClick={()=> save()}
+            sx={saveBtnSx}
+          >
             저장
           </Button>
-          <Button variant="outlined" onClick={handleClose}>
+          <Button
+            variant="outlined"
+            onClick={handleClose}
+            sx={cancelBtnSx}
+          >
             취소
           </Button>
-        </ButtonGroup>
+        </div>
       </Paper>
     </Modal>
   );
