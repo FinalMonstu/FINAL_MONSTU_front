@@ -3,12 +3,20 @@ import { Formik, Form } from 'formik';
 import { Box, Button, Divider, Tab, Tabs, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-import { useSnack } from '../../common/components/MultiSnackBar';
-import { findIdAPI, sendEmailCode, verifyEmailCode } from './AuthController';
-import ResetPwBox from './components/ResetPwBox';
-import FindIdBox from './components/FindIdBox';
-import { emailAuthSchema, findEmailSchema } from './hooks/SignSchema';
-import { authPath } from '../../common/hooks/urlManager';
+import { useSnack } from '../../../common/components/MultiSnackBar';
+import { findIdAPI, sendEmailCode, verifyEmailCode } from '../AuthController';
+import ResetPwBox from '../components/ResetPwBox';
+import FindIdBox from '../components/FindIdBox';
+import { emailAuthSchema, findEmailSchema } from '../hooks/SignSchema';
+import { authPath } from '../../../common/hooks/urlManager';
+import {
+    containerSx,
+    formBoxSx,
+    tabsSx,
+    tabLabelSx,
+    dividerSx,
+    submitButtonSx
+} from '../styles/FindPageStyles';
 
 /* 
   역할 : 비밀번호/아이디(이메일) 찾기 페이지
@@ -78,22 +86,20 @@ export default function FindPage() {
   );
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        bgcolor: '#fff',
-      }}
-    >
-      <Box sx={{ width: 400, p: 4, border: '1px solid #ccc', borderRadius: 2, textAlign: 'center' }}>
-        <Tabs value={tabValue} onChange={handleTabChange} centered textColor="inherit" sx={{ mb: 2 }}>
+    <Box sx={containerSx}>
+      <Box sx={formBoxSx}>
+        <Tabs 
+          value={tabValue} 
+          onChange={handleTabChange} 
+          centered 
+          textColor="inherit" 
+          sx={tabsSx}
+        >
           {['Reset password', 'Find ID(email)'].map(label => (
             <Tab
               key={label}
               label={
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: 'black' }}>
+                <Typography variant="subtitle1" sx={tabLabelSx}>
                   {label}
                 </Typography>
               }
@@ -101,7 +107,7 @@ export default function FindPage() {
           ))}
         </Tabs>
 
-        <Divider sx={{ mb: 4 }} />
+        <Divider sx={dividerSx} />
 
         <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit} enableReinitialize>
           {formik => (
@@ -116,7 +122,7 @@ export default function FindPage() {
                 type="submit"
                 variant="contained"
                 disabled={formik.isSubmitting}
-                sx={{ backgroundColor: 'black', '&:hover': { backgroundColor: '#333' }, mt: 2 }}
+                sx={submitButtonSx}
                 fullWidth
               >
                 {tabValue === 0 ? 'Reset my Password' : 'Find my ID'}

@@ -1,5 +1,14 @@
-import { Table, TableBody, TableCell, TableContainer,TableHead, TableRow, Checkbox, Paper} from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Paper, Typography } from '@mui/material';
 import dayjs from 'dayjs';
+import {
+    tableContainerSx,
+    checkboxCellSx,
+    tableRowSx,
+    basicCellSx,
+    roleCellSx,
+    statusCellSx,
+    dateCellSx
+} from '../styles/MemberTableStyles';
 
 /* 
   역할 : 어드민 페이지 -> 회원 간단 정보 목록 표시
@@ -17,23 +26,26 @@ export default function MemberTable({
   const indeterminate = selected.length > 0 && selected.length < data.length;
 
   return (
-    <TableContainer component={Paper}>
-      <Table size="small">
+    <TableContainer 
+      component={Paper}
+      sx={tableContainerSx}
+    >
+      <Table size="medium">
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
+            <TableCell padding="checkbox" sx={checkboxCellSx}>
               <Checkbox
                 indeterminate={indeterminate}
                 checked={allSelected}
                 onChange={onSelectAll}
               />
             </TableCell>
-            <TableCell>countryCode</TableCell>
-            <TableCell>email</TableCell>
-            <TableCell>nickname</TableCell>
-            <TableCell>role</TableCell>
-            <TableCell>status</TableCell>
-            <TableCell>created</TableCell>
+            <TableCell>국가</TableCell>
+            <TableCell>이메일</TableCell>
+            <TableCell>닉네임</TableCell>
+            <TableCell>역할</TableCell>
+            <TableCell>상태</TableCell>
+            <TableCell>가입일시</TableCell>
           </TableRow>
         </TableHead>
 
@@ -43,19 +55,54 @@ export default function MemberTable({
               key={row.memberId}
               hover
               onClick={() => onRowClick(row.memberId)}
+              sx={tableRowSx}
             >
-              <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
+              <TableCell 
+                padding="checkbox" 
+                onClick={e => e.stopPropagation()}
+                sx={checkboxCellSx}
+              >
                 <Checkbox
                   checked={selected.includes(row.memberId)}
                   onChange={() => onSelectOne(row.memberId)}
                 />
               </TableCell>
-              <TableCell>{row?.countryCode}</TableCell>
-              <TableCell>{row?.email}</TableCell>
-              <TableCell>{row?.nickName}</TableCell>
-              <TableCell>{row?.role}</TableCell>
-              <TableCell>{row?.status}</TableCell>
-              <TableCell>{row?.createdAt ? dayjs(row.modifiedAt).format('YYYY-MM-DD HH:mm') : '—'}</TableCell>
+              <TableCell>
+                <Typography variant="body2" sx={basicCellSx}>
+                  {row?.countryCode || '—'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" sx={basicCellSx}>
+                  {row?.email || '—'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" sx={basicCellSx}>
+                  {row?.nickName || '—'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography 
+                  variant="body2" 
+                  sx={roleCellSx(row?.role)}
+                >
+                  {row?.role || '—'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography 
+                  variant="body2" 
+                  sx={statusCellSx(row?.status)}
+                >
+                  {row?.status || '—'}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography variant="body2" sx={dateCellSx}>
+                  {row?.createdAt ? dayjs(row.createdAt).format('YYYY-MM-DD HH:mm') : '—'}
+                </Typography>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { Box, Button } from "@mui/material";
+import { Box, Button, Paper } from "@mui/material";
 
 import { myPosts } from "../../posts/PostController";
 import { useSnack } from "../../../common/components/MultiSnackBar";
 import DateOptionSelector from "../../preset/components/DateOptionSelector";
 import PageMoreButton from "../../../common/components/custom-styled/PageMoreButton";
 import LitePosts from "../../posts/components/LitePosts";
+import {
+  paperSx,
+  sortButtonSx,
+  selectorBoxSx
+} from '../styles/MyPostsBoxStyles';
 
 export default function MyPostsBox() {
   const showSnack = useSnack();
@@ -63,22 +68,29 @@ export default function MyPostsBox() {
   };
 
   return (
-    <Box>
+    <Paper sx={paperSx}>
       <Box display="flex" justifyContent="flex-end" alignItems="center" mb={2} gap={1}>
-        <Button variant="outlined" size="small" onClick={handleSortToggle}>
+        <Button 
+          variant="outlined" 
+          size="small" 
+          onClick={handleSortToggle}
+          sx={sortButtonSx}
+        >
           {pageable.sortOrder === "asc" ? "오래된 순" : "최신 순"}
         </Button>
 
-        <DateOptionSelector 
-          value={pageable.sortValue} 
-          onChange={handleSortValueChange}
-          values={['createdAt','modifiedAt']}
-          allowNone={false}
-        />
+        <Box sx={selectorBoxSx}>
+          <DateOptionSelector 
+            value={pageable.sortValue} 
+            onChange={handleSortValueChange}
+            values={['createdAt','modifiedAt']}
+            allowNone={false}
+          />
+        </Box>
       </Box>
 
       <LitePosts posts={pageable.content} onDelete={handleRemovePost}/>
       <PageMoreButton pageable={pageable} setPageable={setPageable}/>
-    </Box>
+    </Paper>
   );
 }

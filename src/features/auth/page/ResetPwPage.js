@@ -4,11 +4,11 @@ import CheckIcon from "@mui/icons-material/Check";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Formik, Form, Field } from "formik";
 
-import { confirmPwSchema } from "./hooks/SignSchema";
-import { resetPwAPI } from "./AuthController";
-import { authPath } from "../../common/hooks/urlManager";
-import { useAuth } from "./hooks/AuthContext";
-import { useSnack } from "../../common/components/MultiSnackBar";
+import { confirmPwSchema } from "../hooks/SignSchema";
+import { resetPwAPI } from "../AuthController";
+import { authPath } from "../../../common/hooks/urlManager";
+import { useAuth } from "../hooks/AuthContext";
+import { useSnack } from "../../../common/components/MultiSnackBar";
 
 /* 
   역할 : 비밀번호 재설정 페이지

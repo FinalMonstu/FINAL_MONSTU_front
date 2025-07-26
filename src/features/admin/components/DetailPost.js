@@ -1,19 +1,32 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Modal, Paper, Button, ButtonGroup, TextField, Divider } from "@mui/material";
+import { Box, Modal, Paper, Button, TextField, Typography, Divider } from "@mui/material";
 import { Formik, Form, ErrorMessage } from "formik";
 
-import { btnBlack } from "../../../common/styles/commonStyle";
 import { useSnack } from "../../../common/components/MultiSnackBar";
 import { getDetailPostAPI, updatePostAPI } from "../AdminController";
 import { UpdateSchema } from "../../../features/posts/hooks/PostSchema";
 import BooleanSelector from "../../preset/components/BooleanSelector";
+import {
+    modalSx,
+    paperSx,
+    containerSx,
+    titleSx,
+    sectionTitleSx,
+    inputGridSx,
+    publicSettingSx,
+    publicLabelSx,
+    contentBoxSx,
+    buttonContainerSx,
+    submitButtonSx,
+    cancelButtonSx
+} from '../styles/DetailPostStyles';
 
 export default function DetailPost({ postId, setter, refreshList }){
     const showSnack = useSnack();
     const [postInfo,setPostInfo] = useState(null)
 
     const initialValues = useMemo(() => ({
-            postId:          postId,
+            postId:      postId,
             title:       postInfo?.title       ?? "",
             content:     postInfo?.content     ?? "",
             createdAt:   postInfo?.createdAt   ?? "",
@@ -56,20 +69,23 @@ export default function DetailPost({ postId, setter, refreshList }){
     useEffect(()=>{ if(postId) fetch(postId) },[postId])
     
     return (
-            <Modal
-                open={postId!=null}
-                onClose={() => setter(null)}
-                disableEnforceFocus
-                sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+        <Modal
+            open={postId!=null}
+            onClose={() => setter(null)}
+            disableEnforceFocus
+            sx={modalSx}
+        >
+            <Paper
+                component="div"
+                sx={paperSx}
             >
-                <Paper
-                    component="div"
-                    sx={{
-                        width: { xs: '90%', sm: 600 },
-                        p: 3,
-                        '& .MuiTextField-root': { m: 1, width: 'calc(50% - 16px)' },
-                    }}
-                >
+                <Box sx={containerSx}>
+                    <Typography variant="h5" component="h2" sx={titleSx}>
+                        게시글 정보 수정
+                    </Typography>
+                    
+                    <Divider sx={{ mb: 3 }} />
+
                     <Formik
                         initialValues={initialValues}
                         validationSchema={UpdateSchema} 
@@ -78,97 +94,142 @@ export default function DetailPost({ postId, setter, refreshList }){
                     >
                         {({ values, errors, touched, setFieldValue }) => (
                         <Form>
-                            <TextField
-                                name="postId"
-                                label="postId"
-                                required
-                                value={values.postId}
-                                slotProps={{ input: { readOnly: true } }}
-                            />
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    기본 정보
+                                </Typography>
+                                <Box sx={inputGridSx}>
+                                    <TextField
+                                        name="postId"
+                                        label="게시글 ID"
+                                        required
+                                        value={values.postId}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        name="authorId"
+                                        label="작성자 ID"
+                                        value={values.authorId}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                </Box>
+                            </Box>
 
-                            <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    생성/수정 정보
+                                </Typography>
+                                <Box sx={inputGridSx}>
+                                    <TextField
+                                        name="createdAt"
+                                        label="생성일시"
+                                        required
+                                        value={values.createdAt}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        name="modifiedAt"
+                                        label="수정일시"
+                                        value={values.modifiedAt}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                </Box>
+                            </Box>
 
-                            <TextField
-                                name="createdAt"
-                                label="createdAt"
-                                required
-                                value={values.createdAt}
-                                slotProps={{ input: { readOnly: true } }}
-                            />
-                            <TextField
-                                name="modifiedAt"
-                                label="modifiedAt"
-                                value={values.modifiedAt}
-                                slotProps={{ input: { readOnly: true } }}
-                            />
+                            <Box sx={{ mb: 4 }}>
+                                <Box sx={publicSettingSx}>
+                                    <Typography variant="body1" sx={publicLabelSx}>
+                                        공개 여부:
+                                    </Typography>
+                                    <BooleanSelector 
+                                        value={values.isPublic}
+                                        onChange={newValue => setFieldValue("isPublic", newValue)}
+                                        allowNone={false}
+                                        label={""}
+                                    />
+                                </Box>
+                            </Box>
 
-                            <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
-    
-                            <BooleanSelector 
-                                value={values.isPublic}
-                                onChange={newValue => setFieldValue("isPublic", newValue)}
-                                allowNone={false}
-                                label={"isPublic"}
-                            />
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    조회 정보
+                                </Typography>
+                                <Box sx={inputGridSx}>
+                                    <TextField
+                                        name="viewCount"
+                                        label="조회수"
+                                        value={values.viewCount}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        name="lastViewedAt"
+                                        label="마지막 조회일시"
+                                        value={values.lastViewedAt}
+                                        slotProps={{ input: { readOnly: true } }}
+                                        fullWidth
+                                    />
+                                </Box>
+                            </Box>
 
-                            <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    게시글 내용
+                                </Typography>
+                                <Box sx={contentBoxSx}>
+                                    <TextField
+                                        name="title"
+                                        label="제목"
+                                        required
+                                        value={values.title}
+                                        onChange={e => setFieldValue("title", e.target.value)}
+                                        error={touched.title && Boolean(errors.title)}
+                                        helperText={<ErrorMessage name="title" />}
+                                        fullWidth
+                                    />
+                                </Box>
+                                <Box>
+                                    <TextField
+                                        label="내용"
+                                        value={values.content}
+                                        onChange={e => setFieldValue("content", e.target.value)}
+                                        fullWidth
+                                        multiline
+                                        rows={8}
+                                        error={touched.content && Boolean(errors.content)}
+                                        helperText={<ErrorMessage name="content" />}
+                                    />
+                                </Box>
+                            </Box>
 
-                            <TextField
-                                name="viewCount"
-                                label="viewCount"
-                                value={values.viewCount}
-                                slotProps={{ input: { readOnly: true } }}
-                            />
-                            <TextField
-                                name="lastViewedAt"
-                                label="lastViewedAt"
-                                value={values.lastViewedAt}
-                                slotProps={{ input: { readOnly: true } }}
-                            />
+                            <Divider sx={{ mb: 3 }} />
 
-                            <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
-
-                            <TextField
-                                name="title"
-                                label="title"
-                                required
-                                value={values.title}
-                                onChange={e => setFieldValue("title", e.target.value)}
-                                error={touched.title && Boolean(errors.title)}
-                                helperText={<ErrorMessage name="title" />}
-                            />
-                            <TextField
-                                label="content"
-                                value={values.content}
-                                onChange={e => setFieldValue("content", e.target.value)}
-                                fullWidth
-                                multiline
-                                rows={8}
-                                error={touched.content && Boolean(errors.content)}
-                                helperText={<ErrorMessage name="content" />}
-                            />
-
-                            <ButtonGroup sx={{ mt: 2 }} fullWidth>
+                            <Box sx={buttonContainerSx}>
                                 <Button
                                     type="submit"
-                                    sx={{ ...btnBlack, mr : 0.3}}    
+                                    sx={submitButtonSx}
                                     variant="contained"
                                 >
-                                    Update
+                                    수정 완료
                                 </Button>
                                 <Button
                                     type="button"
                                     onClick={() => setter(null)}
-                                    sx={{ ...btnBlack}}
+                                    sx={cancelButtonSx}
                                     variant="outlined"
                                 >
-                                    Cancel
+                                    취소
                                 </Button>
-                            </ButtonGroup>
+                            </Box>
                         </Form>
                         )}
                     </Formik>
-                </Paper>
-            </Modal>
-        );
+                </Box>
+            </Paper>
+        </Modal>
+    );
 }

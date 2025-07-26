@@ -1,14 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Box, Modal, Paper, Button, ButtonGroup, TextField } from "@mui/material";
+import { Box, Modal, Paper, Button, TextField, Typography, Divider } from "@mui/material";
 import { Formik, Form } from "formik";
 
 import MemberRoleSelector from "../../preset/components/MemberRoleSelector";
 import MemberStatusSelector from "../../preset/components/MemberStatusSelector";
 import CountrySelect from "../../preset/components/CountrySelector";
 import { UpdateSchema } from "../../../features/auth/hooks/SignSchema";
-import { btnBlack } from "../../../common/styles/commonStyle";
 import { getMemberAPI, updateMemberAPI } from "../AdminController";
 import { useSnack } from "../../../common/components/MultiSnackBar";
+import {
+    modalSx,
+    paperSx,
+    containerSx,
+    titleSx,
+    sectionTitleSx,
+    inputGridSx,
+    selectorGridSx,
+    buttonContainerSx,
+    submitButtonSx,
+    cancelButtonSx
+} from '../styles/DetailMemberStyles';
 
 /* 
   역할 : 어드민 페이지 -> 회원 관리 -> 회원 상세 정보
@@ -62,96 +73,115 @@ export default function DetailMember({ memberId, setter, onSuccess }){
             open={memberId!=null}
             onClose={() => setter(null)}
             disableEnforceFocus
-            sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+            sx={modalSx}
         >
             <Paper
-            component="div"
-            sx={{
-            width: { xs: '90%', sm: 600 },
-            p: 3,
-            '& .MuiTextField-root': { m: 1, width: 'calc(50% - 16px)' },
-            }}
+                component="div"
+                sx={paperSx}
             >
-                <Formik
-                    initialValues={initialValues}
-                    validationSchema={UpdateSchema} 
-                    enableReinitialize={true}
-                    onSubmit={handleSubmit}
-                >
-                    {({ values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
-                    <Form>
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-                            <TextField
-                                name="email"
-                                label="Email"
-                                required
-                                value={values.email}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.email && Boolean(errors.email)}
-                                helperText={touched.email && errors.email}
-                            />
-                            <TextField
-                                name="nickName"
-                                label="Nick Name"
-                                required
-                                value={values.nickName}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.nickName && Boolean(errors.nickName)}
-                                helperText={touched.nickName && errors.nickName}
-                            />
-                            <TextField
-                                name="phoneNumber"
-                                label="Phone Number"
-                                placeholder="010-1234-5678"
-                                required
-                                value={values.phoneNumber}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-                                helperText={touched.phoneNumber && errors.phoneNumber}
-                            />
-                        </Box>
+                <Box sx={containerSx}>
+                    <Typography variant="h5" component="h2" sx={titleSx}>
+                        회원 정보 수정
+                    </Typography>
+                    
+                    <Divider sx={{ mb: 3 }} />
 
-                        <Box>
-                            <MemberRoleSelector
-                                value={values.role}
-                                onChange={(v) => setFieldValue("role", v)}
-                                allowNone={false}
-                            />
-                            <MemberStatusSelector
-                                value={values.status}
-                                onChange={(v) => setFieldValue("status", v) }
-                                allowNone={false}
-                            />
-                            <CountrySelect
-                                value={values.country}
-                                onChange={(v) => setFieldValue("country", v) }
-                                allowNone={false}
-                            />
-                        </Box>
+                    <Formik
+                        initialValues={initialValues}
+                        validationSchema={UpdateSchema} 
+                        enableReinitialize={true}
+                        onSubmit={handleSubmit}
+                    >
+                        {({ values, errors, touched, handleChange, handleBlur, setFieldValue }) => (
+                        <Form>
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    기본 정보
+                                </Typography>
+                                <Box sx={inputGridSx}>
+                                    <TextField
+                                        name="email"
+                                        label="이메일"
+                                        required
+                                        value={values.email}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.email && Boolean(errors.email)}
+                                        helperText={touched.email && errors.email}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        name="nickName"
+                                        label="닉네임"
+                                        required
+                                        value={values.nickName}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.nickName && Boolean(errors.nickName)}
+                                        helperText={touched.nickName && errors.nickName}
+                                        fullWidth
+                                    />
+                                    <TextField
+                                        name="phoneNumber"
+                                        label="전화번호"
+                                        placeholder="010-1234-5678"
+                                        required
+                                        value={values.phoneNumber}
+                                        onChange={handleChange}
+                                        onBlur={handleBlur}
+                                        error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+                                        helperText={touched.phoneNumber && errors.phoneNumber}
+                                        fullWidth
+                                    />
+                                </Box>
+                            </Box>
 
-                        <ButtonGroup sx={{ mt: 2 }} fullWidth>
-                            <Button
-                                type="submit"
-                                sx={{ ...btnBlack, mr : 0.3}}    
-                                variant="contained"
-                            >
-                                Update
-                            </Button>
-                            <Button
-                                type="button"
-                                onClick={() => setter(null)}
-                                sx={{ ...btnBlack}}
-                                variant="outlined"
-                            >
-                                Cancel
-                            </Button>
-                        </ButtonGroup>
-                    </Form>
-                    )}
-                </Formik>
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" sx={sectionTitleSx}>
+                                    권한 및 상태
+                                </Typography>
+                                <Box sx={selectorGridSx}>
+                                    <MemberRoleSelector
+                                        value={values.role}
+                                        onChange={(v) => setFieldValue("role", v)}
+                                        allowNone={false}
+                                    />
+                                    <MemberStatusSelector
+                                        value={values.status}
+                                        onChange={(v) => setFieldValue("status", v) }
+                                        allowNone={false}
+                                    />
+                                    <CountrySelect
+                                        value={values.country}
+                                        onChange={(v) => setFieldValue("country", v) }
+                                        allowNone={false}
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Divider sx={{ mb: 3 }} />
+
+                            <Box sx={buttonContainerSx}>
+                                <Button
+                                    type="submit"
+                                    sx={submitButtonSx}
+                                    variant="contained"
+                                >
+                                    수정 완료
+                                </Button>
+                                <Button
+                                    type="button"
+                                    onClick={() => setter(null)}
+                                    sx={cancelButtonSx}
+                                    variant="outlined"
+                                >
+                                    취소
+                                </Button>
+                            </Box>
+                        </Form>
+                        )}
+                    </Formik>
+                </Box>
             </Paper>
         </Modal>
     );

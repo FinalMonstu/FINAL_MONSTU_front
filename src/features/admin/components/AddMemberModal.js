@@ -6,8 +6,18 @@ import MemberRoleSelector from "../../preset/components/MemberRoleSelector";
 import MemberStatusSelector from "../../preset/components/MemberStatusSelector";
 import CountrySelect from "../../preset/components/CountrySelector";
 import { SignSchema } from "../../auth/hooks/SignSchema";
-import { btnBlack } from "../../../common/styles/commonStyle";
 import { createMemberAPI } from "../AdminController";
+import {
+  modalSx,
+  paperSx,
+  formSx,
+  inputBoxSx,
+  textFieldSx,
+  selectorBoxSx,
+  buttonGroupSx,
+  addBtnSx,
+  cancelBtnSx
+} from '../styles/AddMemberModalStyles';
 
 /* 
   역할 : 멤버 추가
@@ -44,21 +54,11 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
       open={modalOpen}
       onClose={() => toggleModal("add")}
       disableEnforceFocus
-      sx={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      sx={modalSx}
     >
       <Paper
         component="div"
-        sx={{
-          "& .MuiTextField-root": { m: 1, width: "70vw" },
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          p: 3,
-        }}
+        sx={paperSx}
       >
         <Formik
           initialValues={initialValues}
@@ -66,8 +66,8 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
           onSubmit={handleSubmit}
         >
           {({ values, errors, touched, handleChange, handleBlur, setFieldValue, submitForm}) => (
-            <Form style={{ width: "100%", textAlign: "center" }} >
-              <Box>
+            <Form style={formSx}>
+              <Box sx={inputBoxSx}>
                 <TextField
                   name="email"
                   label="Email"
@@ -77,8 +77,8 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   onBlur={handleBlur}
                   error={touched.email && Boolean(errors.email)}
                   helperText={touched.email && errors.email}
+                  sx={textFieldSx}
                 />
-
                 <TextField
                   name="nickName"
                   label="Nick Name"
@@ -88,8 +88,10 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   onBlur={handleBlur}
                   error={touched.nickName && Boolean(errors.nickName)}
                   helperText={touched.nickName && errors.nickName}
+                  sx={textFieldSx}
                 />
-
+              </Box>
+              <Box sx={inputBoxSx}>
                 <TextField
                   name="phoneNumber"
                   label="Phone Number"
@@ -100,11 +102,11 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   onBlur={handleBlur}
                   error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                   helperText={touched.phoneNumber && errors.phoneNumber}
+                  sx={textFieldSx}
                 />
-
                 <TextField
                   name="password"
-                  label="password"
+                  label="Password"
                   type="password"
                   required
                   value={values.password}
@@ -112,11 +114,13 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   onBlur={handleBlur}
                   error={touched.password && Boolean(errors.password)}
                   helperText={touched.password && errors.password}
+                  sx={textFieldSx}
                 />
-
+              </Box>
+              <Box sx={inputBoxSx}>
                 <TextField
                   name="confirmPassword"
-                  label="confirmPassword"
+                  label="Confirm Password"
                   type="password"
                   required
                   value={values.confirmPassword}
@@ -124,10 +128,10 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   onBlur={handleBlur}
                   error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                   helperText={touched.confirmPassword && errors.confirmPassword}
+                  sx={textFieldSx}
                 />
               </Box>
-
-              <Box>
+              <Box sx={selectorBoxSx}>
                 <MemberRoleSelector
                   value={values.role}
                   onChange={(v) => setFieldValue("role", v)}
@@ -144,11 +148,10 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                   allowNone={false}
                 />
               </Box>
-
-              <ButtonGroup sx={{ mt: 2 }} fullWidth>
+              <Box sx={buttonGroupSx}>
                 <Button
                   type="button"
-                  sx={{ ...btnBlack, m: 0.5 }}    
+                  sx={addBtnSx}
                   variant="contained"
                   onClick={ submitForm }
                 >
@@ -157,13 +160,12 @@ export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
                 <Button
                   type="button"
                   onClick={() => toggleModal("add")}
-                  sx={{ ...btnBlack, m: 0.5 }}
+                  sx={cancelBtnSx}
                   variant="outlined"
                 >
                   Cancel
                 </Button>
-              </ButtonGroup>
-
+              </Box>
             </Form>
           )}
         </Formik>

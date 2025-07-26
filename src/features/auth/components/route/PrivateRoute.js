@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks/AuthContext';
-import { authPath } from '../../../common/hooks/urlManager';
+import { useAuth } from '../../hooks/AuthContext';
+import { authPath } from '../../../../common/hooks/urlManager';
 
 /* 로그인 상태의 유저 검증  */
 const PrivateRoute = ({ children }) => {

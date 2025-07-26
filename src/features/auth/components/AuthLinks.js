@@ -1,34 +1,20 @@
 import { Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { authPath } from '../../../common/hooks/urlManager';
-
-const ButtonStyle = {
-    textTransform: 'none',
-        fontWeight: 'bold',
-        color: 'text.secondary',
-        '&:hover': {
-        color: 'text.primary',
-        backgroundColor: 'transparent',
-    },
-}
+import { buttonStyle, boxStyle } from '../styles/AuthLinksStyles';
 
 export default function AuthLinks() {
   const navigate = useNavigate();
 
   return (
     <Box
-      sx={{
-        mt: 3,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
+      sx={boxStyle}
     >
       {/* 비밀번호 찾기 / 아이디 찾기 */}
       <Button
         variant="text"
         onClick={() => navigate(authPath.find)}
-        sx={{ ...ButtonStyle }}
+        sx={buttonStyle}
       >
         Reset Password / Find My Id
       </Button>
@@ -37,10 +23,10 @@ export default function AuthLinks() {
       <Button
         variant="text"
         onClick={() => navigate(authPath.signup)}
-        sx={{ ...ButtonStyle }}
+        sx={buttonStyle}
       >
         Sign Up
       </Button>
     </Box>
-);
+  );
 }

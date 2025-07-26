@@ -4,20 +4,21 @@ import Main from './Main';
 import { Box } from '@mui/material';
 
 import PostPage from './features/posts/PostPage';
-import SignUpPage from './features/auth/SignUpPage';
-import LoginPage from './features/auth/LoginPage';
-import PrivateRoute from './features/auth/components/PrivateRoute';
-import {AuthProvider} from './features/auth/hooks/AuthContext'
-import FindPage from './features/auth/FindPage';
-import ResetPwPage from './features/auth/ResetPwPage';
-import FindIdPage from './features/auth/FindIdPage';
-import SignOutPage from './features/auth/SignOutPage';
+import SignUpPage from './features/auth/page/SignUpPage';
+import LoginPage from './features/auth/page/LoginPage';
+import FindPage from './features/auth/page/FindPage';
+import ResetPwPage from './features/auth/page/ResetPwPage';
+import FindIdPage from './features/auth/page/FindIdResultPage';
+import SignOutPage from './features/auth/page/SignOutPage';
 import MyPage from './features/profile/MyPage';
-import { adminPath, authPath, mainPath, myPath, postPath, } from './common/hooks/urlManager';
+import AuthPassPage from './features/auth/page/AuthPassPage';
 import AdminPage from './features/admin/AdminPage';
-import AdminRoute from './features/auth/components/AdminRoute';
+
+import { adminPath, authPath, mainPath, myPath, postPath, } from './common/hooks/urlManager';
 import Header from './common/components/Header';
-import AuthPassPage from './features/auth/AuthPassPage';
+import AdminRoute from './features/auth/components/route/AdminRoute';
+import PrivateRoute from './features/auth/components/route/PrivateRoute';
+import {AuthProvider} from './features/auth/hooks/AuthContext'
 
 function App() {
 

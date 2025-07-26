@@ -1,38 +1,43 @@
-import { Box, Typography } from "@mui/material";
-
-const linkStyle = { color: '#6247AA', textDecoration: 'none', fontWeight: 'bold', margin: 10 }
+import { Box, Typography, Link, Stack } from "@mui/material";
+import {
+  footerSx,
+  titleSx,
+  captionSx,
+  captionEmailSx,
+  linkStackSx,
+  linkSx
+} from '../styles/FooterStyles';
 
 export default function Footer(){
     return(
-        <Box
-            component="footer"
-            sx={{ py: 4, textAlign: 'center' }}
-            >
-            <Typography variant="subtitle1" component="div" gutterBottom>
+        <Box component="footer" sx={footerSx}>
+            <Typography variant="subtitle1" component="div" gutterBottom sx={titleSx}>
                 MonStu
             </Typography>
-            <Typography variant="caption" display="block">
+            <Typography variant="caption" display="block" sx={captionSx}>
                 ©2025 MonStu Developed by kimicetea
             </Typography>
-            <Typography variant="caption" display="block">
+            <Typography variant="caption" display="block" sx={captionEmailSx}>
                 email: kimicetea777@gmail.com
             </Typography>
-            <a
+            <Stack direction="row" justifyContent="center" spacing={2} sx={linkStackSx}>
+              <Link
                 href="https://www.notion.so/PORTFOLIO-19e303eae1f280828d69f4b34a9654a7?pvs=4"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{...linkStyle}}
-                >
+                sx={linkSx}
+              >
                 Developer PROFILE
-            </a>
-            <a
+              </Link>
+              <Link
                 href="https://github.com/orgs/FinalMonstu/repositories"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{...linkStyle}}
-                >
+                sx={linkSx}
+              >
                 Project Code
-            </a>
+              </Link>
+            </Stack>
         </Box>
     )
 }

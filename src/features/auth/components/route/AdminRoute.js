@@ -1,8 +1,8 @@
 import { Navigate } from "react-router-dom";
 
-import { useAuth } from "../hooks/AuthContext";
-import { authPath } from "../../../common/hooks/urlManager";
-import { memberRole } from "../../../common/hooks/enum/member";
+import { useAuth } from "../../hooks/AuthContext";
+import { authPath } from "../../../../common/hooks/urlManager";
+import { memberRole } from "../../../../common/hooks/enum/member";
 
 /* 어드민 검증 컴포넌트 */
 export default function AdminRoute({children}){

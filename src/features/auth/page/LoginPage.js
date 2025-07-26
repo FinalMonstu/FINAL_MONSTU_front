@@ -3,13 +3,24 @@ import { Formik, Form, Field } from "formik";
 import { Box, TextField, Button, Typography, Stack, Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-import { LoginSchema } from "./hooks/SignSchema";
-import { btnBlack, inputStyle } from "../../common/styles/commonStyle";
-import { loginAPI } from "./AuthController";
-import { useAuth } from "./hooks/AuthContext";
-import { mainPath } from "../../common/hooks/urlManager";
-import AuthLinks from "./components/AuthLinks";
-import { useSnack } from "../../common/components/MultiSnackBar";
+import { LoginSchema } from "../hooks/SignSchema";
+import { loginAPI } from "../AuthController";
+import { useAuth } from "../hooks/AuthContext";
+import { mainPath } from "../../../common/hooks/urlManager";
+import AuthLinks from "../components/AuthLinks";
+import { useSnack } from "../../../common/components/MultiSnackBar";
+import {
+    containerSx,
+    formBoxSx,
+    titleSx,
+    subtitleSx,
+    stackSx,
+    inputRowSx,
+    labelSx,
+    inputSx,
+    loginButtonSx,
+    dividerSx
+} from '../styles/LoginPageStyles';
 
 /* 
   역할 : 로그인 페이지
@@ -21,7 +32,6 @@ export default function LoginForm() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const showSnack = useSnack();
-
 
   // 로그인 API 호출 후 JWT 토큰 저장, 유저정보 저장
   const handleLogin = useCallback(
@@ -39,13 +49,15 @@ export default function LoginForm() {
   );
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Box sx={{ width: 400, p: 4 }}>
-        <Typography variant="h4" align="center" fontWeight="bold" gutterBottom>
-          Login
+    <Box sx={containerSx}>
+      <Box sx={formBoxSx}>
+        <Typography variant="h3" sx={titleSx}>
+          Welcome Back
         </Typography>
-
-        <Divider sx={{ mb: 4, borderColor: '#C0C0C0' }} />
+        
+        <Typography variant="body1" sx={subtitleSx}>
+          Sign in to your account to continue
+        </Typography>
 
         <Formik
           initialValues={{ email: '', password: '' }}
@@ -54,25 +66,26 @@ export default function LoginForm() {
         >
           {({ errors, touched }) => (
             <Form>
-              <Stack spacing={3}>
+              <Stack sx={stackSx}>
 
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
-                    ID (email)
+                <Stack sx={inputRowSx}>
+                  <Typography variant="body2" sx={labelSx}>
+                    Email Address
                   </Typography>
 
                   <Field
                     name="email"
                     as={TextField}
                     fullWidth
-                    size="small"
-                    sx={{ input: inputStyle }}
+                    placeholder="Enter your email"
+                    sx={inputSx}
                     error={touched.email && Boolean(errors.email)}
+                    helperText={touched.email && errors.email}
                   />
                 </Stack>
                 
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <Typography variant="h5" sx={{  whiteSpace: "nowrap" }}>
+                <Stack sx={inputRowSx}>
+                  <Typography variant="body2" sx={labelSx}>
                     Password
                   </Typography>
 
@@ -81,13 +94,19 @@ export default function LoginForm() {
                     as={TextField}
                     type="password"
                     fullWidth
-                    size="small"
-                    sx={{ input: inputStyle }}
+                    placeholder="Enter your password"
+                    sx={inputSx}
                     error={touched.password && Boolean(errors.password)}
+                    helperText={touched.password && errors.password}
                   />
                 </Stack>
 
-                <Button type="submit" fullWidth sx={btnBlack} variant="contained">
+                <Button 
+                  type="submit" 
+                  fullWidth 
+                  sx={loginButtonSx}
+                  variant="contained"
+                >
                   LOGIN
                 </Button>
 
@@ -95,6 +114,12 @@ export default function LoginForm() {
             </Form>
           )}
         </Formik>
+
+        <Divider sx={dividerSx}>
+          <Typography variant="body2" sx={{ color: '#718096', px: 2 }}>
+            or
+          </Typography>
+        </Divider>
 
         {/* 비밀번호 / 아이디 찾기, 회원가입 - 페이지 링크 */}
         <AuthLinks/>

@@ -3,13 +3,22 @@ import { Box, Typography, TextField, Button, Divider, Stack} from "@mui/material
 import { Formik, Form, Field, ErrorMessage} from "formik";
 import { useNavigate } from "react-router-dom";
 
-import CountrySelector from "../preset/components/CountrySelector";
-import { SignSchema } from "./hooks/SignSchema";  
-import { LabelWithInput } from "../../common/components/custom-styled/LabelWithInput";
-import { emailAvail, sendEmailCode, signupAPI, verifyEmailCode } from "./AuthController";
-import { btnBlack, inputStyle } from "../../common/styles/commonStyle";
-import { authPath } from "../../common/hooks/urlManager";
-import { useSnack } from "../../common/components/MultiSnackBar";
+import CountrySelector from "../../preset/components/CountrySelector";
+import { SignSchema } from "../hooks/SignSchema";  
+import { LabelWithInput } from "../../../common/components/custom-styled/LabelWithInput";
+import { emailAvail, sendEmailCode, signupAPI, verifyEmailCode } from "../AuthController";
+import { authPath } from "../../../common/hooks/urlManager";
+import { useSnack } from "../../../common/components/MultiSnackBar";
+import {
+    containerSx,
+    formBoxSx,
+    titleSx,
+    subtitleSx,
+    stackSx,
+    inputSx,
+    actionButtonSx,
+    submitButtonSx
+} from '../styles/SignUpPageStyles';
 
 /* 
   역할 : 회원 가입 페이지
@@ -81,19 +90,21 @@ export default function SignUpPage () {
   }, [checks.codeCheck]);
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Box sx={{ p: 4, width: '100%', maxWidth: 600 }}>
+    <Box sx={containerSx}>
+      <Box sx={formBoxSx}>
 
-        <Typography variant="h4" fontWeight="bold" textAlign="center" gutterBottom>
-          Sign Up
+        <Typography variant="h3" sx={titleSx}>
+          Create Account
         </Typography>
-
-        <Divider sx={{ mb: 5, borderColor: '#C0C0C0' }} />
+        
+        <Typography variant="body1" sx={subtitleSx}>
+          Join us and start your journey
+        </Typography>
 
         <Formik initialValues={initialValues} validationSchema={SignSchema} onSubmit={handleSubmit}>
           {({ values, touched, errors, setFieldValue, isSubmitting }) => (
             <Form>
-              <Stack spacing={2}>
+              <Stack sx={stackSx}>
                 
                 <LabelWithInput label="ID" sub="(email)">
                   <Stack direction="row" spacing={1}>
@@ -103,11 +114,11 @@ export default function SignUpPage () {
                       placeholder="email@domain.net"
                       fullWidth
                       disabled={checks.emailCheck}
-                      sx={{ input: inputStyle }}
+                      sx={inputSx}
                       error={touched.email && Boolean(errors.email)}
                       helperText={<ErrorMessage name="email" />}
                     />
-                    <Button sx={btnBlack} disabled={checks.emailCheck} onClick={() => emailCheck(values.email)}>
+                    <Button sx={actionButtonSx} disabled={checks.emailCheck} onClick={() => emailCheck(values.email)}>
                       중복확인
                     </Button>
                   </Stack>
@@ -121,12 +132,12 @@ export default function SignUpPage () {
                       disabled={checks.codeCheck}
                       value={verifiCode.code}
                       onChange={e => setVerifiCode(prev => ({ ...prev, code: e.target.value }))}
-                      sx={{ input: inputStyle }}
+                      sx={inputSx}
                     />
-                    <Button sx={btnBlack} disabled={checks.codeCheck} onClick={sendCode}>
+                    <Button sx={actionButtonSx} disabled={checks.codeCheck} onClick={sendCode}>
                       인증코드 받기
                     </Button>
-                    <Button sx={btnBlack} disabled={checks.codeCheck} onClick={verifyCode}>
+                    <Button sx={actionButtonSx} disabled={checks.codeCheck} onClick={verifyCode}>
                       인증코드 확인
                     </Button>
                   </Stack>
@@ -138,7 +149,7 @@ export default function SignUpPage () {
                     as={TextField}
                     type="password"
                     fullWidth
-                    sx={{ input: inputStyle }}
+                    sx={inputSx}
                     error={touched.password && Boolean(errors.password)}
                     helperText={<ErrorMessage name="password" />}
                   />
@@ -150,7 +161,7 @@ export default function SignUpPage () {
                     as={TextField}
                     type="password"
                     fullWidth
-                    sx={{ input: inputStyle }}
+                    sx={inputSx}
                     error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                     helperText={<ErrorMessage name="confirmPassword" />}
                   />
@@ -161,7 +172,7 @@ export default function SignUpPage () {
                     name="nickName"
                     as={TextField}
                     fullWidth
-                    sx={{ input: inputStyle }}
+                    sx={inputSx}
                     error={touched.nickName && Boolean(errors.nickName)}
                     helperText={<ErrorMessage name="nickName" />}
                   />
@@ -173,7 +184,7 @@ export default function SignUpPage () {
                     as={TextField}
                     placeholder="010-1234-5678"
                     fullWidth
-                    sx={{ input: inputStyle }}
+                    sx={inputSx}
                     error={touched.phoneNumber && Boolean(errors.phoneNumber)}
                     helperText={<ErrorMessage name="phoneNumber" />}
                   />
@@ -185,7 +196,7 @@ export default function SignUpPage () {
                   allowNone={false}
                 />
 
-                <Button type="submit" fullWidth disabled={isSubmitting} sx={{ ...btnBlack, fontSize: 20, height: 45, mt: 2 }}>
+                <Button type="submit" fullWidth disabled={isSubmitting} sx={submitButtonSx}>
                   SIGN UP
                 </Button>
               </Stack>

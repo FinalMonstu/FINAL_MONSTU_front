@@ -1,9 +1,10 @@
 import { Box, TextField, Button, Typography } from '@mui/material';
 import { useState } from 'react';
 
-import { useSnack } from '../../common/components/MultiSnackBar';
-import { useAuth } from './hooks/AuthContext';
+import { useSnack } from '../../../common/components/MultiSnackBar';
+import { useAuth } from '../hooks/AuthContext';
 
+/* 특정 사용자만 접근 가능하도록 제한 */
 export default function AuthPassPage({ children }) {
   const {pass, passin} = useAuth();
   const showSnack = useSnack();
