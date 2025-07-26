@@ -1,5 +1,5 @@
 import { Box, Button, Stack, TablePagination, TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { useSnack } from "../../../common/components/MultiSnackBar";
 import { deletePosts } from "../AdminController";
@@ -137,6 +137,9 @@ export default function PostsBox() {
     const handleSelectOne = (id) => {
         setSelected(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
     };
+
+
+    useEffect(() => { handleSearchBtn() }, []);
 
     return(
         <Box>

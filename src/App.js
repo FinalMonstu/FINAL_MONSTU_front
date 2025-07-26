@@ -16,8 +16,8 @@ import AdminPage from './features/admin/AdminPage';
 
 import { adminPath, authPath, mainPath, myPath, postPath, } from './common/hooks/urlManager';
 import Header from './common/components/Header';
-import AdminRoute from './features/auth/components/route/AdminRoute';
-import PrivateRoute from './features/auth/components/route/PrivateRoute';
+import AdminRoute from './common/components/route/AdminRoute';
+import PrivateRoute from './common/components/route/PrivateRoute';
 import {AuthProvider} from './features/auth/hooks/AuthContext'
 
 function App() {

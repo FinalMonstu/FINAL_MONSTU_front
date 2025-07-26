@@ -1,13 +1,14 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Box, TextField, Button, Stack, TablePagination } from "@mui/material";
 
 import CountrySelector from "../../preset/components/CountrySelector";
 import MemberRoleSelector from "../../preset/components/MemberRoleSelector";
 import MemberStatusSelector from "../../preset/components/MemberStatusSelector";
 import DateSelector from "../../preset/components/DateSelector";
+
 import { deleteMembers, filterMemberAPI } from "../AdminController";
 import { useSnack } from "../../../common/components/MultiSnackBar";
-import AddMemberModal from "./AddMemberModal";
+import CreateMemberModal from "./CreateMemberModal";
 import DetailMember from "./DetailMember";
 import MemberTable from "./MemberTable";
 
@@ -18,39 +19,40 @@ export default function MembersBox() {
   const showSnack = useSnack();
 
   const [filters, setFilters] = useState({
-    email: "",
-    nickname: "",
-    countryCode: null,
-    role: null,
-    status: null,
+    email      : "",
+    nickname   : "",
+    countryCode: null,  
+    role       : null,  
+    status     : null,  
   });
 
   const [dateFilters, setDateFilters] = useState({
-    dateOption: null,
-    dateStart: "",
-    dateEnd: "",
+    dateOption : null,  
+    dateStart  : "",    
+    dateEnd    : "",    
   })
 
   const [pageOption, setPageOption] = useState({
-    totalElements: 0,
-    totalPages: 0,
-    page: 0,
-    size: 20,
+    totalElements : 0,
+    totalPages    : 0,
+    page          : 0,
+    size          : 20,
   })
 
   // 모달 여닫이 옵션
   const [modal,setModal] = useState({ add : false })
 
-  const [data,setData] = useState([])   // Members Information
-  const [selected, setSelected] = useState([]); // 체크 박스 선택된 모든 요소 저장
-  const [detail,setDetail] = useState(null);  // 상세보기 게시물 ID 저장
+  const [data,setData]          = useState([])     // Members Information
+  const [selected, setSelected] = useState([]);    // 체크 박스 선택된 모든 요소 저장
+  const [detail,setDetail]      = useState(null);  // 상세보기 게시물 ID 저장
 
 
   // useState 속성 헨들러
   const handleFilterChange = (key) => (e) => { setFilters((prev) => ({ ...prev, [key]: e.target.value }));};
-  const toggleModal = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
-  const updateFilters = useCallback( (field, value) => { setFilters((prev) => ({ ...prev, [field]: value })); }, [] );
+  const toggleModal        = (key) => { setModal((prev) => ({ ...prev, [key]: !prev[key] }));};
+  const updateFilters      = useCallback( (field, value) => { setFilters((prev) => ({ ...prev, [field]: value })); }, [] );
 
+  // 페이징 이용, 여러 유저 검색
   const handlePageChange = (event, newPage) => {
       setPageOption(prev => ({ ...prev, page: newPage }));
       handleSearchBtn({ page: newPage, size: pageOption.size });
@@ -141,6 +143,8 @@ export default function MembersBox() {
     );
   };
 
+  useEffect(() => { handleSearchBtn() }, []);
+
   return (
     <Box>
       {/* 필터 바 */}
@@ -218,7 +222,7 @@ export default function MembersBox() {
       />
 
       {/* Add Member Modal */}
-      <AddMemberModal modalOpen={modal.add} toggleModal={toggleModal} onSuccess={handleSearchBtn}/>
+      <CreateMemberModal modalOpen={modal.add} toggleModal={toggleModal} onSuccess={handleSearchBtn}/>
 
       {/* Member Detail Information Modal*/}
       <DetailMember memberId={detail} setter={setDetail} onSuccess={handleSearchBtn} />

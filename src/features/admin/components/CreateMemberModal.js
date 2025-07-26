@@ -20,21 +20,21 @@ import {
 } from '../styles/AddMemberModalStyles';
 
 /* 
-  역할 : 멤버 추가
+  역할 : 멤버 추가 모달
   인증 : ADMIN만 사용가능
-  기능 : 유저 정보 입력/저장
-  비고 : 회원가입 기능과의 차이점 -> Role, Status 속성을 프론트에서 바로 추가 가능
+  기능 : 새로운 멤버 추가 기능
+  비고 : 회원가입 기능과의 차이점 -> Role, Status 속성까지지 프론트에서 바로 추가 가능
 */
-export default function AddMemberModal({ modalOpen, toggleModal, onSuccess}) {
+export default function CreateMemberModal({ modalOpen, toggleModal, onSuccess}) {
   const initialValues = useMemo(() => ({
-      email: "",
-      password: "",
-      confirmPassword: "",  // 비밀번호 재확인 입력값값
-      nickName: "",
-      phoneNumber: "",
-      role: "",
-      status: "",
-      country: "",
+      email           : "",
+      password        : "",
+      confirmPassword : "",  // 비밀번호 재확인 입력값
+      nickName        : "",
+      phoneNumber     : "",
+      role            : "",
+      status          : "",
+      country         : "",
   }), []);
 
 
