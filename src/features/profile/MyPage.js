@@ -17,8 +17,8 @@ export default function MyPage() {
           />
   
           <Box flexGrow={1} p={2}>
-              {child === "MyInfoBox" && <MyInfoTable/>}
-              {child === "MyPosts"    && <MyPostsBox/>}
+              {child === "MyInfoBox"  && <MyInfoTable/>}
+              {child === "MyPosts"    && <MyPostsBox/> }
           </Box>
       </Box>
   );

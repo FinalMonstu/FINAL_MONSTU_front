@@ -9,7 +9,7 @@ export default function AdminRoute({children}){
     const { isAuthenticated, userInfo  } = useAuth();
     
     if (isAuthenticated && userInfo.role===memberRole.ADMIN) {return children};
-    console.log("isAuthenticated", isAuthenticated);
-    console.log("userInfo", userInfo);
+    // console.log("isAuthenticated", isAuthenticated);
+    // console.log("userInfo", userInfo);
     return <Navigate to={authPath.login} replace />;
 }

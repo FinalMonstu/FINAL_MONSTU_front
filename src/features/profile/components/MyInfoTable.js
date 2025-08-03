@@ -46,7 +46,7 @@ export default function MyInfoTable() {
     success ? fetch() : showSnack('error', message);
   }, []);
 
-  useEffect(() => { fetch(); }, [fetch]);
+  useEffect(() => { fetch(); }, []);
 
   const handleChangePassword = () => { 
     navigate(authPath.resetPw, { state: { email: data.email } });

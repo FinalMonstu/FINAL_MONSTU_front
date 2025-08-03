@@ -21,8 +21,8 @@ export default function AdminPage(){
             />
     
             <Box flexGrow={1} p={2}>
-                {child === "MembersBox" && <MembersBox />}
-                {child === "PostsBox"    && <PostsBox />}
+                {child === "MembersBox"  && <MembersBox />}
+                {child === "PostsBox"    && <PostsBox />  }
             </Box>
         </Box>
     );

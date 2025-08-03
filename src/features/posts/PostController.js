@@ -17,6 +17,7 @@ const postController = (url,type='post',data=null) => {
 export const savePost = async (post) => {
     try {
         const response = await postController(``, 'post',post);
+        console.log("savePost Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -30,6 +31,7 @@ export const myPosts = async ({page,size,sortValue, sortOrder}) => {
             `/me`,'get',
             { params: { page, size, sort: `${sortValue},${sortOrder}` }}
         )
+        console.log("myPosts Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -45,6 +47,7 @@ export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
             ``, 'get', 
             { params: { page, size, sort: `${sortValue},${sortOrder}` }}
         );
+        console.log("getPublicPosts Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -55,6 +58,7 @@ export const getPublicPosts = async ({page,size,sortValue, sortOrder}) => {
 export const deletePostAPI = async (id) => {
     try {
         const response = await postController(`/${id}`, 'delete');
+        console.log("deletePostAPI Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -65,7 +69,7 @@ export const deletePostAPI = async (id) => {
 export const getPostById = async (id) => {
     try {
         const response = await postController(`/${id}`, 'get');
-        console.log(JSON.stringify(response.data));
+        console.log("getPostById Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -87,9 +91,10 @@ export const filterPostAPI = async ({filter, pageable}) => {
             delete params[key];
         }
     });
-
+    console.log("filterPostAPI params",params);
     try {
         const response = await postController(`/search`, 'get',{ params });
+        console.log("filterPostAPI Active");
         return responseStatus(response, response.data);
     } catch (error) {
         return errorStatus(error);

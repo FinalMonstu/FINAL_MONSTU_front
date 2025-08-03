@@ -17,6 +17,7 @@ const authController = (url,type='post',data=null) => {
 export const emailAvail = async (email) => {
     try {
         const response = await authController(`/email-avail?email=${email}`, 'get');
+        console.log("emailAvail Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -27,6 +28,7 @@ export const emailAvail = async (email) => {
 export const sendEmailCode = async (request) => {
     try {
         const response = await authController(`/email-code`, 'post',request);
+        console.log("sendEmailCode Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -37,6 +39,7 @@ export const sendEmailCode = async (request) => {
 export const verifyEmailCode = async (request) => {
     try {
         const response = await authController(`/email-code/verify`, 'post',request);
+        console.log("verifyEmailCode Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -47,6 +50,7 @@ export const verifyEmailCode = async (request) => {
 export const signupAPI = async (request) => {
     try {
         const response = await authController(`/signup`, 'post', request);
+        console.log("signupAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -57,6 +61,7 @@ export const signupAPI = async (request) => {
 export const signOutAPI = async () => {
     try {
         const response = await authController(`/signout`, 'post');
+        console.log("signOutAPI Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -66,6 +71,7 @@ export const signOutAPI = async () => {
 export const loginAPI = async (request) => {
     try {
         const response = await authController(`/login`, 'post', request);
+        console.log("loginAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -76,6 +82,7 @@ export const loginAPI = async (request) => {
 export const resetPwAPI = async (request) => {
     try {
         const response = await authController(`/password`, 'post', request);
+        console.log("resetPwAPI Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -86,18 +93,9 @@ export const resetPwAPI = async (request) => {
 export const findIdAPI = async (request) => {
     try {
         const response = await authController(`/email-find`, 'post', request);
+        console.log("findIdAPI Active");
         return responseStatus(response,response.data.email);
     }catch(error){
         return errorStatus(error);
     }     
 };
-
-// 로그인한 사용자 정보 반환환
-// export const meAPI = async () => {
-//     try {
-//         const response = await authController(`/me`, 'get');
-//         return responseStatus(response,response.data);
-//     }catch(error){
-//         return errorStatus(error);
-//     }     
-// };

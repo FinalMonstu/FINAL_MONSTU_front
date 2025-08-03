@@ -15,6 +15,7 @@ const adminController = (url,type='post',data=null) => {
 export const updateMemberAPI = async (dto) => {
     try {
         const response = await adminController(`/members/${dto.id}`, 'patch', dto);
+        console.log("updateMemberAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -27,6 +28,7 @@ export const deleteMembers = async (list) => {
     try {
         const params = { ids: list.join(',') };
         const response = await adminController(`/members`, 'delete', { params });
+        console.log("deleteMembers Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -41,6 +43,7 @@ export const filterMemberAPI = async ({filter,pageable}) => {
             'post',
             filter
         )
+        console.log("filterMemberAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -51,8 +54,8 @@ export const filterMemberAPI = async ({filter,pageable}) => {
 // Find Member By ID - API
 export const getMemberAPI = async (id) => {
     try {
-        // const response = await memberController(`/members/{id}?id=${id}`, 'get');
         const response = await adminController(`/members/${id}`, 'get');
+        console.log("getMemberAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -63,6 +66,7 @@ export const getMemberAPI = async (id) => {
 export const createMemberAPI = async (request) => {
     try {
         const response = await adminController(`/members`, 'post', request);
+        console.log("createMemberAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -75,6 +79,7 @@ export const createMemberAPI = async (request) => {
 export const getDetailPostAPI = async (id) => {
     try {
         const response = await adminController(`/posts/${id}/logs`, 'get');
+        console.log("getDetailPostAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
@@ -87,6 +92,7 @@ export const deletePosts = async (list) => {
     const params = { ids: list.join(',') };
     try {
         const response = await adminController(`/posts`, 'delete', {params});
+        console.log("deletePosts Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
@@ -97,6 +103,7 @@ export const deletePosts = async (list) => {
 export const updatePostAPI = async (dto) => {
     try {
         const response = await adminController(`/posts/${dto.id}`, 'patch', dto);
+        console.log("updatePostAPI Active");
         return responseStatus(response,response.data);
     }catch(error){
         return errorStatus(error);
