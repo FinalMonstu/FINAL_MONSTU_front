@@ -16,10 +16,10 @@ export default function HistoryWordBox({ list, handleDelete, sx }) {
   return (
     <Box sx={{ ...rootSx, ...sx }}>
       <List sx={listSx}>
-        {list.map(({ createdAt, originalText, translatedText }) => (
-          <ListItem key={createdAt} divider sx={listItemSx}>
+        {list.map(({ id, createdAt, originalText, translatedText }) => (
+          <ListItem key={id || createdAt} divider sx={listItemSx}>
             <Button
-              onClick={() => handleDelete(createdAt)}
+              onClick={() => handleDelete(id || createdAt)}
               size="small"
               sx={deleteBtnSx}
             >

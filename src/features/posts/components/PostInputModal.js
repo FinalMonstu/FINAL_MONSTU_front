@@ -39,7 +39,11 @@ export default function PostInputModal({ isOpen, toggleOption, post, setPost, sa
 
   // 저장 버튼 클릭 시
   const save = useCallback(() => {
-    const updated = { ...post, ...tempPost };
+    const updated = { 
+      ...post, 
+      title: tempPost.title,
+      content: tempPost.content
+    };
     (autoSave)
       ? savePost(updated) // DB 저장
       : setPost(updated); // 로컬 상태만 변경

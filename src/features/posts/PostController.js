@@ -101,7 +101,28 @@ export const filterPostAPI = async ({filter, pageable}) => {
     }
 };
 
+// 게시물의 번역 기록을 조회하는 API
+export const getHistoriesByPost = async (postId) => {
+    try {
+        const response = await postController(`/${postId}/histories`, 'get');
+        console.log("getHistoriesByPost Active");
+        console.log(JSON.stringify(response.data));
+        return responseStatus(response, response.data);
+    } catch (error) {
+        return errorStatus(error);
+    }
+};
 
+// 히스토리 삭제 API
+export const deleteHistory = async (historyId, postId) => {
+    try {
+        const response = await postController(`/${postId}/histories/${historyId}`, 'delete');
+        console.log("deleteHistory Active");
+        return responseStatus(response, response.data);
+    } catch (error) {
+        return errorStatus(error);
+    }
+};
 
 
 
