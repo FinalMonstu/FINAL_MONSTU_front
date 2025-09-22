@@ -78,6 +78,57 @@ export default function PostPage() {
   const toggleOption = useCallback((field) => { setOptions(prev => ({ ...prev, [field]: !prev[field] })); }, []);
   const toggleModal  = useCallback((field) => { setModal((prev) => ({ ...prev, [field]: !prev[field] })); }, []);
 
+  // 번역기록 내보내기 함수
+  const exportHistory = useCallback(() => {
+    // 번역기록이 없는 경우 알림 표시 후 종료
+    if (histWord.length === 0 && histSentence.length === 0) {
+      showSnack('warning', '내보낼 번역기록이 없습니다');
+      return;
+    }
+
+    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD 형식
+    const postTitle = post.title || '번역기록';
+    
+    let content = `번역기록 내보내기\n`;
+    content += `내보내기 날짜: ${currentDate}\n\n`;
+
+    content += `게시물: ${postTitle}\n`;
+    content += `\n${'='.repeat(50)}\n\n`;
+    
+    // 단어 번역기록
+    if (histWord.length > 0) {
+      content += `📝 단어 번역기록 (${histWord.length}개)\n`;
+      content += `${'='.repeat(30)}\n`;
+      histWord.forEach((item, index) => {
+        content += `${index + 1}. ${item.originalText} → ${item.translatedText}\n`;
+      });
+      content += `\n`;
+    }
+    
+    // 문장 번역기록
+    if (histSentence.length > 0) {
+      content += `📝 문장 번역기록 (${histSentence.length}개)\n`;
+      content += `${'='.repeat(30)}\n`;
+      histSentence.forEach((item, index) => {
+        content += `${index + 1}. ${item.originalText}\n`;
+        content += `   → ${item.translatedText}\n`;
+      });
+    }
+    
+    // 파일 다운로드
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `번역기록_${postTitle}_${currentDate}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showSnack('success', '번역기록이 다운로드되었습니다');
+  }, [histWord, histSentence, post.title, showSnack]);
+
 
   const deleteWordFromHistory = useCallback(async (id) => {
     setHistWord(prev => {
@@ -392,7 +443,7 @@ export default function PostPage() {
       </Box>
 
       {/* 옵션/입력 모달 */}
-      <PostOption isOpen={modal.optionsModal} toggleModal={toggleModal} toggleOption={toggleOption} options={options} />
+      <PostOption isOpen={modal.optionsModal} toggleModal={toggleModal} toggleOption={toggleOption} options={options} onExportHistory={exportHistory} />
       <PostInputModal isOpen={modal.inputModal} toggleOption={toggleModal} post={post} setPost={setPost} savePost={savePostAPI }/>
     </Box>
   );

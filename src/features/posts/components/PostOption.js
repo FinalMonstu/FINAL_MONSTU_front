@@ -12,9 +12,9 @@ import {
 /* 
   역할 : 게시물 페이지 -> 게시물에 페이지에 번역기록(단어,문장) 표시 여부 결정
   인증 : 모든 이용자 사용가능
-  기능 : 단어&문장 번역기록 보이기 / 안보이기 설정
+  기능 : 단어&문장 번역기록 보이기 / 안보이기 설정, 번역기록 내보내기
 */
-export default function PostOption({isOpen, toggleModal, toggleOption, options}) {
+export default function PostOption({isOpen, toggleModal, toggleOption, options, onExportHistory}) {
     const handleClose = () => toggleModal('optionsModal');
 
     return(
@@ -51,7 +51,27 @@ export default function PostOption({isOpen, toggleModal, toggleOption, options})
                         onClick={() => toggleOption("viewSentence")}
                         active={!!options?.viewSentence}
                     />
+                    
+                    
                 </Box>
+                {/* 번역기록 내보내기 버튼 */}
+                <Button
+                    onClick={onExportHistory}
+                    sx={{
+                        width: '70%',
+                        mt: 2,
+                        bgcolor: 'white',
+                        color: '#000',
+                        border: '1px solid #000',
+                        borderRadius: '20px',
+                        '&:hover': {
+                            bgcolor: '#f0f0f0',
+                            color: '#000'
+                        }
+                    }}
+                >
+                    번역기록 내보내기
+                </Button>
             </Box>
         </Modal>
     );
