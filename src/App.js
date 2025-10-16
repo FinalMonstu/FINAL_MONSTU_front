@@ -50,7 +50,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
 
-        <AuthPassPage>
+        {/* <AuthPassPage> */}
 
           <Box sx={{ height: "60px", flexShrink: 0 }}>
             <Header />
@@ -70,7 +70,7 @@ function App() {
             ))}
           </Routes>
 
-        </AuthPassPage>
+        {/* </AuthPassPage> */}
         
       </BrowserRouter>
     </AuthProvider>

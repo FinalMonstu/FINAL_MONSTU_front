@@ -20,7 +20,7 @@ export default function Footer(){
             <Typography variant="caption" display="block" sx={captionEmailSx}>
                 email: kimicetea777@gmail.com
             </Typography>
-            <Stack direction="row" justifyContent="center" spacing={2} sx={linkStackSx}>
+            {/* <Stack direction="row" justifyContent="center" spacing={2} sx={linkStackSx}>
               <Link
                 href="https://www.notion.so/PORTFOLIO-19e303eae1f280828d69f4b34a9654a7?pvs=4"
                 target="_blank"
@@ -37,7 +37,7 @@ export default function Footer(){
               >
                 Project Code
               </Link>
-            </Stack>
+            </Stack> */}
         </Box>
     )
 }

@@ -16,7 +16,7 @@ export default function PostsBox() {
     const [filters, setFilters] = useState({
         isPublic: null,
         title: '',
-        authorId: null,
+        authorId: '',
     });
     
     const [dateFilters, setDateFilters] = useState({
@@ -78,7 +78,7 @@ export default function PostsBox() {
         setFilters({
             isPublic: null,
             title: '',
-            authorId: null,
+            authorId: '',
         });
         setDateFilters({
             dateOption: "",
@@ -100,6 +100,28 @@ export default function PostsBox() {
 
     const handleSearchBtn = useCallback(
         ({ page = pageOption.page, size = pageOption.size } = {}) => {
+        // If any date filter field is provided, require all three
+        const { dateOption, dateStart, dateEnd } = dateFilters;
+        const anyDateProvided = !!(dateOption || dateStart || dateEnd);
+        if (anyDateProvided) {
+            if (!dateOption || !dateStart || !dateEnd) {
+                showSnack('warning', '날짜 필터을 사용하려면 옵션/시작일/종료일을 모두 입력하세요.');
+                return;
+            }
+
+            // check that end >= start
+            const start = new Date(dateStart);
+            const end = new Date(dateEnd);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                showSnack('warning', '날짜 형식이 올바르지 않습니다.');
+                return;
+            }
+            if (end < start) {
+                showSnack('warning', '종료일은 시작일보다 이전일 수 없습니다.');
+                return;
+            }
+        }
+
         const filter = {
             isPublic : filters?.isPublic,
             title : filters?.title,
@@ -161,16 +183,19 @@ export default function PostsBox() {
                     <TextField
                         sx={{maxWidth:110}}
                         size="small"
-                        label="author_id"
+                        label="authorId"
                         value={filters.authorId}
                         onChange={handleFilterChange("authorId")}
+                        InputLabelProps={{
+                            shrink: !!filters.authorId
+                        }}
                     />
 
-                    <ViewCountSelector
+                    {/* <ViewCountSelector
                         viewCount={viewFilters.viewCount}
                         viewCountOption={viewFilters.viewCountOption}
                         onChange={(newFilters) => setViewFilters(prev => ({ ...prev, ...newFilters })) }
-                    />
+                    /> */}
 
                     <DateSelector
                         addValue={['createdAt','modifiedAt','lastViewAt']}

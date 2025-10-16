@@ -37,6 +37,7 @@ export const deleteMembers = async (list) => {
 
 // 필터링된 멤버 데이터 반환 API
 export const filterMemberAPI = async ({filter,pageable}) => {
+    console.log('filter: '+JSON.stringify(filter));
     try {
         const response = await adminController(
             `/members/search?page=${pageable.page}&size=${pageable.size}`, 

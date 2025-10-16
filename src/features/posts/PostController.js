@@ -93,7 +93,7 @@ export const filterPostAPI = async ({filter, pageable}) => {
     });
     console.log("filterPostAPI params",params);
     try {
-        const response = await postController(`/search`, 'get',{ params });
+        const response = await postController(`/search`, 'get', { params });
         console.log("filterPostAPI Active");
         return responseStatus(response, response.data);
     } catch (error) {
