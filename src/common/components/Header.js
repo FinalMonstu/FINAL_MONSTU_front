@@ -44,19 +44,20 @@ export default function Header() {
     );
 
     return (
-        <Box sx={{ flexGrow: 1, marginLeft: "15px", marginRight: "15px",marginTop: "8px"}}>
-            <AppBar position="static" sx={{backgroundColor:"white",boxShadow:"none"}}>
-            <Toolbar>
-                <Typography variant="h6" component="div" 
-                    sx={{ flexGrow: 1, color: "black",fontWeight: "bold"}}
-                    onClick={handleHome}    
-                >
-                MonStu
-                </Typography>
-
-                {isAuthenticated? <Authenticated/> : <UnAuthenticated/> }
-            </Toolbar>
+        <>
+            <AppBar position="fixed" sx={{backgroundColor:"white",boxShadow:"none", zIndex: 1300}}>
+                <Toolbar sx={{ marginLeft: "15px", marginRight: "15px", marginTop: "8px" }}>
+                    <Typography variant="h6" component="div" 
+                        sx={{ flexGrow: 1, color: "black",fontWeight: "bold"}}
+                        onClick={handleHome}    
+                    >
+                        MonStu
+                    </Typography>
+                    {isAuthenticated? <Authenticated/> : <UnAuthenticated/> }
+                </Toolbar>
             </AppBar>
-        </Box>
+            {/* Spacer to prevent content from being hidden under the fixed header */}
+            <Box sx={{ height: '64px' }} />
+        </>
     );
 };

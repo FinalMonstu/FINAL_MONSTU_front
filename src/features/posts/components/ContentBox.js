@@ -36,7 +36,7 @@ export default function ContentBox({ translation, updateTranslation, post }) {
   return (
     <Box
       ref={boxRef}
-      sx={{ position: "relative", padding: "40px" }}
+      sx={{ position: "relative", padding: "40px", height: '100%', overflow: 'auto', boxSizing: 'border-box' }}
       onMouseUp={handleHighlightText}
     >
       <Typography sx={{ whiteSpace: "pre-wrap" }}>

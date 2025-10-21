@@ -42,8 +42,8 @@ export default function PostPage() {
 
   const [post, setPost] = useState({
     postId     : postId,
-    title      : "오른쪽 '+' 버튼을 눌러 보세요",
-    content    : '[아인슈타인]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다',
+    title      : "오른쪽 '+' 버튼을 누르면 새 게시물을 작성할 수 있습니다",
+    content    : '단어나 문장을 드래그하면 번역을 볼 수 있습니다.\n\n[sample]\n\nCreativity is intelligence having fun.\n\n 창의성이란 지성이 즐겁게 노는 것이다',
     createdAt  : '',
     modifiedAt : '',
     status     : '',

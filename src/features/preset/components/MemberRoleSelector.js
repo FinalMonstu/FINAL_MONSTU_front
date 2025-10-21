@@ -18,9 +18,11 @@ export default function MemberRoleSelect({value,onChange,allowNone=true}){
         <FormControl size="small" sx={{ minWidth: 120 }}>
             <InputLabel id="role-label">Role</InputLabel>
             <Select
-                label="role-label"
-                value={value || null}
+                labelId="role-label"
+                label="Role"
+                value={value ?? ''}
                 onChange={e => onChange(e.target.value)}
+                displayEmpty
             >
                 {allowNone && <MenuItem value={null}> <em>None</em> </MenuItem>}
                 
