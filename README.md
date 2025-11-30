@@ -3,13 +3,11 @@ MONSTU project frontend code
 
 ---
 
-### ⚡ Live Site: [MonStu_Site_Link](https://monstu.win)  접근코드 24601
-
 ### 📦 GitHub Back Repository: [github.com](https://github.com/FinalMonstu/FINAL_MONSTU_back)
 
-### 💿 Demo Video: [youtube.com](https://www.youtube.com/watch?v=54qtrOOisXw)
+### 💿 Demo Video: [youtube.com](https://www.youtube.com/watch?v=CH2E0r3U4CA)
 
-### 📖 Developer Profile: [notion.com](https://www.notion.so/PORTFOLIO-19e303eae1f280828d69f4b34a9654a7?pvs=4)
+### 📖 More Info: [notion.com](https://dot-woodwind-39a.notion.site/MonStu-1fc303eae1f280978cbaec88b23b3ac4)
 
 ### 🚩 Develop Log Blog: [tistory.com](https://code-is-code.tistory.com/)
 ---
@@ -42,8 +40,6 @@ MonStu는 웹 상의 텍스트를 활용해 다양한 언어 학습을 지원하
 
 - 3단계 조회 파이프라인: 캐시 → DB → 외부 API, 동시 실행 후 ‘첫 성공 결과’ 반환(캐시/DB 경쟁 실행으로 지연 최소화)
 
-- 회복력 패턴: completeOnTimeout, orTimeout, exceptionally로 타임아웃·예외 내성 강화
-
 - 결과 캐싱 & 영속화: 외부 API 결과를 캐시 저장 + DB 저장으로 재사용·비용 절감
 
 ---
@@ -62,6 +58,10 @@ MonStu는 웹 상의 텍스트를 활용해 다양한 언어 학습을 지원하
 - OS: Ubuntu Linux
 - Domain : Cloudflare
 - Hardware: Laptop
+
+---
+
+### 🙆‍♂️ 개발자 포트폴리오 [notion.com](https://www.notion.so/248303eae1f280949123e25ee9ad7d04)
 
 ---
 
