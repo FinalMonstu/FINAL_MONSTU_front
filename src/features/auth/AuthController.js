@@ -16,7 +16,7 @@ const authController = (url,type='post',data=null) => {
 // 이메일 중복 검사
 export const emailAvail = async (email) => {
     try {
-        const response = await authController(`/email-avail?email=${email}`, 'get');
+        const response = await authController(`/check-email?email=${email}`, 'get');
         console.log("emailAvail Active");
         return responseStatus(response,response.data);
     }catch(error){
@@ -60,8 +60,8 @@ export const signupAPI = async (request) => {
 // 회원탈퇴
 export const signOutAPI = async () => {
     try {
-        const response = await authController(`/signout`, 'post');
-        console.log("signOutAPI Active");
+        const response = await authController(`/withdraw`, 'post');
+        console.log("withdraw API Active");
         return responseStatus(response);
     }catch(error){
         return errorStatus(error);
